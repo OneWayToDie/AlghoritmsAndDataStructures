@@ -1,0 +1,172 @@
+﻿<Window x:Class="AlghoritmsAndDataStructures.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:AlghoritmsAndDataStructures.ViewModels"
+        Title="Практические работы" 
+        Height="600" Width="800"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        Background="Transparent">
+
+    <Window.Resources>
+        <!-- Стиль для кнопок в заголовке -->
+        <Style x:Key="CaptionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource CaptionForeground}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#3A3A5A"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Стиль для плитки -->
+        <Style x:Key="WorkTileStyle" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource TileBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TileForeground}"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="12"
+                                Padding="20,15"
+                                BorderBrush="{DynamicResource TileBorderBrush}"
+                                BorderThickness="1">
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <TextBlock Text="📁" FontSize="48" Margin="0,0,0,12" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{Binding Title}" 
+                                           HorizontalAlignment="Center"
+                                           TextWrapping="Wrap"
+                                           TextAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource TileHoverBackground}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource TilePressedBackground}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Border Background="{DynamicResource MainBackground}"
+            BorderBrush="{DynamicResource WindowBorderBrush}"
+            BorderThickness="{DynamicResource WindowBorderThickness}"
+            CornerRadius="8">
+        <Border.Effect>
+            <DropShadowEffect Color="Black" Opacity="0.3" BlurRadius="15" ShadowDepth="0"/>
+        </Border.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
+
+            <!-- Заголовок с перетаскиванием -->
+            <Border Grid.Row="0" 
+                    Background="{DynamicResource CaptionBackground}" 
+                    MouseLeftButtonDown="CaptionBorder_MouseLeftButtonDown">
+                <Grid>
+                    <TextBlock Text="Практические работы по программированию" 
+                               FontSize="20" FontWeight="Bold" 
+                               Foreground="{DynamicResource CaptionForeground}"
+                               VerticalAlignment="Center" 
+                               HorizontalAlignment="Left"
+                               Margin="20,0,0,0"/>
+                    <StackPanel Orientation="Horizontal" 
+                                HorizontalAlignment="Right" 
+                                VerticalAlignment="Center"
+                                Margin="0,0,10,0">
+                        <!-- Кнопки переключения тем -->
+                        <Button Style="{StaticResource CaptionButtonStyle}" 
+                                Command="{Binding SwitchThemeCommand}" CommandParameter="DarkYellow"
+                                ToolTip="Черно-желтая тема">
+                            <Border Width="20" Height="20" Background="#1A1A1A" BorderBrush="#F5C518" BorderThickness="2"/>
+                        </Button>
+                        <Button Style="{StaticResource CaptionButtonStyle}" 
+                                Command="{Binding SwitchThemeCommand}" CommandParameter="LightGreen"
+                                ToolTip="Бело-зеленая тема">
+                            <Border Width="20" Height="20" Background="#F0F0F0" BorderBrush="#2E7D32" BorderThickness="2"/>
+                        </Button>
+                        <!-- Настройки -->
+                        <Button Style="{StaticResource CaptionButtonStyle}" 
+                                Command="{Binding OpenSettingsCommand}"
+                                ToolTip="Настройки">
+                            <TextBlock Text="⚙" FontSize="22"/>
+                        </Button>
+                        <!-- Свернуть -->
+                        <Button Style="{StaticResource CaptionButtonStyle}" 
+                                Click="MinimizeButton_Click">
+                            <TextBlock Text="─" FontSize="24"/>
+                        </Button>
+                        <!-- Развернуть (инактив) -->
+                        <Button Style="{StaticResource CaptionButtonStyle}" 
+                                IsEnabled="False" Opacity="0.3">
+                            <TextBlock Text="☐" FontSize="22"/>
+                        </Button>
+                        <!-- Закрыть -->
+                        <Button Style="{StaticResource CaptionButtonStyle}" 
+                                Click="CloseButton_Click">
+                            <TextBlock Text="✕" FontSize="20"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Плитки -->
+            <ItemsControl Grid.Row="1" 
+                          ItemsSource="{Binding Works}" 
+                          Margin="30,20,30,20">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="4" Rows="2" VerticalAlignment="Center"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Style="{StaticResource WorkTileStyle}"
+                                Command="{Binding DataContext.OpenWorkCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                CommandParameter="{Binding Id}"
+                                Margin="15,10"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- Нижний колонтитул -->
+            <Border Grid.Row="2" 
+                    Background="{DynamicResource FooterBackground}" 
+                    Padding="15,5">
+                <TextBlock Text="© 2026 | Теория алгоритмов и структур данных" 
+                           Foreground="{DynamicResource FooterForeground}" 
+                           HorizontalAlignment="Center" 
+                           FontSize="14"/>
+            </Border>
+        </Grid>
+    </Border>
+</Window>

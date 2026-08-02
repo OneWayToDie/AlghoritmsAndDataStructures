@@ -1,0 +1,293 @@
+﻿<Window x:Class="AlghoritmsAndDataStructures.Views.TaskWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:tasks="clr-namespace:AlghoritmsAndDataStructures.ViewModels.Tasks"
+        Title="Практическая работа" 
+        Height="550" Width="700"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None" 
+        ResizeMode="NoResize"
+        Background="Transparent">
+
+    <Window.Resources>
+        <!-- Стиль для кнопок заголовка -->
+        <Style x:Key="CaptionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource CaptionForeground}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#3A3A5A"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Стиль для кнопки "Вычислить" -->
+        <Style x:Key="ComputeButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource ButtonBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ButtonForeground}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="20,8"/>
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="5,10,5,10"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource ButtonHoverBackground}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource ButtonPressedBackground}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Стиль для вкладок (только выбор, без эффекта наведения) -->
+        <Style TargetType="TabItem">
+            <Setter Property="Foreground" Value="{DynamicResource MainTextForeground}"/>
+            <Setter Property="Background" Value="{DynamicResource TileBackground}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource TileBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border Name="Border" 
+                                Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter x:Name="ContentSite"
+                                              ContentSource="Header"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              TextBlock.Foreground="{TemplateBinding Foreground}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="{DynamicResource ButtonBackground}"/>
+                                <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource ButtonBackground}"/>
+                                <Setter TargetName="Border" Property="BorderThickness" Value="0,0,0,4"/>
+                                <Setter Property="Foreground" Value="{DynamicResource ButtonForeground}"/>
+                                <Setter TargetName="ContentSite" Property="TextBlock.Foreground" Value="{DynamicResource ButtonForeground}"/>
+                                <Setter TargetName="ContentSite" Property="TextBlock.FontWeight" Value="Bold"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Общие стили -->
+        <Style TargetType="Label">
+            <Setter Property="Foreground" Value="{DynamicResource MainTextForeground}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="5,0,5,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="{DynamicResource TileBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource MainTextForeground}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource TileBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <EventSetter Event="GotFocus" Handler="TextBox_GotFocus"/>
+        </Style>
+
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource MainTextForeground}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+
+        <!-- DataTemplate для задачи 1 (Куб) -->
+        <DataTemplate DataType="{x:Type tasks:CubeTaskViewModel}">
+            <StackPanel Margin="10">
+                <TextBlock Text="Введите длину ребра:" FontWeight="Bold" 
+                           Foreground="{DynamicResource MainTextForeground}"/>
+                <TextBox Text="{Binding Edge, UpdateSourceTrigger=PropertyChanged}" 
+                         Width="150" HorizontalAlignment="Left"/>
+
+                <Button Content="Вычислить" 
+                        Command="{Binding ComputeCommand}"
+                        Style="{StaticResource ComputeButtonStyle}"/>
+
+                <Separator Margin="0,15,0,15" Background="{DynamicResource TileBorderBrush}"/>
+
+                <TextBlock Text="Результаты:" FontWeight="Bold" 
+                           Foreground="{DynamicResource MainTextForeground}" Margin="0,0,0,10"/>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Content="Площадь грани:"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" 
+                               Text="{Binding FaceArea, StringFormat={}{0:F2}}" 
+                               Foreground="{DynamicResource ResultForeground}"
+                               VerticalAlignment="Center"/>
+
+                    <Label Grid.Row="1" Grid.Column="0" Content="Полная поверхность:"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" 
+                               Text="{Binding TotalSurface, StringFormat={}{0:F2}}"
+                               Foreground="{DynamicResource ResultForeground}"
+                               VerticalAlignment="Center"/>
+
+                    <Label Grid.Row="2" Grid.Column="0" Content="Объём:"/>
+                    <TextBlock Grid.Row="2" Grid.Column="1" 
+                               Text="{Binding Volume, StringFormat={}{0:F2}}"
+                               Foreground="{DynamicResource ResultForeground}"
+                               VerticalAlignment="Center"/>
+                </Grid>
+
+                <TextBlock Text="{Binding ResultText}" 
+                           Foreground="{DynamicResource MainTextForeground}" 
+                           Margin="0,10,0,0"/>
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- DataTemplate для задачи 2 (Дробь) -->
+        <DataTemplate DataType="{x:Type tasks:FractionTaskViewModel}">
+            <StackPanel Margin="10">
+                <TextBlock Text="Введите M и N (натуральные):" FontWeight="Bold"
+                           Foreground="{DynamicResource MainTextForeground}"/>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="M ="/>
+                    <TextBox Text="{Binding M, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
+                    <Label Content="N =" Margin="15,0,0,0"/>
+                    <TextBox Text="{Binding N, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
+                </StackPanel>
+
+                <Button Content="Вычислить" 
+                        Command="{Binding ComputeCommand}"
+                        Style="{StaticResource ComputeButtonStyle}"/>
+
+                <Separator Margin="0,15,0,15" Background="{DynamicResource TileBorderBrush}"/>
+
+                <TextBlock Text="Результаты:" FontWeight="Bold" 
+                           Foreground="{DynamicResource MainTextForeground}" Margin="0,0,0,10"/>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Content="Младшая цифра целой части:"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" 
+                               Text="{Binding IntegerLastDigit}"
+                               Foreground="{DynamicResource ResultForeground}"
+                               VerticalAlignment="Center"/>
+
+                    <Label Grid.Row="1" Grid.Column="0" Content="Старшая цифра дробной части:"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" 
+                               Text="{Binding FractionFirstDigit}"
+                               Foreground="{DynamicResource ResultForeground}"
+                               VerticalAlignment="Center"/>
+                </Grid>
+
+                <TextBlock Text="{Binding ResultText}" 
+                           Foreground="{DynamicResource MainTextForeground}" 
+                           Margin="0,10,0,0"/>
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
+
+    <Border Background="{DynamicResource MainBackground}"
+            BorderBrush="{DynamicResource WindowBorderBrush}"
+            BorderThickness="{DynamicResource WindowBorderThickness}"
+            CornerRadius="8">
+        <Border.Effect>
+            <DropShadowEffect Color="Black" Opacity="0.3" BlurRadius="15" ShadowDepth="0"/>
+        </Border.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Заголовок -->
+            <Border Grid.Row="0" 
+                    Background="{DynamicResource CaptionBackground}" 
+                    MouseLeftButtonDown="CaptionBorder_MouseLeftButtonDown">
+                <Grid>
+                    <TextBlock Text="Практическая работа 1 (вариант 26)" 
+                               FontSize="20" FontWeight="Bold"
+                               Foreground="{DynamicResource CaptionForeground}"
+                               VerticalAlignment="Center" HorizontalAlignment="Left"
+                               Margin="20,0,0,0"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0">
+                        <Button Style="{StaticResource CaptionButtonStyle}" Click="MinimizeButton_Click">
+                            <TextBlock Text="─" FontSize="24"/>
+                        </Button>
+                        <Button Style="{StaticResource CaptionButtonStyle}" IsEnabled="False" Opacity="0.3">
+                            <TextBlock Text="☐" FontSize="22"/>
+                        </Button>
+                        <Button Style="{StaticResource CaptionButtonStyle}" Click="CloseButton_Click">
+                            <TextBlock Text="✕" FontSize="20"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Вкладки -->
+            <Grid Grid.Row="1" Margin="20">
+                <TabControl ItemsSource="{Binding Tasks}" SelectedIndex="0"
+                            Background="{DynamicResource MainBackground}"
+                            BorderThickness="0">
+                    <TabControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Title}" 
+                                       Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=TabItem}, Path=Foreground}"
+                                       FontWeight="SemiBold"/>
+                        </DataTemplate>
+                    </TabControl.ItemTemplate>
+                    <TabControl.ContentTemplate>
+                        <DataTemplate>
+                            <ContentPresenter Content="{Binding}"/>
+                        </DataTemplate>
+                    </TabControl.ContentTemplate>
+                </TabControl>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>
