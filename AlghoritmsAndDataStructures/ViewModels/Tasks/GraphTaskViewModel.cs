@@ -10,7 +10,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 	{
 		private double _x = 0.0;
 		private double _r = 3.0;
-
+		public override string HistoryKey => "Graph";
 		public double X
 		{
 			get => _x;

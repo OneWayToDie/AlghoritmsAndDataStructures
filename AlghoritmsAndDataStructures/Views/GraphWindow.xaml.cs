@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using AlghoritmsAndDataStructures.Core.Calculators;
 using Microsoft.Win32;
 using OxyPlot;
@@ -14,23 +17,49 @@ using OxyPlot.Wpf;
 
 namespace AlghoritmsAndDataStructures.Views
 {
-	public partial class GraphWindow : Window
+	public partial class GraphWindow : Window, INotifyPropertyChanged
 	{
 		private double _x;
 		private double _r;
 		private readonly bool _isDarkTheme;
 		private PlotModel _currentModel;
+		private List<DataPoint> _allPoints;
+		private LineSeries _animatedSeries;
+		private DispatcherTimer _animationTimer;
+		private int _currentPointIndex;
+		private const int PointsPerStep = 30;
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		}
 
 		public double X
 		{
 			get => _x;
-			set => _x = value;
+			set
+			{
+				if (_x != value)
+				{
+					_x = value;
+					OnPropertyChanged();
+				}
+			}
 		}
 
 		public double R
 		{
 			get => _r;
-			set => _r = value;
+			set
+			{
+				if (_r != value)
+				{
+					_r = value;
+					OnPropertyChanged();
+				}
+			}
 		}
 
 		public GraphWindow(double x, double r, bool isDarkTheme)
@@ -46,15 +75,27 @@ namespace AlghoritmsAndDataStructures.Views
 
 		private void BuildPlot()
 		{
-			var model = new PlotModel
-			{
-				Title = $"График функции при R = {_r:F2}",
-				TitleColor = _isDarkTheme ? OxyColors.White : OxyColors.Black,
-				Background = _isDarkTheme ? OxyColors.Black : OxyColors.White,
-				PlotAreaBackground = _isDarkTheme ? OxyColors.Black : OxyColors.White
-			};
+			StopAnimation();
 
-			// Динамический диапазон X
+			// --- Проверка на недопустимые значения R ---
+			if (_r == 5 || _r == 8)
+			{
+				var errorModel = new PlotModel
+				{
+					Title = "Ошибка: R не может быть равен 5 или 8 (деление на ноль).",
+					TitleColor = OxyColors.Red,
+					Background = _isDarkTheme ? OxyColors.Black : OxyColors.White
+				};
+				var errorXAxis = new LinearAxis { Position = AxisPosition.Bottom, Minimum = -10, Maximum = 10 };
+				var errorYAxis = new LinearAxis { Position = AxisPosition.Left, Minimum = -10, Maximum = 10 };
+				errorModel.Axes.Add(errorXAxis);
+				errorModel.Axes.Add(errorYAxis);
+				_currentModel = errorModel;
+				PlotView.Model = errorModel;
+				return;
+			}
+
+			// --- Динамический диапазон X ---
 			double xMinBase = Math.Min(-10, -_r - 2);
 			double xMaxBase = Math.Max(11, _r + 2);
 			double xMinUser = _x - 2;
@@ -62,7 +103,6 @@ namespace AlghoritmsAndDataStructures.Views
 			double xMin = Math.Min(xMinBase, xMinUser);
 			double xMax = Math.Max(xMaxBase, xMaxUser);
 
-			// --- Автоматический шаг (оптимизация) ---
 			double range = xMax - xMin;
 			double step = 0.01;
 			if (range > 50) step = 0.05;
@@ -85,6 +125,25 @@ namespace AlghoritmsAndDataStructures.Views
 				}
 			}
 
+			if (points.Count == 0)
+			{
+				var errorModel = new PlotModel
+				{
+					Title = "Ошибка: не удалось построить график (проверьте R).",
+					TitleColor = OxyColors.Red,
+					Background = _isDarkTheme ? OxyColors.Black : OxyColors.White
+				};
+				var errorXAxis = new LinearAxis { Position = AxisPosition.Bottom, Minimum = -10, Maximum = 10 };
+				var errorYAxis = new LinearAxis { Position = AxisPosition.Left, Minimum = -10, Maximum = 10 };
+				errorModel.Axes.Add(errorXAxis);
+				errorModel.Axes.Add(errorYAxis);
+				_currentModel = errorModel;
+				PlotView.Model = errorModel;
+				return;
+			}
+
+			_allPoints = points;
+
 			// --- Оси ---
 			var axisColor = _isDarkTheme ? OxyColors.White : OxyColors.Black;
 			var gridColor = _isDarkTheme ? OxyColors.Gray : OxyColors.LightGray;
@@ -102,7 +161,7 @@ namespace AlghoritmsAndDataStructures.Views
 				TitleColor = axisColor,
 				MajorGridlineStyle = LineStyle.Dot,
 				MajorGridlineColor = gridColor,
-				MinorGridlineStyle = LineStyle.None // отключаем частую сетку для скорости
+				MinorGridlineStyle = LineStyle.None
 			};
 
 			double yPadding = (yMax - yMin) * 0.1;
@@ -126,18 +185,25 @@ namespace AlghoritmsAndDataStructures.Views
 				MinorGridlineStyle = LineStyle.None
 			};
 
-			// --- Основная кривая ---
-			// --- Основная кривая ---
+			// --- Модель ---
+			var model = new PlotModel
+			{
+				Title = $"График функции при R = {_r:F2}",
+				TitleColor = _isDarkTheme ? OxyColors.White : OxyColors.Black,
+				Background = _isDarkTheme ? OxyColors.Black : OxyColors.White,
+				PlotAreaBackground = _isDarkTheme ? OxyColors.Black : OxyColors.White
+			};
+
+			// --- Анимируемая кривая ---
 			var curveColor = _isDarkTheme ? OxyColors.DodgerBlue : OxyColors.DarkBlue;
-			var series = new LineSeries
+			_animatedSeries = new LineSeries
 			{
 				Color = curveColor,
 				StrokeThickness = 2,
 				LineStyle = LineStyle.Solid
 			};
-			series.Points.AddRange(points); // вместо Points = points
 
-			// --- Границы дуги (-R и R) ---
+			// --- Границы дуги ---
 			var borderColor = _isDarkTheme ? OxyColors.Orange : OxyColors.DarkOrange;
 			var leftBorder = new LineSeries
 			{
@@ -172,7 +238,6 @@ namespace AlghoritmsAndDataStructures.Views
 			{
 				markerSeries.Points.Add(new ScatterPoint(_x, userY.Value));
 
-				// Вертикальная линия для X
 				var userLine = new LineSeries
 				{
 					Color = OxyColors.Red,
@@ -183,7 +248,6 @@ namespace AlghoritmsAndDataStructures.Views
 				userLine.Points.Add(new DataPoint(_x, yAxisMax));
 				model.Series.Add(userLine);
 
-				// Аннотация с координатами
 				var annotation = new TextAnnotation
 				{
 					Text = $"({_x:F2}; {userY.Value:F2})",
@@ -198,33 +262,102 @@ namespace AlghoritmsAndDataStructures.Views
 				model.Annotations.Add(annotation);
 			}
 
-			// --- Сборка модели ---
 			model.Axes.Add(xAxis);
 			model.Axes.Add(yAxis);
-			model.Series.Add(series);
+			model.Series.Add(_animatedSeries);
 			model.Series.Add(leftBorder);
 			model.Series.Add(rightBorder);
 			model.Series.Add(markerSeries);
 
 			_currentModel = model;
 			PlotView.Model = model;
+			StartAnimation();
 		}
 
-		// --- Обработчики ---
+		// ---------------------- АНИМАЦИЯ ----------------------
+		private void StartAnimation()
+		{
+			if (_allPoints == null || _allPoints.Count == 0)
+				return;
+
+			_currentPointIndex = 0;
+			_animatedSeries.Points.Clear();
+
+			_animationTimer = new DispatcherTimer();
+			_animationTimer.Interval = TimeSpan.FromMilliseconds(30);
+			_animationTimer.Tick += OnAnimationTick;
+			_animationTimer.Start();
+		}
+
+		private void OnAnimationTick(object sender, EventArgs e)
+		{
+			if (_allPoints == null || _animatedSeries == null)
+			{
+				StopAnimation();
+				return;
+			}
+
+			int remaining = _allPoints.Count - _currentPointIndex;
+			int toAdd = Math.Min(PointsPerStep, remaining);
+
+			for (int i = 0; i < toAdd; i++)
+			{
+				_animatedSeries.Points.Add(_allPoints[_currentPointIndex + i]);
+			}
+			_currentPointIndex += toAdd;
+
+			PlotView.InvalidatePlot(true);
+
+			if (_currentPointIndex >= _allPoints.Count)
+			{
+				StopAnimation();
+			}
+		}
+
+		private void StopAnimation()
+		{
+			if (_animationTimer != null)
+			{
+				_animationTimer.Stop();
+				_animationTimer.Tick -= OnAnimationTick;
+				_animationTimer = null;
+			}
+		}
+
+		// ---------------------- ОБНОВЛЕНИЕ ГРАФИКА ----------------------
 		private void UpdateButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (double.TryParse(InputX.Text, out double newX) && double.TryParse(InputR.Text, out double newR))
+			// Свойства X и R уже обновлены через привязку (TwoWay).
+			// Но для безопасности, если пользователь вручную ввёл что-то в поля, попробуем спарсить с инвариантной культурой.
+			if (double.TryParse(InputX.Text, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double newX) &&
+				double.TryParse(InputR.Text, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double newR))
 			{
-				_x = newX;
-				_r = newR;
+				X = newX;
+				R = newR;
 				BuildPlot();
 			}
 			else
 			{
-				MessageBox.Show("Введите корректные числовые значения для X и R.", "Ошибка ввода", MessageBoxButton.OK, MessageBoxImage.Warning);
+				// Если парсинг не удался, пробуем использовать текущие значения свойств (они могут быть валидны)
+				// Проверим, что они не NaN и не бесконечность
+				if (!double.IsNaN(X) && !double.IsInfinity(X) && !double.IsNaN(R) && !double.IsInfinity(R) && R > 0 && R != 5 && R != 8)
+				{
+					BuildPlot();
+				}
+				else
+				{
+					MessageBox.Show("Введите корректные числовые значения для X и R.", "Ошибка ввода", MessageBoxButton.OK, MessageBoxImage.Warning);
+				}
 			}
 		}
 
+		// Обработчик завершения перетаскивания слайдера
+		private void Slider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+		{
+			UpdateButton_Click(sender, null);
+		}
+
+		// ---------------------- СОХРАНЕНИЕ PNG ----------------------
 		private void SaveButton_Click(object sender, RoutedEventArgs e)
 		{
 			if (_currentModel == null) return;
@@ -246,6 +379,7 @@ namespace AlghoritmsAndDataStructures.Views
 			}
 		}
 
+		// ---------------------- КОПИРОВАНИЕ В БУФЕР ----------------------
 		private void CopyButton_Click(object sender, RoutedEventArgs e)
 		{
 			if (_currentModel == null) return;
@@ -271,7 +405,7 @@ namespace AlghoritmsAndDataStructures.Views
 			}
 		}
 
-		// Заголовок
+		// ---------------------- ОБРАБОТЧИКИ ЗАГОЛОВКА ----------------------
 		private void CaptionBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
 			if (e.ClickCount == 1)
@@ -290,6 +424,7 @@ namespace AlghoritmsAndDataStructures.Views
 
 		private void CloseButton_Click(object sender, RoutedEventArgs e)
 		{
+			StopAnimation();
 			this.Close();
 		}
 	}

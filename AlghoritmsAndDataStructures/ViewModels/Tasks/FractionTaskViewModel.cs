@@ -5,10 +5,12 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 {
 	public class FractionTaskViewModel : BaseTaskViewModel
 	{
-		private int _m = 0;    // теперь 0
-		private int _n = 1;    // 1, чтобы избежать деления на ноль
+		private int _m = 0;
+		private int _n = 1;
 		private int _integerLastDigit;
 		private int _fractionFirstDigit;
+		private string _calculationSteps = string.Empty;
+		public override string HistoryKey => "Fraction";
 
 		public int M
 		{
@@ -34,6 +36,12 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			private set { _fractionFirstDigit = value; OnPropertyChanged(nameof(FractionFirstDigit)); }
 		}
 
+		public string CalculationSteps
+		{
+			get => _calculationSteps;
+			private set { _calculationSteps = value; OnPropertyChanged(nameof(CalculationSteps)); }
+		}
+
 		public override string Title => "Задача 2: Дробь M/N";
 
 		protected override void ExecuteCompute(object parameter)
@@ -43,6 +51,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 				IntegerLastDigit = 0;
 				FractionFirstDigit = 0;
 				ResultText = "Ошибка: N должно быть больше 0.";
+				CalculationSteps = string.Empty;
 				return;
 			}
 
@@ -50,6 +59,18 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			IntegerLastDigit = result.IntegerLastDigit;
 			FractionFirstDigit = result.FractionFirstDigit;
 			ResultText = "Вычислено успешно.";
+
+			int integerPart = M / N;
+			int remainder = M % N;
+
+			CalculationSteps =
+				$"Формулы:\n" +
+				$"{M} / {N} = {integerPart} целых, остаток {remainder}\n" +
+				$"Младшая цифра целой части: {integerPart} % 10 = {IntegerLastDigit}\n" +
+				$"Старшая цифра дробной части: ({remainder} * 10) / {N} = {FractionFirstDigit}";
+
+			string historyEntry = $"M={M}, N={N} → целая(мл.):{IntegerLastDigit}, дробная(ст.):{FractionFirstDigit}";
+			AddHistoryEntry(historyEntry);
 		}
 	}
 }
