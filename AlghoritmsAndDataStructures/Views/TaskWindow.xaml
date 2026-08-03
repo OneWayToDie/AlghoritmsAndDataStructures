@@ -36,7 +36,7 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Стиль для кнопки "Вычислить" -->
+        <!-- Стиль для кнопки "Вычислить" (и для "Показать график") -->
         <Style x:Key="ComputeButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="{DynamicResource ButtonBackground}"/>
             <Setter Property="Foreground" Value="{DynamicResource ButtonForeground}"/>
@@ -65,7 +65,7 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Стиль для вкладок (только выбор, без эффекта наведения) -->
+        <!-- Стиль для вкладок -->
         <Style TargetType="TabItem">
             <Setter Property="Foreground" Value="{DynamicResource MainTextForeground}"/>
             <Setter Property="Background" Value="{DynamicResource TileBackground}"/>
@@ -101,7 +101,7 @@
             </Setter>
         </Style>
 
-        <!-- Общие стили -->
+        <!-- Общие стили для элементов -->
         <Style TargetType="Label">
             <Setter Property="Foreground" Value="{DynamicResource MainTextForeground}"/>
             <Setter Property="FontSize" Value="14"/>
@@ -242,9 +242,15 @@
                     <TextBox Text="{Binding R, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
                 </StackPanel>
 
-                <Button Content="Вычислить" 
-                        Command="{Binding ComputeCommand}"
-                        Style="{StaticResource ComputeButtonStyle}"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Вычислить" 
+                            Command="{Binding ComputeCommand}"
+                            Style="{StaticResource ComputeButtonStyle}"/>
+                    <Button Content="Показать график" 
+                            Command="{Binding ShowGraphCommand}"
+                            Style="{StaticResource ComputeButtonStyle}"
+                            Margin="5,10,5,10"/>
+                </StackPanel>
 
                 <Separator Margin="0,15,0,15" Background="{DynamicResource TileBorderBrush}"/>
 
@@ -274,7 +280,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- Заголовок (универсальный) -->
+            <!-- Заголовок -->
             <Border Grid.Row="0" 
                     Background="{DynamicResource CaptionBackground}" 
                     MouseLeftButtonDown="CaptionBorder_MouseLeftButtonDown">

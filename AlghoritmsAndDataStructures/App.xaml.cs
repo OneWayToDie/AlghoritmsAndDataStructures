@@ -8,10 +8,8 @@ using System.Windows;
 
 namespace AlghoritmsAndDataStructures
 {
-	/// <summary>
-	/// Interaction logic for App.xaml
-	/// </summary>
 	public partial class App : Application
 	{
+		public static bool IsDarkTheme { get; set; } = true; 
 	}
 }

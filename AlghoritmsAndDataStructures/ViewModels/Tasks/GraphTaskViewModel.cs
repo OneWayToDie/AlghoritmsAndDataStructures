@@ -1,5 +1,8 @@
-﻿using AlghoritmsAndDataStructures.Core.Calculators;
+﻿using System.Windows.Input;
+using AlghoritmsAndDataStructures.Core.Calculators;
+using AlghoritmsAndDataStructures.Helpers;
 using AlghoritmsAndDataStructures.ViewModels.Base;
+using AlghoritmsAndDataStructures.Views; // Добавляем для создания окна
 
 namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 {
@@ -28,7 +31,14 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			}
 		}
 
+		public ICommand ShowGraphCommand { get; }
+
 		public override string Title => "Задача: вычисление функции по графику";
+
+		public GraphTaskViewModel()
+		{
+			ShowGraphCommand = new RelayCommand(ExecuteShowGraph, CanShowGraph);
+		}
 
 		protected override void ExecuteCompute(object parameter)
 		{
@@ -43,6 +53,22 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			{
 				ResultText = $"Ошибка: {error}";
 			}
+		}
+
+		private void ExecuteShowGraph(object parameter)
+		{
+			// Открываем окно с графиком, передаём текущие X, R и флаг темы
+			bool isDark = App.IsDarkTheme;
+			var graphWindow = new GraphWindow(X, R, isDark);
+			graphWindow.ShowDialog(); // или Show() для немодального
+		}
+
+		private bool CanShowGraph(object parameter)
+		{
+			// Проверяем, что R корректен (не вызывает ошибок)
+			string err;
+			var test = GraphCalculator.Compute(X, R, out err);
+			return test.HasValue;
 		}
 	}
 }

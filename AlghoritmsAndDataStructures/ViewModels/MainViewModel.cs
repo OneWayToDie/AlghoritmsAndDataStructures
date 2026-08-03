@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using AlghoritmsAndDataStructures.Helpers;
@@ -72,13 +73,14 @@ namespace AlghoritmsAndDataStructures.ViewModels
 				return;
 
 			var app = Application.Current;
-			// Создаем новый ResourceDictionary с нужной темой
 			var newDict = new ResourceDictionary();
-			newDict.Source = new System.Uri($"Resources/Themes/{themeName}.xaml", System.UriKind.Relative);
+			newDict.Source = new Uri($"Resources/Themes/{themeName}.xaml", UriKind.Relative);
 
-			// Заменяем словарь
 			app.Resources.MergedDictionaries.Clear();
 			app.Resources.MergedDictionaries.Add(newDict);
+
+			// Обновляем флаг темы
+			App.IsDarkTheme = themeName == "DarkYellow";
 		}
 	}
 }
