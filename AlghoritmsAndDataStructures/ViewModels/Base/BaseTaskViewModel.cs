@@ -6,7 +6,8 @@ namespace AlghoritmsAndDataStructures.ViewModels.Base
 	public abstract class BaseTaskViewModel : System.ComponentModel.INotifyPropertyChanged
 	{
 		private string _resultText = string.Empty;
-		public string ResultText
+
+		public virtual string ResultText
 		{
 			get => _resultText;
 			set

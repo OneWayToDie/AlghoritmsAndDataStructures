@@ -56,8 +56,11 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Core\Calculators\FractionCalculator.cs" />
+    <Compile Include="Core\Calculators\GraphCalculator.cs" />
     <Compile Include="ViewModels\Tasks\FractionTaskViewModel.cs" />
+    <Compile Include="ViewModels\Tasks\GraphTaskViewModel.cs" />
     <Compile Include="ViewModels\Tasks\Work1ViewModel.cs" />
+    <Compile Include="ViewModels\Tasks\Work2ViewModel.cs" />
     <Compile Include="ViewModels\Tasks\WorkViewModel.cs" />
     <Compile Include="Views\TaskWindow.xaml.cs">
       <DependentUpon>TaskWindow.xaml</DependentUpon>
