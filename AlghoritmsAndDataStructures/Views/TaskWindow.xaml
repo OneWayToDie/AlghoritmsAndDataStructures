@@ -187,6 +187,10 @@
                                Text="{Binding Volume, StringFormat={}{0:F2}}"
                                Foreground="{DynamicResource ResultForeground}"
                                VerticalAlignment="Center"/>
+                    <Button Content="Показать 3D куб" 
+                            Command="{Binding Show3DCubeCommand}"
+                            Style="{StaticResource ComputeButtonStyle}"
+                            Margin="5,10,5,10"/>
                 </Grid>
 
                 <TextBlock Text="{Binding ResultText}" 

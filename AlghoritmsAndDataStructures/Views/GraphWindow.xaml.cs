@@ -151,7 +151,7 @@ namespace AlghoritmsAndDataStructures.Views
 			var xAxis = new LinearAxis
 			{
 				Position = AxisPosition.Bottom,
-				Title = $"X (диапазон: [{xMin:F1}, {xMax:F1}])",
+				Title = string.Format("X (диапазон: [{0:F1}, {1:F1}])", xMin, xMax),
 				Minimum = xMin,
 				Maximum = xMax,
 				TickStyle = TickStyle.Outside,
@@ -188,7 +188,7 @@ namespace AlghoritmsAndDataStructures.Views
 			// --- Модель ---
 			var model = new PlotModel
 			{
-				Title = $"График функции при R = {_r:F2}",
+				Title = string.Format("График функции при R = {0:F2}", _r),
 				TitleColor = _isDarkTheme ? OxyColors.White : OxyColors.Black,
 				Background = _isDarkTheme ? OxyColors.Black : OxyColors.White,
 				PlotAreaBackground = _isDarkTheme ? OxyColors.Black : OxyColors.White
@@ -250,7 +250,7 @@ namespace AlghoritmsAndDataStructures.Views
 
 				var annotation = new TextAnnotation
 				{
-					Text = $"({_x:F2}; {userY.Value:F2})",
+					Text = string.Format("({0:F2}; {1:F2})", _x, userY.Value),
 					TextColor = OxyColors.Red,
 					FontSize = 12,
 					FontWeight = 700,
@@ -327,8 +327,6 @@ namespace AlghoritmsAndDataStructures.Views
 		// ---------------------- ОБНОВЛЕНИЕ ГРАФИКА ----------------------
 		private void UpdateButton_Click(object sender, RoutedEventArgs e)
 		{
-			// Свойства X и R уже обновлены через привязку (TwoWay).
-			// Но для безопасности, если пользователь вручную ввёл что-то в поля, попробуем спарсить с инвариантной культурой.
 			if (double.TryParse(InputX.Text, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double newX) &&
 				double.TryParse(InputR.Text, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double newR))
 			{
@@ -338,8 +336,6 @@ namespace AlghoritmsAndDataStructures.Views
 			}
 			else
 			{
-				// Если парсинг не удался, пробуем использовать текущие значения свойств (они могут быть валидны)
-				// Проверим, что они не NaN и не бесконечность
 				if (!double.IsNaN(X) && !double.IsInfinity(X) && !double.IsNaN(R) && !double.IsInfinity(R) && R > 0 && R != 5 && R != 8)
 				{
 					BuildPlot();
@@ -351,7 +347,6 @@ namespace AlghoritmsAndDataStructures.Views
 			}
 		}
 
-		// Обработчик завершения перетаскивания слайдера
 		private void Slider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
 		{
 			UpdateButton_Click(sender, null);
@@ -366,7 +361,7 @@ namespace AlghoritmsAndDataStructures.Views
 			{
 				Filter = "PNG files (*.png)|*.png",
 				DefaultExt = ".png",
-				FileName = $"graph_R{_r:F2}_X{_x:F2}"
+				FileName = string.Format("graph_R{0:F2}_X{1:F2}", _r, _x)
 			};
 			if (dialog.ShowDialog() == true)
 			{
@@ -401,7 +396,7 @@ namespace AlghoritmsAndDataStructures.Views
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show($"Ошибка копирования: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+				MessageBox.Show(string.Format("Ошибка копирования: {0}", ex.Message), "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 		}
 

@@ -1,6 +1,9 @@
-﻿using AlghoritmsAndDataStructures.Core.Calculators;
+﻿using System;
+using System.Windows.Input;
+using AlghoritmsAndDataStructures.Core.Calculators;
 using AlghoritmsAndDataStructures.ViewModels.Base;
-using System;
+using AlghoritmsAndDataStructures.Helpers;        // <-- для RelayCommand
+using AlghoritmsAndDataStructures.Views;          // <-- для Cube3DWindow
 
 namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 {
@@ -12,6 +15,13 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 		private double _volume;
 		private string _calculationSteps = string.Empty;
 		public override string HistoryKey => "Cube";
+
+		public ICommand Show3DCubeCommand { get; }
+
+		public CubeTaskViewModel()
+		{
+			Show3DCubeCommand = new RelayCommand(ExecuteShow3DCube);
+		}
 
 		public double Edge
 		{
@@ -63,16 +73,30 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			Volume = result.Volume;
 			ResultText = "Вычислено успешно.";
 
-			// Формируем пошаговый вывод
+			// Формируем пошаговый вывод (без интерполяции)
 			CalculationSteps =
-				$"Формулы:\n" +
-				$"S_грани = a² = {Edge:F2}² = {FaceArea:F2}\n" +
-				$"S_полн = 6·a² = 6·{FaceArea:F2} = {TotalSurface:F2}\n" +
-				$"V = a³ = {Edge:F2}³ = {Volume:F2}";
+				"Формулы:\n" +
+				string.Format("S_грани = a² = {0:F2}² = {1:F2}\n", Edge, FaceArea) +
+				string.Format("S_полн = 6·a² = 6·{0:F2} = {1:F2}\n", FaceArea, TotalSurface) +
+				string.Format("V = a³ = {0:F2}³ = {1:F2}", Edge, Volume);
 
 			// Добавляем в историю
-			string historyEntry = $"a={Edge:F2} → Sгр={FaceArea:F2}, Sп={TotalSurface:F2}, V={Volume:F2}";
+			string historyEntry = string.Format(
+				"a={0:F2} → Sгр={1:F2}, Sп={2:F2}, V={3:F2}",
+				Edge, FaceArea, TotalSurface, Volume);
 			AddHistoryEntry(historyEntry);
+		}
+
+		// Метод для отображения 3D-куба
+		private void ExecuteShow3DCube(object parameter)
+		{
+			if (Edge <= 0)
+			{
+				System.Windows.MessageBox.Show("Ребро должно быть положительным!", "Ошибка", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
+				return;
+			}
+			var window = new Cube3DWindow(Edge);
+			window.ShowDialog();
 		}
 	}
 }

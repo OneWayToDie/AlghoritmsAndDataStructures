@@ -2,7 +2,7 @@
 using AlghoritmsAndDataStructures.Core.Calculators;
 using AlghoritmsAndDataStructures.Helpers;
 using AlghoritmsAndDataStructures.ViewModels.Base;
-using AlghoritmsAndDataStructures.Views; // Добавляем для создания окна
+using AlghoritmsAndDataStructures.Views;
 
 namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 {
@@ -10,7 +10,9 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 	{
 		private double _x = 0.0;
 		private double _r = 3.0;
+
 		public override string HistoryKey => "Graph";
+
 		public double X
 		{
 			get => _x;
@@ -47,25 +49,23 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 
 			if (result.HasValue)
 			{
-				ResultText = $"Y = {result.Value:F4}";
+				ResultText = string.Format("Y = {0:F4}", result.Value);
 			}
 			else
 			{
-				ResultText = $"Ошибка: {error}";
+				ResultText = string.Format("Ошибка: {0}", error);
 			}
 		}
 
 		private void ExecuteShowGraph(object parameter)
 		{
-			// Открываем окно с графиком, передаём текущие X, R и флаг темы
 			bool isDark = App.IsDarkTheme;
 			var graphWindow = new GraphWindow(X, R, isDark);
-			graphWindow.ShowDialog(); // или Show() для немодального
+			graphWindow.ShowDialog();
 		}
 
 		private bool CanShowGraph(object parameter)
 		{
-			// Проверяем, что R корректен (не вызывает ошибок)
 			string err;
 			var test = GraphCalculator.Compute(X, R, out err);
 			return test.HasValue;
