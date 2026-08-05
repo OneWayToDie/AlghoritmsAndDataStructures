@@ -95,7 +95,8 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 				System.Windows.MessageBox.Show("Ребро должно быть положительным!", "Ошибка", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
 				return;
 			}
-			var window = new Cube3DWindow(Edge);
+			var result = CubeCalculator.Compute(Edge);
+			var window = new Cube3DWindow(Edge, result.FaceArea, result.TotalSurface, result.Volume);
 			window.ShowDialog();
 		}
 	}

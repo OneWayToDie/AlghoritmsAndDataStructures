@@ -197,6 +197,7 @@
     <Compile Include="Core\Calculators\FractionCalculator.cs" />
     <Compile Include="Core\Calculators\GraphCalculator.cs" />
     <Compile Include="Helpers\HistoryStorage.cs" />
+    <Compile Include="Helpers\TooltipService.cs" />
     <Compile Include="ViewModels\Tasks\FractionTaskViewModel.cs" />
     <Compile Include="ViewModels\Tasks\GraphTaskViewModel.cs" />
     <Compile Include="ViewModels\Tasks\Work1ViewModel.cs" />
