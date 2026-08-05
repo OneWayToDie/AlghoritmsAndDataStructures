@@ -1,0 +1,144 @@
+﻿<Window x:Class="AlghoritmsAndDataStructures.Views.FractionVisualizationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Визуализация дроби M/N" 
+        Height="600" Width="850"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="NoResize"
+        Background="Transparent"
+        MouseDown="Window_MouseDown">
+
+    <Window.Resources>
+        <Style x:Key="CaptionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource CaptionForeground}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#3A3A5A"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="Slider">
+            <Setter Property="Background" Value="{DynamicResource TileBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ButtonBackground}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource TileBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="Width" Value="140"/>
+            <Setter Property="Margin" Value="5,0,5,0"/>
+            <Setter Property="IsSnapToTickEnabled" Value="False"/>
+            <Setter Property="TickFrequency" Value="1"/>
+        </Style>
+    </Window.Resources>
+
+    <Border Background="{DynamicResource MainBackground}"
+            BorderBrush="{DynamicResource WindowBorderBrush}"
+            BorderThickness="{DynamicResource WindowBorderThickness}"
+            CornerRadius="8">
+        <Border.Effect>
+            <DropShadowEffect Color="Black" Opacity="0.3" BlurRadius="15" ShadowDepth="0"/>
+        </Border.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Заголовок -->
+            <Border Grid.Row="0"
+                    Background="{DynamicResource CaptionBackground}"
+                    MouseLeftButtonDown="CaptionBorder_MouseLeftButtonDown">
+                <Grid>
+                    <TextBlock Text="Визуализация дроби M/N" FontSize="20" FontWeight="Bold"
+                               Foreground="{DynamicResource CaptionForeground}"
+                               VerticalAlignment="Center" HorizontalAlignment="Left"
+                               Margin="20,0,0,0"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0">
+                        <Button Style="{StaticResource CaptionButtonStyle}" Click="MinimizeButton_Click">
+                            <TextBlock Text="─" FontSize="24"/>
+                        </Button>
+                        <Button Style="{StaticResource CaptionButtonStyle}" Click="MaximizeButton_Click">
+                            <TextBlock Text="☐" FontSize="22"/>
+                        </Button>
+                        <Button Style="{StaticResource CaptionButtonStyle}" Click="CloseButton_Click">
+                            <TextBlock Text="✕" FontSize="20"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Основное содержимое -->
+            <Grid Grid.Row="1" Margin="20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Canvas для круга -->
+                <Canvas Grid.Column="0" x:Name="DrawingCanvas" Background="{DynamicResource TileBackground}" 
+                        Width="400" Height="400" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                <!-- Панель управления справа -->
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="20,0,0,0" Width="280">
+                    <!-- M в одну строку -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                        <TextBlock Text="M =" Foreground="{DynamicResource MainTextForeground}" FontWeight="Bold" VerticalAlignment="Center" Width="30"/>
+                        <Slider x:Name="SliderM" Minimum="0" Maximum="50" Value="10" TickFrequency="1" IsSnapToTickEnabled="True"
+                                ValueChanged="SliderM_ValueChanged" ToolTip="M" Width="160"/>
+                        <TextBlock x:Name="TextM" Text="10" Foreground="{DynamicResource ResultForeground}" FontSize="16" FontWeight="Bold" Width="30" TextAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- N в одну строку -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,15">
+                        <TextBlock Text="N =" Foreground="{DynamicResource MainTextForeground}" FontWeight="Bold" VerticalAlignment="Center" Width="30"/>
+                        <Slider x:Name="SliderN" Minimum="1" Maximum="20" Value="3" TickFrequency="1" IsSnapToTickEnabled="True"
+                                ValueChanged="SliderN_ValueChanged" ToolTip="N (не может быть 0)" Width="160"/>
+                        <TextBlock x:Name="TextN" Text="3" Foreground="{DynamicResource ResultForeground}" FontSize="16" FontWeight="Bold" Width="30" TextAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- Блок результатов (расширен) -->
+                    <Border Background="{DynamicResource TileBackground}" BorderBrush="{DynamicResource TileBorderBrush}" 
+                            BorderThickness="1" CornerRadius="5" Padding="15,10" Margin="0,20,0,0" MinWidth="240">
+                        <StackPanel>
+                            <TextBlock Text="Результаты:" Foreground="{DynamicResource MainTextForeground}" FontWeight="Bold" FontSize="14"/>
+                            <TextBlock x:Name="ResultIntegerPart" Foreground="{DynamicResource ResultForeground}" FontSize="16" Margin="0,5,0,0"/>
+                            <TextBlock x:Name="ResultFractionPart" Foreground="{DynamicResource ResultForeground}" FontSize="16"/>
+                            <TextBlock x:Name="ResultIntegerLastDigit" Foreground="{DynamicResource ResultForeground}" FontSize="16"/>
+                            <TextBlock x:Name="ResultFractionFirstDigit" Foreground="{DynamicResource ResultForeground}" FontSize="16"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+
+            <!-- Нижняя панель -->
+            <Border Grid.Row="2" Background="{DynamicResource CaptionBackground}" Padding="15,8">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBlock Text="Младшая цифра целой части: " Foreground="{DynamicResource MainTextForeground}" FontWeight="Bold"/>
+                    <TextBlock x:Name="DisplayIntegerLastDigit" Foreground="Yellow" FontWeight="Bold" FontSize="18"/>
+                    <TextBlock Text="  |  Старшая цифра дробной части: " Foreground="{DynamicResource MainTextForeground}" FontWeight="Bold" Margin="20,0,0,0"/>
+                    <TextBlock x:Name="DisplayFractionFirstDigit" Foreground="Cyan" FontWeight="Bold" FontSize="18"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Border>
+</Window>

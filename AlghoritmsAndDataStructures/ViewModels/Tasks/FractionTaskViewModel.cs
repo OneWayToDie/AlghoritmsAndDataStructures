@@ -1,5 +1,8 @@
-﻿using AlghoritmsAndDataStructures.Core.Calculators;
+﻿using System.Windows.Input;
+using AlghoritmsAndDataStructures.Core.Calculators;
 using AlghoritmsAndDataStructures.ViewModels.Base;
+using AlghoritmsAndDataStructures.Views;
+using AlghoritmsAndDataStructures.Helpers;
 
 namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 {
@@ -11,6 +14,8 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 		private int _fractionFirstDigit;
 		private string _calculationSteps = string.Empty;
 		public override string HistoryKey => "Fraction";
+
+
 
 		public int M
 		{
@@ -71,6 +76,19 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 
 			string historyEntry = $"M={M}, N={N} → целая(мл.):{IntegerLastDigit}, дробная(ст.):{FractionFirstDigit}";
 			AddHistoryEntry(historyEntry);
+		}
+
+		public ICommand ShowVisualizationCommand { get; }
+
+		public FractionTaskViewModel()
+		{
+			ShowVisualizationCommand = new RelayCommand(ExecuteShowVisualization);
+		}
+
+		private void ExecuteShowVisualization(object parameter)
+		{
+			var window = new FractionVisualizationWindow(M, N);
+			window.ShowDialog();
 		}
 	}
 }

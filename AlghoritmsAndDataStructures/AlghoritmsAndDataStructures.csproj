@@ -206,6 +206,9 @@
     <Compile Include="Views\Cube3DWindow.xaml.cs">
       <DependentUpon>Cube3DWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\FractionVisualizationWindow.xaml.cs">
+      <DependentUpon>FractionVisualizationWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\GraphWindow.xaml.cs">
       <DependentUpon>GraphWindow.xaml</DependentUpon>
     </Compile>
@@ -225,6 +228,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Cube3DWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FractionVisualizationWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
