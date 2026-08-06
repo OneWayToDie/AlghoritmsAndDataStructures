@@ -194,15 +194,21 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\StringToVisibilityConverter.cs" />
+    <Compile Include="Core\Calculators\AreaChecker.cs" />
     <Compile Include="Core\Calculators\FractionCalculator.cs" />
     <Compile Include="Core\Calculators\GraphCalculator.cs" />
     <Compile Include="Helpers\HistoryStorage.cs" />
     <Compile Include="Helpers\TooltipService.cs" />
+    <Compile Include="ViewModels\Tasks\AreaTaskViewModel.cs" />
     <Compile Include="ViewModels\Tasks\FractionTaskViewModel.cs" />
     <Compile Include="ViewModels\Tasks\GraphTaskViewModel.cs" />
     <Compile Include="ViewModels\Tasks\Work1ViewModel.cs" />
     <Compile Include="ViewModels\Tasks\Work2ViewModel.cs" />
+    <Compile Include="ViewModels\Tasks\Work3ViewModel.cs" />
     <Compile Include="ViewModels\Tasks\WorkViewModel.cs" />
+    <Compile Include="Views\AreaVisualizationWindow.xaml.cs">
+      <DependentUpon>AreaVisualizationWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Cube3DWindow.xaml.cs">
       <DependentUpon>Cube3DWindow.xaml</DependentUpon>
     </Compile>
@@ -224,6 +230,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Themes\LightGreen.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AreaVisualizationWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -39,7 +39,7 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Стиль для кнопки "Вычислить" (и для "Показать график") -->
+        <!-- Стиль для кнопки "Вычислить" -->
         <Style x:Key="ComputeButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="{DynamicResource ButtonBackground}"/>
             <Setter Property="Foreground" Value="{DynamicResource ButtonForeground}"/>
@@ -104,7 +104,7 @@
             </Setter>
         </Style>
 
-        <!-- Общие стили для элементов -->
+        <!-- Общие стили -->
         <Style TargetType="Label">
             <Setter Property="Foreground" Value="{DynamicResource MainTextForeground}"/>
             <Setter Property="FontSize" Value="14"/>
@@ -141,7 +141,7 @@
         </Style>
 
         <!-- ============================================================ -->
-        <!-- DataTemplate для задачи 1 (Куб) с формулами и историей      -->
+        <!-- DataTemplate для задачи 1 (Куб) -->
         <!-- ============================================================ -->
         <DataTemplate DataType="{x:Type tasks:CubeTaskViewModel}">
             <StackPanel Margin="10">
@@ -207,7 +207,7 @@
 
                 <Separator Margin="0,15,0,15" Background="{DynamicResource TileBorderBrush}"/>
 
-                <!-- История вычислений -->
+                <!-- История -->
                 <StackPanel>
                     <Grid>
                         <TextBlock Text="История вычислений:" FontWeight="Bold" 
@@ -232,7 +232,7 @@
         </DataTemplate>
 
         <!-- ============================================================ -->
-        <!-- DataTemplate для задачи 2 (Дробь) с формулами и историей    -->
+        <!-- DataTemplate для задачи 2 (Дробь) -->
         <!-- ============================================================ -->
         <DataTemplate DataType="{x:Type tasks:FractionTaskViewModel}">
             <StackPanel Margin="10">
@@ -295,7 +295,7 @@
 
                 <Separator Margin="0,15,0,15" Background="{DynamicResource TileBorderBrush}"/>
 
-                <!-- История вычислений -->
+                <!-- История -->
                 <StackPanel>
                     <Grid>
                         <TextBlock Text="История вычислений:" FontWeight="Bold" 
@@ -353,6 +353,93 @@
                            FontSize="18"
                            FontWeight="Bold"
                            Margin="0,10,0,0"/>
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- ============================================================ -->
+        <!-- DataTemplate для задачи "Попадание точки в область"         -->
+        <!-- ============================================================ -->
+        <DataTemplate DataType="{x:Type tasks:AreaTaskViewModel}">
+            <StackPanel Margin="10">
+                <TextBlock Text="Введите координаты точки и параметры фигур:" FontWeight="Bold" 
+                           Foreground="{DynamicResource MainTextForeground}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Content="X =" Foreground="{DynamicResource MainTextForeground}"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding X, UpdateSourceTrigger=PropertyChanged}" Width="80"/>
+                    <Label Grid.Row="0" Grid.Column="2" Content="Y =" Foreground="{DynamicResource MainTextForeground}" Margin="15,0,0,0"/>
+                    <TextBox Grid.Row="0" Grid.Column="3" Text="{Binding Y, UpdateSourceTrigger=PropertyChanged}" Width="80"/>
+
+                    <Label Grid.Row="1" Grid.Column="0" Content="a =" Foreground="{DynamicResource MainTextForeground}"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding A, UpdateSourceTrigger=PropertyChanged}" Width="80"/>
+                    <Label Grid.Row="1" Grid.Column="2" Content="b =" Foreground="{DynamicResource MainTextForeground}" Margin="15,0,0,0"/>
+                    <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding B, UpdateSourceTrigger=PropertyChanged}" Width="80"/>
+
+                    <Label Grid.Row="2" Grid.Column="0" Content="R =" Foreground="{DynamicResource MainTextForeground}"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding R, UpdateSourceTrigger=PropertyChanged}" Width="80"/>
+                </Grid>
+
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Проверить" 
+                            Command="{Binding ComputeCommand}"
+                            Style="{StaticResource ComputeButtonStyle}"
+                            Margin="0,10,5,10"/>
+                    <Button Content="Показать карту" 
+                            Command="{Binding ShowVisualizationCommand}"
+                            Style="{StaticResource ComputeButtonStyle}"
+                            Margin="5,10,0,10"/>
+                    <Button Content="Очистить историю" 
+                            Command="{Binding ClearHistoryCommand}"
+                            Style="{StaticResource ComputeButtonStyle}"
+                            Margin="5,10,0,10"/>
+                </StackPanel>
+
+                <TextBlock Text="{Binding ResultText}" 
+                           Foreground="{DynamicResource ResultForeground}" 
+                           FontSize="16"
+                           FontWeight="Bold"
+                           Margin="0,10,0,0"/>
+
+                <!-- История -->
+                <Separator Margin="0,15,0,15" Background="{DynamicResource TileBorderBrush}"/>
+                <StackPanel>
+                    <Grid>
+                        <TextBlock Text="История проверок:" FontWeight="Bold" 
+                                   Foreground="{DynamicResource MainTextForeground}" 
+                                   HorizontalAlignment="Left"/>
+                        <Button Content="Очистить" 
+                                Command="{Binding ClearHistoryCommand}"
+                                HorizontalAlignment="Right"
+                                Style="{StaticResource ComputeButtonStyle}"
+                                Margin="0,0,0,0"
+                                Padding="10,5"/>
+                    </Grid>
+                    <ListBox ItemsSource="{Binding History}" 
+                             Background="{DynamicResource TileBackground}"
+                             Foreground="{DynamicResource MainTextForeground}"
+                             BorderBrush="{DynamicResource TileBorderBrush}"
+                             BorderThickness="1"
+                             Margin="0,5,0,0"
+                             MaxHeight="120"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" FontFamily="Consolas" FontSize="12"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
             </StackPanel>
         </DataTemplate>
 

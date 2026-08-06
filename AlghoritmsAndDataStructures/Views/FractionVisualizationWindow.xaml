@@ -47,6 +47,23 @@
             <Setter Property="IsSnapToTickEnabled" Value="False"/>
             <Setter Property="TickFrequency" Value="1"/>
         </Style>
+
+        <!-- Стиль для выравнивания текста в нижней панели -->
+        <Style x:Key="LabelTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource MainTextForeground}"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="ValueTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="Yellow"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="MinWidth" Value="30"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+        </Style>
     </Window.Resources>
 
     <Border Background="{DynamicResource MainBackground}"
@@ -99,45 +116,61 @@
                         Width="400" Height="400" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
                 <!-- Панель управления справа -->
-                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="20,0,0,0" Width="280">
-                    <!-- M в одну строку -->
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="20,0,0,0" Width="250">
+                    <!-- M -->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
                         <TextBlock Text="M =" Foreground="{DynamicResource MainTextForeground}" FontWeight="Bold" VerticalAlignment="Center" Width="30"/>
                         <Slider x:Name="SliderM" Minimum="0" Maximum="50" Value="10" TickFrequency="1" IsSnapToTickEnabled="True"
-                                ValueChanged="SliderM_ValueChanged" ToolTip="M" Width="160"/>
-                        <TextBlock x:Name="TextM" Text="10" Foreground="{DynamicResource ResultForeground}" FontSize="16" FontWeight="Bold" Width="30" TextAlignment="Center"/>
+                                ValueChanged="SliderM_ValueChanged" ToolTip="M"/>
+                        <TextBlock x:Name="TextM" Text="10" Foreground="{DynamicResource ResultForeground}" FontSize="16" FontWeight="Bold" Width="30" TextAlignment="Center" VerticalAlignment="Center"/>
                     </StackPanel>
 
-                    <!-- N в одну строку -->
+                    <!-- N -->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,15">
                         <TextBlock Text="N =" Foreground="{DynamicResource MainTextForeground}" FontWeight="Bold" VerticalAlignment="Center" Width="30"/>
                         <Slider x:Name="SliderN" Minimum="1" Maximum="20" Value="3" TickFrequency="1" IsSnapToTickEnabled="True"
-                                ValueChanged="SliderN_ValueChanged" ToolTip="N (не может быть 0)" Width="160"/>
-                        <TextBlock x:Name="TextN" Text="3" Foreground="{DynamicResource ResultForeground}" FontSize="16" FontWeight="Bold" Width="30" TextAlignment="Center"/>
+                                ValueChanged="SliderN_ValueChanged" ToolTip="N (не может быть 0)"/>
+                        <TextBlock x:Name="TextN" Text="3" Foreground="{DynamicResource ResultForeground}" FontSize="16" FontWeight="Bold" Width="30" TextAlignment="Center" VerticalAlignment="Center"/>
                     </StackPanel>
 
-                    <!-- Блок результатов (расширен) -->
+                    <!-- Результаты (расширенный блок) -->
                     <Border Background="{DynamicResource TileBackground}" BorderBrush="{DynamicResource TileBorderBrush}" 
-                            BorderThickness="1" CornerRadius="5" Padding="15,10" Margin="0,20,0,0" MinWidth="240">
+                            BorderThickness="1" CornerRadius="5" Padding="10" Margin="0,0,0,0" MinWidth="220">
                         <StackPanel>
                             <TextBlock Text="Результаты:" Foreground="{DynamicResource MainTextForeground}" FontWeight="Bold" FontSize="14"/>
-                            <TextBlock x:Name="ResultIntegerPart" Foreground="{DynamicResource ResultForeground}" FontSize="16" Margin="0,5,0,0"/>
-                            <TextBlock x:Name="ResultFractionPart" Foreground="{DynamicResource ResultForeground}" FontSize="16"/>
-                            <TextBlock x:Name="ResultIntegerLastDigit" Foreground="{DynamicResource ResultForeground}" FontSize="16"/>
-                            <TextBlock x:Name="ResultFractionFirstDigit" Foreground="{DynamicResource ResultForeground}" FontSize="16"/>
+                            <TextBlock x:Name="ResultIntegerPart" Foreground="{DynamicResource ResultForeground}" FontSize="16" Margin="0,5,0,0" TextWrapping="Wrap"/>
+                            <TextBlock x:Name="ResultFractionPart" Foreground="{DynamicResource ResultForeground}" FontSize="16" TextWrapping="Wrap"/>
+                            <TextBlock x:Name="ResultIntegerLastDigit" Foreground="{DynamicResource ResultForeground}" FontSize="16" TextWrapping="Wrap"/>
+                            <TextBlock x:Name="ResultFractionFirstDigit" Foreground="{DynamicResource ResultForeground}" FontSize="16" TextWrapping="Wrap"/>
                         </StackPanel>
                     </Border>
                 </StackPanel>
             </Grid>
 
-            <!-- Нижняя панель -->
+            <!-- Нижняя панель (выровнена по центру) -->
             <Border Grid.Row="2" Background="{DynamicResource CaptionBackground}" Padding="15,8">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <TextBlock Text="Младшая цифра целой части: " Foreground="{DynamicResource MainTextForeground}" FontWeight="Bold"/>
-                    <TextBlock x:Name="DisplayIntegerLastDigit" Foreground="Yellow" FontWeight="Bold" FontSize="18"/>
-                    <TextBlock Text="  |  Старшая цифра дробной части: " Foreground="{DynamicResource MainTextForeground}" FontWeight="Bold" Margin="20,0,0,0"/>
-                    <TextBlock x:Name="DisplayFractionFirstDigit" Foreground="Cyan" FontWeight="Bold" FontSize="18"/>
-                </StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Левая часть -->
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,20,0">
+                        <TextBlock Text="Младшая цифра целой части: " Style="{StaticResource LabelTextStyle}"/>
+                        <TextBlock x:Name="DisplayIntegerLastDigit" Style="{StaticResource ValueTextStyle}" Foreground="Yellow"/>
+                    </StackPanel>
+
+                    <!-- Разделитель -->
+                    <TextBlock Grid.Column="1" Text="|" Foreground="{DynamicResource TileBorderBrush}" FontSize="24" VerticalAlignment="Center" Margin="0,0,20,0"/>
+
+                    <!-- Правая часть -->
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Left">
+                        <TextBlock Text="Старшая цифра дробной части: " Style="{StaticResource LabelTextStyle}"/>
+                        <TextBlock x:Name="DisplayFractionFirstDigit" Style="{StaticResource ValueTextStyle}" Foreground="Cyan"/>
+                    </StackPanel>
+                </Grid>
             </Border>
         </Grid>
     </Border>

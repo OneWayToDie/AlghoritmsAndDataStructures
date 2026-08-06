@@ -1,12 +1,12 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using AlghoritmsAndDataStructures.ViewModels.Tasks;
 
 namespace AlghoritmsAndDataStructures.Views
 {
 	public partial class TaskWindow : Window
 	{
-		// Принимаем любой ViewModel, чтобы можно было использовать для разных работ
 		public TaskWindow(object viewModel)
 		{
 			InitializeComponent();
