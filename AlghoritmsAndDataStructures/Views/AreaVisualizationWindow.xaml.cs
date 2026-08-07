@@ -10,39 +10,31 @@ namespace AlghoritmsAndDataStructures.Views
 {
 	public partial class AreaVisualizationWindow : Window
 	{
-		private double _x, _y, _a, _b, _r;
+		private double _x = 0, _y = 0, _a = 4, _b = 3, _r = 5;
 
 		public AreaVisualizationWindow(double x, double y, double a, double b, double r)
 		{
 			InitializeComponent();
 			_x = x; _y = y; _a = a; _b = b; _r = r;
-
-			// Устанавливаем начальные значения в поля ввода после инициализации
-			this.Loaded += (s, e) =>
-			{
-				InputX.Text = _x.ToString("F1");
-				InputY.Text = _y.ToString("F1");
-				InputA.Text = _a.ToString("F1");
-				InputB.Text = _b.ToString("F1");
-				InputR.Text = _r.ToString("F1");
-				SliderA.Value = _a;
-				SliderB.Value = _b;
-				SliderR.Value = _r;
-				DrawCanvas();
-				UpdateResult();
-			};
+			InputX.Text = x.ToString("F1");
+			InputY.Text = y.ToString("F1");
+			InputA.Text = a.ToString("F1");
+			InputB.Text = b.ToString("F1");
+			InputR.Text = r.ToString("F1");
+			SliderA.Value = a;
+			SliderB.Value = b;
+			SliderR.Value = r;
+			DrawCanvas();
+			UpdateResult();
 		}
 
 		private void DrawCanvas()
 		{
-			if (MapCanvas == null) return;
 			var canvas = MapCanvas;
 			canvas.Children.Clear();
 
 			double width = canvas.Width;
 			double height = canvas.Height;
-			if (width <= 0 || height <= 0) return;
-
 			double centerX = width / 2;
 			double centerY = height / 2;
 			double maxVal = Math.Max(Math.Max(_a, _b), _r) * 1.2;
@@ -138,47 +130,48 @@ namespace AlghoritmsAndDataStructures.Views
 
 		private void DrawShadedAreas(Canvas canvas, Func<double, double, Point> toPixel, double a, double b, double r)
 		{
-			// Левая верхняя область
-			var leftUpperGeometry = new PathGeometry();
-			var figure1 = new PathFigure();
-			figure1.StartPoint = toPixel(-a, 0);
-			figure1.Segments.Add(new LineSegment(toPixel(0, 0), true));
-			figure1.Segments.Add(new LineSegment(toPixel(0, b), true));
-			figure1.Segments.Add(new LineSegment(toPixel(-a, b), true));
-			figure1.Segments.Add(new LineSegment(toPixel(-a, 0), true));
-			figure1.IsClosed = true;
-			leftUpperGeometry.Figures.Add(figure1);
+			Point center = toPixel(0, 0);
+			double radiusPx = Math.Abs(toPixel(r, 0).X - center.X);
 
-			// Правая нижняя область
-			var rightLowerGeometry = new PathGeometry();
-			var figure2 = new PathFigure();
-			figure2.StartPoint = toPixel(0, 0);
-			figure2.Segments.Add(new LineSegment(toPixel(a, 0), true));
-			figure2.Segments.Add(new LineSegment(toPixel(a, -b), true));
-			figure2.Segments.Add(new LineSegment(toPixel(0, -b), true));
-			figure2.Segments.Add(new LineSegment(toPixel(0, 0), true));
-			figure2.IsClosed = true;
-			rightLowerGeometry.Figures.Add(figure2);
+			// Левая нижняя область (III квадрант) — внутри круга
+			PathGeometry leftLowerGeometry = new PathGeometry();
+			PathFigure leftFigure = new PathFigure();
+			leftFigure.StartPoint = toPixel(-a, 0);
+			leftFigure.Segments.Add(new LineSegment(toPixel(0, 0), true));
+			leftFigure.Segments.Add(new LineSegment(toPixel(0, -b), true));
+			leftFigure.Segments.Add(new LineSegment(toPixel(-a, -b), true));
+			leftFigure.IsClosed = true;
+			leftLowerGeometry.Figures.Add(leftFigure);
 
-			var circleGeometry = new EllipseGeometry(toPixel(0, 0),
-				r * (toPixel(r, 0).X - toPixel(0, 0).X),
-				r * (toPixel(0, r).Y - toPixel(0, 0).Y));
+			// Правая верхняя область (I квадрант) — снаружи круга
+			PathGeometry rightUpperGeometry = new PathGeometry();
+			PathFigure rightFigure = new PathFigure();
+			rightFigure.StartPoint = toPixel(0, 0);
+			rightFigure.Segments.Add(new LineSegment(toPixel(a, 0), true));
+			rightFigure.Segments.Add(new LineSegment(toPixel(a, b), true));
+			rightFigure.Segments.Add(new LineSegment(toPixel(0, b), true));
+			rightFigure.IsClosed = true;
+			rightUpperGeometry.Figures.Add(rightFigure);
 
-			var leftUpperCombined = Geometry.Combine(leftUpperGeometry, circleGeometry, GeometryCombineMode.Intersect, null);
-			var leftUpperPath = new Path
+			EllipseGeometry circleGeometry = new EllipseGeometry(center, radiusPx, radiusPx);
+
+			// Левая нижняя: пересечение с кругом
+			Geometry leftCombined = Geometry.Combine(leftLowerGeometry, circleGeometry, GeometryCombineMode.Intersect, null);
+			Path leftPath = new Path
 			{
 				Fill = new SolidColorBrush(Colors.Gray) { Opacity = 0.4 },
-				Data = leftUpperCombined
+				Data = leftCombined
 			};
-			canvas.Children.Add(leftUpperPath);
+			canvas.Children.Add(leftPath);
 
-			var rightLowerCombined = Geometry.Combine(rightLowerGeometry, circleGeometry, GeometryCombineMode.Exclude, null);
-			var rightLowerPath = new Path
+			// Правая верхняя: вычитание круга
+			Geometry rightCombined = Geometry.Combine(rightUpperGeometry, circleGeometry, GeometryCombineMode.Exclude, null);
+			Path rightPath = new Path
 			{
 				Fill = new SolidColorBrush(Colors.Gray) { Opacity = 0.4 },
-				Data = rightLowerCombined
+				Data = rightCombined
 			};
-			canvas.Children.Add(rightLowerPath);
+			canvas.Children.Add(rightPath);
 		}
 
 		private void DrawPoint(Canvas canvas, Func<double, double, Point> toPixel, double x, double y)
@@ -206,7 +199,6 @@ namespace AlghoritmsAndDataStructures.Views
 			ResultText.Foreground = ok ? new SolidColorBrush(Colors.LimeGreen) : new SolidColorBrush(Colors.Red);
 		}
 
-		// Обработчики
 		private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
 		{
 			if (SliderA == null || SliderB == null || SliderR == null ||
@@ -231,16 +223,13 @@ namespace AlghoritmsAndDataStructures.Views
 			double.TryParse(InputA.Text, out _a);
 			double.TryParse(InputB.Text, out _b);
 			double.TryParse(InputR.Text, out _r);
-
 			SliderA.Value = _a;
 			SliderB.Value = _b;
 			SliderR.Value = _r;
-
 			DrawCanvas();
 			UpdateResult();
 		}
 
-		// Обработчики заголовка
 		private void CaptionBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
 			if (e.ClickCount == 1) this.DragMove();

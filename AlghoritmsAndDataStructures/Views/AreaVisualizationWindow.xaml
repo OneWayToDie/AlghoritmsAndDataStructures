@@ -41,10 +41,10 @@
             <Setter Property="BorderBrush" Value="{DynamicResource TileBorderBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Height" Value="20"/>
-            <Setter Property="Width" Value="120"/>
+            <Setter Property="Width" Value="150"/>
             <Setter Property="Margin" Value="5,0,5,0"/>
             <Setter Property="IsSnapToTickEnabled" Value="False"/>
-            <Setter Property="TickFrequency" Value="0.5"/>
+            <Setter Property="TickFrequency" Value="0.1"/>
         </Style>
 
         <Style TargetType="TextBox">
@@ -56,7 +56,7 @@
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="Margin" Value="5"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Width" Value="80"/>
+            <Setter Property="Width" Value="60"/>
         </Style>
     </Window.Resources>
 
@@ -114,33 +114,29 @@
 
                 <!-- Панель управления справа -->
                 <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="20,0,0,0" Width="220">
-                    <!-- X -->
+                    <TextBlock Text="Параметры:" Foreground="{DynamicResource MainTextForeground}" FontWeight="Bold" Margin="0,0,0,5"/>
+
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,5">
                         <TextBlock Text="X =" Foreground="{DynamicResource MainTextForeground}" FontWeight="Bold" VerticalAlignment="Center" Width="25"/>
-                        <TextBox x:Name="InputX" Text="{Binding X, UpdateSourceTrigger=PropertyChanged}" Width="60"/>
+                        <TextBox x:Name="InputX" Text="0" Width="60"/>
                     </StackPanel>
-                    <!-- Y -->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,5">
                         <TextBlock Text="Y =" Foreground="{DynamicResource MainTextForeground}" FontWeight="Bold" VerticalAlignment="Center" Width="25"/>
-                        <TextBox x:Name="InputY" Text="{Binding Y, UpdateSourceTrigger=PropertyChanged}" Width="60"/>
+                        <TextBox x:Name="InputY" Text="0" Width="60"/>
                     </StackPanel>
-                    <!-- a -->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,5">
                         <TextBlock Text="a =" Foreground="{DynamicResource MainTextForeground}" FontWeight="Bold" VerticalAlignment="Center" Width="25"/>
-                        <TextBox x:Name="InputA" Text="{Binding A, UpdateSourceTrigger=PropertyChanged}" Width="60"/>
+                        <TextBox x:Name="InputA" Text="4" Width="60"/>
                     </StackPanel>
-                    <!-- b -->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,5">
                         <TextBlock Text="b =" Foreground="{DynamicResource MainTextForeground}" FontWeight="Bold" VerticalAlignment="Center" Width="25"/>
-                        <TextBox x:Name="InputB" Text="{Binding B, UpdateSourceTrigger=PropertyChanged}" Width="60"/>
+                        <TextBox x:Name="InputB" Text="3" Width="60"/>
                     </StackPanel>
-                    <!-- R -->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
                         <TextBlock Text="R =" Foreground="{DynamicResource MainTextForeground}" FontWeight="Bold" VerticalAlignment="Center" Width="25"/>
-                        <TextBox x:Name="InputR" Text="{Binding R, UpdateSourceTrigger=PropertyChanged}" Width="60"/>
+                        <TextBox x:Name="InputR" Text="5" Width="60"/>
                     </StackPanel>
 
-                    <!-- Слайдеры для удобства -->
                     <TextBlock Text="Слайдеры для управления:" Foreground="{DynamicResource MainTextForeground}" FontWeight="Bold" Margin="0,10,0,5"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                         <TextBlock Text="a" Foreground="{DynamicResource MainTextForeground}" Width="20" VerticalAlignment="Center"/>
@@ -164,14 +160,14 @@
                     <!-- Результат -->
                     <Border Background="{DynamicResource TileBackground}" BorderBrush="{DynamicResource TileBorderBrush}" 
                             BorderThickness="1" CornerRadius="5" Padding="10" Margin="0,15,0,0">
-                        <TextBlock x:Name="ResultText" Foreground="{DynamicResource ResultForeground}" FontSize="16" TextWrapping="Wrap"/>
+                        <TextBlock x:Name="ResultText" Foreground="{DynamicResource ResultForeground}" FontSize="16" TextWrapping="Wrap" Text="Ожидание..."/>
                     </Border>
                 </StackPanel>
             </Grid>
 
-            <!-- Нижняя панель (подпись) -->
+            <!-- Нижняя панель -->
             <Border Grid.Row="2" Background="{DynamicResource CaptionBackground}" Padding="15,8">
-                <TextBlock Text="Заштрихованные области: II и IV квадранты (внутри/снаружи окружности)" 
+                <TextBlock Text="Заштрихованные области: III квадрант (внутри круга) и I квадрант (снаружи круга)" 
                            Foreground="{DynamicResource MainTextForeground}" HorizontalAlignment="Center" FontSize="14"/>
             </Border>
         </Grid>
