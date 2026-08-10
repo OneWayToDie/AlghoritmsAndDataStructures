@@ -11,6 +11,8 @@ namespace AlghoritmsAndDataStructures.Views
 	public partial class AreaVisualizationWindow : Window
 	{
 		private double _x = 0, _y = 0, _a = 4, _b = 3, _r = 5;
+		private double _lastValidX = 0, _lastValidY = 0, _lastValidA = 4, _lastValidB = 3, _lastValidR = 5;
+		private const double Limit = 1000;
 
 		public AreaVisualizationWindow(double x, double y, double a, double b, double r)
 		{
@@ -21,14 +23,46 @@ namespace AlghoritmsAndDataStructures.Views
 			InputA.Text = a.ToString("F1");
 			InputB.Text = b.ToString("F1");
 			InputR.Text = r.ToString("F1");
-			SliderA.Value = a;
-			SliderB.Value = b;
-			SliderR.Value = r;
-			DrawCanvas();
+			SliderA.Value = Math.Min(a, Limit);
+			SliderB.Value = Math.Min(b, Limit);
+			SliderR.Value = Math.Min(r, Limit);
+			ApplyVisualization();
+		}
+
+		private bool AllParamsWithinLimit()
+		{
+			return Math.Abs(_x) <= Limit && Math.Abs(_y) <= Limit &&
+				   _a <= Limit && _b <= Limit && _r <= Limit;
+		}
+
+		private void ApplyVisualization()
+		{
+			if (AllParamsWithinLimit())
+			{
+				_lastValidX = _x;
+				_lastValidY = _y;
+				_lastValidA = _a;
+				_lastValidB = _b;
+				_lastValidR = _r;
+				DrawCanvas();
+				WarningText.Visibility = Visibility.Collapsed;
+			}
+			else
+			{
+				// Используем последние валидные значения для отрисовки
+				// Но они уже хранятся в полях _lastValid*, а текущие _x,_y,_a,_b,_r выходят за лимит.
+				// Для рисования используем сохранённые валидные значения.
+				// Мы можем временно подставить их в поля, нарисовать, а потом вернуть обратно.
+				// Но проще передать параметры в DrawCanvas.
+				// Перепишем DrawCanvas так, чтобы он принимал параметры.
+				DrawCanvasWithParams(_lastValidX, _lastValidY, _lastValidA, _lastValidB, _lastValidR);
+				WarningText.Visibility = Visibility.Visible;
+			}
 			UpdateResult();
 		}
 
-		private void DrawCanvas()
+		// Новый метод с параметрами, чтобы не зависеть от полей
+		private void DrawCanvasWithParams(double x, double y, double a, double b, double r)
 		{
 			var canvas = MapCanvas;
 			canvas.Children.Clear();
@@ -37,21 +71,27 @@ namespace AlghoritmsAndDataStructures.Views
 			double height = canvas.Height;
 			double centerX = width / 2;
 			double centerY = height / 2;
-			double maxVal = Math.Max(Math.Max(_a, _b), _r) * 1.2;
+			double maxVal = Math.Max(Math.Max(a, b), r) * 1.2;
 			if (maxVal < 1) maxVal = 1;
 			double scale = Math.Min((width / 2) / maxVal, (height / 2) / maxVal);
 
 			Func<double, double, Point> toPixel = (wx, wy) =>
 				new Point(centerX + wx * scale, centerY - wy * scale);
 
-			DrawAxis(canvas, toPixel, maxVal);
-			DrawRectangle(canvas, toPixel, _a, _b);
-			DrawCircle(canvas, toPixel, _r);
-			DrawShadedAreas(canvas, toPixel, _a, _b, _r);
-			DrawPoint(canvas, toPixel, _x, _y);
+			DrawAxis(canvas, toPixel, maxVal, a, b, r);
+			DrawRectangle(canvas, toPixel, a, b);
+			DrawCircle(canvas, toPixel, r);
+			DrawShadedAreas(canvas, toPixel, a, b, r);
+			DrawPoint(canvas, toPixel, x, y);
 		}
 
-		private void DrawAxis(Canvas canvas, Func<double, double, Point> toPixel, double maxVal)
+		// Старый метод DrawCanvas без параметров (оставляем для совместимости, но можно убрать)
+		private void DrawCanvas()
+		{
+			DrawCanvasWithParams(_lastValidX, _lastValidY, _lastValidA, _lastValidB, _lastValidR);
+		}
+
+		private void DrawAxis(Canvas canvas, Func<double, double, Point> toPixel, double maxVal, double a, double b, double r)
 		{
 			var axisColor = new SolidColorBrush(Colors.LightGray);
 			double axisLength = maxVal * 1.1;
@@ -74,12 +114,12 @@ namespace AlghoritmsAndDataStructures.Views
 			lineY.StrokeThickness = 1;
 			canvas.Children.Add(lineY);
 
-			AddTick(canvas, toPixel, _a, 0, "a");
-			AddTick(canvas, toPixel, -_a, 0, "-a");
-			AddTick(canvas, toPixel, 0, _b, "b");
-			AddTick(canvas, toPixel, 0, -_b, "-b");
-			AddTick(canvas, toPixel, _r, 0, "R");
-			AddTick(canvas, toPixel, -_r, 0, "-R");
+			AddTick(canvas, toPixel, a, 0, "a");
+			AddTick(canvas, toPixel, -a, 0, "-a");
+			AddTick(canvas, toPixel, 0, b, "b");
+			AddTick(canvas, toPixel, 0, -b, "-b");
+			AddTick(canvas, toPixel, r, 0, "R");
+			AddTick(canvas, toPixel, -r, 0, "-R");
 		}
 
 		private void AddTick(Canvas canvas, Func<double, double, Point> toPixel, double x, double y, string label)
@@ -155,7 +195,6 @@ namespace AlghoritmsAndDataStructures.Views
 
 			EllipseGeometry circleGeometry = new EllipseGeometry(center, radiusPx, radiusPx);
 
-			// Левая нижняя: пересечение с кругом
 			Geometry leftCombined = Geometry.Combine(leftLowerGeometry, circleGeometry, GeometryCombineMode.Intersect, null);
 			Path leftPath = new Path
 			{
@@ -164,7 +203,6 @@ namespace AlghoritmsAndDataStructures.Views
 			};
 			canvas.Children.Add(leftPath);
 
-			// Правая верхняя: вычитание круга
 			Geometry rightCombined = Geometry.Combine(rightUpperGeometry, circleGeometry, GeometryCombineMode.Exclude, null);
 			Path rightPath = new Path
 			{
@@ -210,8 +248,7 @@ namespace AlghoritmsAndDataStructures.Views
 			InputA.Text = _a.ToString("F1");
 			InputB.Text = _b.ToString("F1");
 			InputR.Text = _r.ToString("F1");
-			DrawCanvas();
-			UpdateResult();
+			ApplyVisualization();
 		}
 
 		private void UpdateButton_Click(object sender, RoutedEventArgs e)
@@ -223,11 +260,10 @@ namespace AlghoritmsAndDataStructures.Views
 			double.TryParse(InputA.Text, out _a);
 			double.TryParse(InputB.Text, out _b);
 			double.TryParse(InputR.Text, out _r);
-			SliderA.Value = _a;
-			SliderB.Value = _b;
-			SliderR.Value = _r;
-			DrawCanvas();
-			UpdateResult();
+			SliderA.Value = Math.Min(_a, Limit);
+			SliderB.Value = Math.Min(_b, Limit);
+			SliderR.Value = Math.Min(_r, Limit);
+			ApplyVisualization();
 		}
 
 		private void CaptionBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

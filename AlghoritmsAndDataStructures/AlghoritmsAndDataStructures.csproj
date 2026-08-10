@@ -193,18 +193,24 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\CountToVisibilityConverter.cs" />
     <Compile Include="Converters\StringToVisibilityConverter.cs" />
     <Compile Include="Core\Calculators\AreaChecker.cs" />
+    <Compile Include="Core\Calculators\AverageCalculator.cs" />
     <Compile Include="Core\Calculators\FractionCalculator.cs" />
     <Compile Include="Core\Calculators\GraphCalculator.cs" />
+    <Compile Include="Core\Calculators\SeriesSumCalculator.cs" />
     <Compile Include="Helpers\HistoryStorage.cs" />
     <Compile Include="Helpers\TooltipService.cs" />
     <Compile Include="ViewModels\Tasks\AreaTaskViewModel.cs" />
+    <Compile Include="ViewModels\Tasks\AverageTaskViewModel.cs" />
     <Compile Include="ViewModels\Tasks\FractionTaskViewModel.cs" />
     <Compile Include="ViewModels\Tasks\GraphTaskViewModel.cs" />
+    <Compile Include="ViewModels\Tasks\SeriesSumTaskViewModel.cs" />
     <Compile Include="ViewModels\Tasks\Work1ViewModel.cs" />
     <Compile Include="ViewModels\Tasks\Work2ViewModel.cs" />
     <Compile Include="ViewModels\Tasks\Work3ViewModel.cs" />
+    <Compile Include="ViewModels\Tasks\Work4ViewModel.cs" />
     <Compile Include="ViewModels\Tasks\WorkViewModel.cs" />
     <Compile Include="Views\AreaVisualizationWindow.xaml.cs">
       <DependentUpon>AreaVisualizationWindow.xaml</DependentUpon>
@@ -217,6 +223,9 @@
     </Compile>
     <Compile Include="Views\GraphWindow.xaml.cs">
       <DependentUpon>GraphWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SolutionWindow.xaml.cs">
+      <DependentUpon>SolutionWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TaskWindow.xaml.cs">
       <DependentUpon>TaskWindow.xaml</DependentUpon>
@@ -271,6 +280,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\SolutionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\TaskWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

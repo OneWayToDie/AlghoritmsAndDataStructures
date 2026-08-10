@@ -12,6 +12,7 @@
 
     <Window.Resources>
         <conv:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+        <conv:CountToVisibilityConverter x:Key="CountToVisibilityConverter"/>
 
         <!-- Стиль для кнопок заголовка -->
         <Style x:Key="CaptionButtonStyle" TargetType="Button">
@@ -416,6 +417,160 @@
                 <StackPanel>
                     <Grid>
                         <TextBlock Text="История проверок:" FontWeight="Bold" 
+                                   Foreground="{DynamicResource MainTextForeground}" 
+                                   HorizontalAlignment="Left"/>
+                        <Button Content="Очистить" 
+                                Command="{Binding ClearHistoryCommand}"
+                                HorizontalAlignment="Right"
+                                Style="{StaticResource ComputeButtonStyle}"
+                                Margin="0,0,0,0"
+                                Padding="10,5"/>
+                    </Grid>
+                    <ListBox ItemsSource="{Binding History}" 
+                             Background="{DynamicResource TileBackground}"
+                             Foreground="{DynamicResource MainTextForeground}"
+                             BorderBrush="{DynamicResource TileBorderBrush}"
+                             BorderThickness="1"
+                             Margin="0,5,0,0"
+                             MaxHeight="120"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" FontFamily="Consolas" FontSize="12"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- ============================================================ -->
+        <!-- DataTemplate для задачи 1: Сумма ряда                       -->
+        <!-- ============================================================ -->
+        <DataTemplate DataType="{x:Type tasks:SeriesSumTaskViewModel}">
+            <StackPanel Margin="10">
+                <TextBlock Text="Введите n (n > 1):" FontWeight="Bold" 
+                           Foreground="{DynamicResource MainTextForeground}"/>
+                <TextBox Text="{Binding N, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"/>
+
+                <Button Content="Вычислить" 
+                        Command="{Binding ComputeCommand}"
+                        Style="{StaticResource ComputeButtonStyle}"/>
+                
+                <Button Content="Ход решения" 
+                        Command="{Binding ShowSolutionCommand}"
+                        Style="{StaticResource ComputeButtonStyle}"
+                        Margin="5,10,5,10"/>
+
+                <Separator Margin="0,15,0,15" Background="{DynamicResource TileBorderBrush}"/>
+
+                <TextBlock Text="Результат:" FontWeight="Bold" 
+                           Foreground="{DynamicResource MainTextForeground}" Margin="0,0,0,10"/>
+
+                <TextBlock Text="{Binding ResultText}" 
+                           Foreground="{DynamicResource ResultForeground}" 
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Margin="0,10,0,0"/>
+
+                <!-- Блок с дополнительной информацией (сумма) -->
+                <TextBlock Text="{Binding Sum, StringFormat='Значение суммы: {0:F6}'}" 
+                           Foreground="{DynamicResource MainTextForeground}" 
+                           Margin="0,10,0,0"/>
+
+                <!-- История -->
+                <Separator Margin="0,15,0,15" Background="{DynamicResource TileBorderBrush}"/>
+                <StackPanel>
+                    <Grid>
+                        <TextBlock Text="История:" FontWeight="Bold" 
+                                   Foreground="{DynamicResource MainTextForeground}" 
+                                   HorizontalAlignment="Left"/>
+                        <Button Content="Очистить" 
+                                Command="{Binding ClearHistoryCommand}"
+                                HorizontalAlignment="Right"
+                                Style="{StaticResource ComputeButtonStyle}"
+                                Margin="0,0,0,0"
+                                Padding="10,5"/>
+                    </Grid>
+                    <ListBox ItemsSource="{Binding History}" 
+                             Background="{DynamicResource TileBackground}"
+                             Foreground="{DynamicResource MainTextForeground}"
+                             BorderBrush="{DynamicResource TileBorderBrush}"
+                             BorderThickness="1"
+                             Margin="0,5,0,0"
+                             MaxHeight="120"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" FontFamily="Consolas" FontSize="12"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- ============================================================ -->
+        <!-- DataTemplate для задачи 2: Среднее трёхзначных               -->
+        <!-- ============================================================ -->
+        <DataTemplate DataType="{x:Type tasks:AverageTaskViewModel}">
+            <StackPanel Margin="10">
+                <TextBlock Text="Введите числа через запятую (или пробел):" FontWeight="Bold" 
+                           Foreground="{DynamicResource MainTextForeground}"/>
+                <TextBox Text="{Binding InputNumbers, UpdateSourceTrigger=PropertyChanged}" 
+                         Height="80" TextWrapping="Wrap" AcceptsReturn="True" 
+                         VerticalScrollBarVisibility="Auto" HorizontalAlignment="Stretch"/>
+
+                <Button Content="Найти среднее" 
+                        Command="{Binding ComputeCommand}"
+                        Style="{StaticResource ComputeButtonStyle}"/>
+
+                <Button Content="Ход решения" 
+                        Command="{Binding ShowSolutionCommand}"
+                        Style="{StaticResource ComputeButtonStyle}"
+                        Margin="5,10,5,10"/>
+
+                <Separator Margin="0,15,0,15" Background="{DynamicResource TileBorderBrush}"/>
+
+                <TextBlock Text="Результат:" FontWeight="Bold" 
+                           Foreground="{DynamicResource MainTextForeground}" Margin="0,0,0,10"/>
+
+                <TextBlock Text="{Binding ResultText}" 
+                           Foreground="{DynamicResource ResultForeground}" 
+                           FontSize="16"
+                           FontWeight="Bold"
+                           Margin="0,10,0,0"/>
+
+                <TextBlock Text="{Binding ResultDetail}" 
+                           Foreground="{DynamicResource MainTextForeground}" 
+                           TextWrapping="Wrap"
+                           Margin="0,5,0,0"/>
+
+                <!-- Список трёхзначных чисел -->
+                <TextBlock Text="Найденные трёхзначные числа:" FontWeight="Bold" 
+                           Foreground="{DynamicResource MainTextForeground}" Margin="0,10,0,5"
+                           Visibility="{Binding ThreeDigitNumbers.Count, Converter={StaticResource CountToVisibilityConverter}}"/>
+                <ListBox ItemsSource="{Binding ThreeDigitNumbers}" 
+                         Background="{DynamicResource TileBackground}"
+                         Foreground="{DynamicResource MainTextForeground}"
+                         BorderBrush="{DynamicResource TileBorderBrush}"
+                         BorderThickness="1"
+                         Margin="0,0,0,10"
+                         MaxHeight="100"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         Visibility="{Binding ThreeDigitNumbers.Count, Converter={StaticResource CountToVisibilityConverter}}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" FontFamily="Consolas" FontSize="12"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <!-- История -->
+                <Separator Margin="0,15,0,15" Background="{DynamicResource TileBorderBrush}"/>
+                <StackPanel>
+                    <Grid>
+                        <TextBlock Text="История:" FontWeight="Bold" 
                                    Foreground="{DynamicResource MainTextForeground}" 
                                    HorizontalAlignment="Left"/>
                         <Button Content="Очистить" 
