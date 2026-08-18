@@ -3,11 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:tasks="clr-namespace:AlghoritmsAndDataStructures.ViewModels.Tasks"
         xmlns:conv="clr-namespace:AlghoritmsAndDataStructures.Converters"
+        xmlns:controls="clr-namespace:AlghoritmsAndDataStructures.Views.Controls"
         Title="Практическая работа" 
-        Height="600" Width="750"
+        Height="810" Width="850"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None" 
-        ResizeMode="NoResize"
+        ResizeMode="CanResizeWithGrip"
+        AllowsTransparency="True"
         Background="Transparent">
 
     <Window.Resources>
@@ -40,7 +42,7 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Стиль для кнопки "Вычислить" -->
+        <!-- Стиль для кнопок действий -->
         <Style x:Key="ComputeButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="{DynamicResource ButtonBackground}"/>
             <Setter Property="Foreground" Value="{DynamicResource ButtonForeground}"/>
@@ -137,14 +139,15 @@
             <Setter Property="BorderBrush" Value="{DynamicResource TileBorderBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Margin" Value="0,5,0,0"/>
-            <Setter Property="MaxHeight" Value="120"/>
+            <Setter Property="MaxHeight" Value="150"/>
             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
         </Style>
 
         <!-- ============================================================ -->
-        <!-- DataTemplate для задачи 1 (Куб) -->
+        <!-- DataTemplate для задачи 1 (Куб) — без изменений             -->
         <!-- ============================================================ -->
         <DataTemplate DataType="{x:Type tasks:CubeTaskViewModel}">
+            <!-- ... (остаётся как было) ... -->
             <StackPanel Margin="10">
                 <TextBlock Text="Введите длину ребра:" FontWeight="Bold" 
                            Foreground="{DynamicResource MainTextForeground}"/>
@@ -198,7 +201,6 @@
                            Foreground="{DynamicResource MainTextForeground}" 
                            Margin="0,10,0,0"/>
 
-                <!-- Блок с формулами -->
                 <TextBlock Text="{Binding CalculationSteps}" 
                            Foreground="{DynamicResource MainTextForeground}"
                            FontFamily="Consolas"
@@ -207,35 +209,18 @@
                            Visibility="{Binding CalculationSteps, Converter={StaticResource StringToVisibilityConverter}}"/>
 
                 <Separator Margin="0,15,0,15" Background="{DynamicResource TileBorderBrush}"/>
-
-                <!-- История -->
-                <StackPanel>
-                    <Grid>
-                        <TextBlock Text="История вычислений:" FontWeight="Bold" 
-                                   Foreground="{DynamicResource MainTextForeground}" 
-                                   HorizontalAlignment="Left"/>
-                        <Button Content="Очистить" 
-                                Command="{Binding ClearHistoryCommand}"
-                                HorizontalAlignment="Right"
-                                Style="{StaticResource ComputeButtonStyle}"
-                                Margin="0,0,0,0"
-                                Padding="10,5"/>
-                    </Grid>
-                    <ListBox ItemsSource="{Binding History}">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding}" FontFamily="Consolas" FontSize="12"/>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </StackPanel>
+                <Button Content="История вычислений" 
+                        Command="{Binding ShowHistoryCommand}"
+                        Style="{StaticResource ComputeButtonStyle}"
+                        HorizontalAlignment="Left"/>
             </StackPanel>
         </DataTemplate>
 
         <!-- ============================================================ -->
-        <!-- DataTemplate для задачи 2 (Дробь) -->
+        <!-- DataTemplate для задачи 2 (Дробь) — без изменений           -->
         <!-- ============================================================ -->
         <DataTemplate DataType="{x:Type tasks:FractionTaskViewModel}">
+            <!-- ... (остаётся как было) ... -->
             <StackPanel Margin="10">
                 <TextBlock Text="Введите M и N (натуральные):" FontWeight="Bold"
                            Foreground="{DynamicResource MainTextForeground}"/>
@@ -286,7 +271,6 @@
                            Foreground="{DynamicResource MainTextForeground}" 
                            Margin="0,10,0,0"/>
 
-                <!-- Блок с формулами -->
                 <TextBlock Text="{Binding CalculationSteps}" 
                            Foreground="{DynamicResource MainTextForeground}"
                            FontFamily="Consolas"
@@ -295,28 +279,10 @@
                            Visibility="{Binding CalculationSteps, Converter={StaticResource StringToVisibilityConverter}}"/>
 
                 <Separator Margin="0,15,0,15" Background="{DynamicResource TileBorderBrush}"/>
-
-                <!-- История -->
-                <StackPanel>
-                    <Grid>
-                        <TextBlock Text="История вычислений:" FontWeight="Bold" 
-                                   Foreground="{DynamicResource MainTextForeground}" 
-                                   HorizontalAlignment="Left"/>
-                        <Button Content="Очистить" 
-                                Command="{Binding ClearHistoryCommand}"
-                                HorizontalAlignment="Right"
-                                Style="{StaticResource ComputeButtonStyle}"
-                                Margin="0,0,0,0"
-                                Padding="10,5"/>
-                    </Grid>
-                    <ListBox ItemsSource="{Binding History}">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding}" FontFamily="Consolas" FontSize="12"/>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </StackPanel>
+                <Button Content="История вычислений" 
+                        Command="{Binding ShowHistoryCommand}"
+                        Style="{StaticResource ComputeButtonStyle}"
+                        HorizontalAlignment="Left"/>
             </StackPanel>
         </DataTemplate>
 
@@ -354,6 +320,11 @@
                            FontSize="18"
                            FontWeight="Bold"
                            Margin="0,10,0,0"/>
+
+                <Button Content="История вычислений" 
+                        Command="{Binding ShowHistoryCommand}"
+                        Style="{StaticResource ComputeButtonStyle}"
+                        HorizontalAlignment="Left"/>
             </StackPanel>
         </DataTemplate>
 
@@ -412,40 +383,16 @@
                            FontWeight="Bold"
                            Margin="0,10,0,0"/>
 
-                <!-- История -->
                 <Separator Margin="0,15,0,15" Background="{DynamicResource TileBorderBrush}"/>
-                <StackPanel>
-                    <Grid>
-                        <TextBlock Text="История проверок:" FontWeight="Bold" 
-                                   Foreground="{DynamicResource MainTextForeground}" 
-                                   HorizontalAlignment="Left"/>
-                        <Button Content="Очистить" 
-                                Command="{Binding ClearHistoryCommand}"
-                                HorizontalAlignment="Right"
-                                Style="{StaticResource ComputeButtonStyle}"
-                                Margin="0,0,0,0"
-                                Padding="10,5"/>
-                    </Grid>
-                    <ListBox ItemsSource="{Binding History}" 
-                             Background="{DynamicResource TileBackground}"
-                             Foreground="{DynamicResource MainTextForeground}"
-                             BorderBrush="{DynamicResource TileBorderBrush}"
-                             BorderThickness="1"
-                             Margin="0,5,0,0"
-                             MaxHeight="120"
-                             ScrollViewer.VerticalScrollBarVisibility="Auto">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding}" FontFamily="Consolas" FontSize="12"/>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </StackPanel>
+                <Button Content="История проверок" 
+                        Command="{Binding ShowHistoryCommand}"
+                        Style="{StaticResource ComputeButtonStyle}"
+                        HorizontalAlignment="Left"/>
             </StackPanel>
         </DataTemplate>
 
         <!-- ============================================================ -->
-        <!-- DataTemplate для задачи 1: Сумма ряда                       -->
+        <!-- DataTemplate для задачи 1: Сумма ряда (с гистограммой)      -->
         <!-- ============================================================ -->
         <DataTemplate DataType="{x:Type tasks:SeriesSumTaskViewModel}">
             <StackPanel Margin="10">
@@ -453,14 +400,19 @@
                            Foreground="{DynamicResource MainTextForeground}"/>
                 <TextBox Text="{Binding N, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"/>
 
-                <Button Content="Вычислить" 
-                        Command="{Binding ComputeCommand}"
-                        Style="{StaticResource ComputeButtonStyle}"/>
-                
-                <Button Content="Ход решения" 
-                        Command="{Binding ShowSolutionCommand}"
-                        Style="{StaticResource ComputeButtonStyle}"
-                        Margin="5,10,5,10"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Вычислить" 
+                            Command="{Binding ComputeCommand}"
+                            Style="{StaticResource ComputeButtonStyle}"/>
+                    <Button Content="Ход решения" 
+                            Command="{Binding ShowSolutionCommand}"
+                            Style="{StaticResource ComputeButtonStyle}"
+                            Margin="5,10,5,10"/>
+                    <Button Content="История вычислений" 
+                            Command="{Binding ShowHistoryCommand}"
+                            Style="{StaticResource ComputeButtonStyle}"
+                            Margin="5,10,5,10"/>
+                </StackPanel>
 
                 <Separator Margin="0,15,0,15" Background="{DynamicResource TileBorderBrush}"/>
 
@@ -473,128 +425,129 @@
                            FontWeight="Bold"
                            Margin="0,10,0,0"/>
 
-                <!-- Блок с дополнительной информацией (сумма) -->
                 <TextBlock Text="{Binding Sum, StringFormat='Значение суммы: {0:F6}'}" 
                            Foreground="{DynamicResource MainTextForeground}" 
                            Margin="0,10,0,0"/>
 
-                <!-- История -->
                 <Separator Margin="0,15,0,15" Background="{DynamicResource TileBorderBrush}"/>
-                <StackPanel>
-                    <Grid>
-                        <TextBlock Text="История:" FontWeight="Bold" 
-                                   Foreground="{DynamicResource MainTextForeground}" 
-                                   HorizontalAlignment="Left"/>
-                        <Button Content="Очистить" 
-                                Command="{Binding ClearHistoryCommand}"
-                                HorizontalAlignment="Right"
-                                Style="{StaticResource ComputeButtonStyle}"
-                                Margin="0,0,0,0"
-                                Padding="10,5"/>
-                    </Grid>
-                    <ListBox ItemsSource="{Binding History}" 
-                             Background="{DynamicResource TileBackground}"
-                             Foreground="{DynamicResource MainTextForeground}"
-                             BorderBrush="{DynamicResource TileBorderBrush}"
-                             BorderThickness="1"
-                             Margin="0,5,0,0"
-                             MaxHeight="120"
-                             ScrollViewer.VerticalScrollBarVisibility="Auto">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding}" FontFamily="Consolas" FontSize="12"/>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </StackPanel>
+                <TextBlock Text="Визуализация членов ряда:" FontWeight="Bold" 
+                           Foreground="{DynamicResource MainTextForeground}" Margin="0,0,0,10"/>
+                <controls:HistogramControl Data="{Binding MembersList}" 
+                                           Mode="Series"
+                                           Height="200" Width="450"/>
             </StackPanel>
         </DataTemplate>
 
         <!-- ============================================================ -->
-        <!-- DataTemplate для задачи 2: Среднее трёхзначных               -->
+        <!-- DataTemplate для задачи 2: Среднее трёхзначных (с гистогр.) -->
         <!-- ============================================================ -->
         <DataTemplate DataType="{x:Type tasks:AverageTaskViewModel}">
             <StackPanel Margin="10">
                 <TextBlock Text="Введите числа через запятую (или пробел):" FontWeight="Bold" 
-                           Foreground="{DynamicResource MainTextForeground}"/>
+                   Foreground="{DynamicResource MainTextForeground}"/>
                 <TextBox Text="{Binding InputNumbers, UpdateSourceTrigger=PropertyChanged}" 
-                         Height="80" TextWrapping="Wrap" AcceptsReturn="True" 
-                         VerticalScrollBarVisibility="Auto" HorizontalAlignment="Stretch"/>
+                 Height="80" TextWrapping="Wrap" AcceptsReturn="True" 
+                 VerticalScrollBarVisibility="Auto" HorizontalAlignment="Stretch"
+                 VerticalContentAlignment="Top"/>
 
-                <Button Content="Найти среднее" 
-                        Command="{Binding ComputeCommand}"
-                        Style="{StaticResource ComputeButtonStyle}"/>
-
-                <Button Content="Ход решения" 
-                        Command="{Binding ShowSolutionCommand}"
-                        Style="{StaticResource ComputeButtonStyle}"
-                        Margin="5,10,5,10"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Найти среднее" 
+                    Command="{Binding ComputeCommand}"
+                    Style="{StaticResource ComputeButtonStyle}"/>
+                    <Button Content="Ход решения" 
+                    Command="{Binding ShowSolutionCommand}"
+                    Style="{StaticResource ComputeButtonStyle}"
+                    Margin="5,10,5,10"/>
+                    <Button Content="История вычислений" 
+                    Command="{Binding ShowHistoryCommand}"
+                    Style="{StaticResource ComputeButtonStyle}"
+                    Margin="5,10,5,10"/>
+                </StackPanel>
 
                 <Separator Margin="0,15,0,15" Background="{DynamicResource TileBorderBrush}"/>
 
                 <TextBlock Text="Результат:" FontWeight="Bold" 
-                           Foreground="{DynamicResource MainTextForeground}" Margin="0,0,0,10"/>
+                   Foreground="{DynamicResource MainTextForeground}" Margin="0,0,0,10"/>
 
                 <TextBlock Text="{Binding ResultText}" 
-                           Foreground="{DynamicResource ResultForeground}" 
-                           FontSize="16"
-                           FontWeight="Bold"
-                           Margin="0,10,0,0"/>
+                   Foreground="{DynamicResource ResultForeground}" 
+                   FontSize="16"
+                   FontWeight="Bold"
+                   Margin="0,10,0,0"/>
 
                 <TextBlock Text="{Binding ResultDetail}" 
-                           Foreground="{DynamicResource MainTextForeground}" 
-                           TextWrapping="Wrap"
-                           Margin="0,5,0,0"/>
+                   Foreground="{DynamicResource MainTextForeground}" 
+                   TextWrapping="Wrap"
+                   Margin="0,5,0,0"/>
 
-                <!-- Список трёхзначных чисел -->
-                <TextBlock Text="Найденные трёхзначные числа:" FontWeight="Bold" 
-                           Foreground="{DynamicResource MainTextForeground}" Margin="0,10,0,5"
-                           Visibility="{Binding ThreeDigitNumbers.Count, Converter={StaticResource CountToVisibilityConverter}}"/>
-                <ListBox ItemsSource="{Binding ThreeDigitNumbers}" 
-                         Background="{DynamicResource TileBackground}"
-                         Foreground="{DynamicResource MainTextForeground}"
-                         BorderBrush="{DynamicResource TileBorderBrush}"
-                         BorderThickness="1"
-                         Margin="0,0,0,10"
-                         MaxHeight="100"
-                         ScrollViewer.VerticalScrollBarVisibility="Auto"
-                         Visibility="{Binding ThreeDigitNumbers.Count, Converter={StaticResource CountToVisibilityConverter}}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding}" FontFamily="Consolas" FontSize="12"/>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                <!-- Список трёхзначных чисел (в строку) -->
+                <TextBlock Text="Найденные трёхзначные числа: " FontWeight="Bold" 
+                   Foreground="{DynamicResource MainTextForeground}" Margin="0,10,0,5"
+                   Visibility="{Binding ThreeDigitNumbers.Count, Converter={StaticResource CountToVisibilityConverter}}"/>
+                <TextBlock Text="{Binding ThreeDigitString}" 
+                   Foreground="{DynamicResource MainTextForeground}" 
+                   TextWrapping="Wrap"
+                   Margin="0,0,0,10"
+                   Visibility="{Binding ThreeDigitNumbers.Count, Converter={StaticResource CountToVisibilityConverter}}"/>
 
-                <!-- История -->
+                <!-- Гистограмма для трёхзначных чисел -->
                 <Separator Margin="0,15,0,15" Background="{DynamicResource TileBorderBrush}"/>
-                <StackPanel>
-                    <Grid>
-                        <TextBlock Text="История:" FontWeight="Bold" 
-                                   Foreground="{DynamicResource MainTextForeground}" 
-                                   HorizontalAlignment="Left"/>
-                        <Button Content="Очистить" 
-                                Command="{Binding ClearHistoryCommand}"
-                                HorizontalAlignment="Right"
-                                Style="{StaticResource ComputeButtonStyle}"
-                                Margin="0,0,0,0"
-                                Padding="10,5"/>
-                    </Grid>
-                    <ListBox ItemsSource="{Binding History}" 
-                             Background="{DynamicResource TileBackground}"
-                             Foreground="{DynamicResource MainTextForeground}"
-                             BorderBrush="{DynamicResource TileBorderBrush}"
-                             BorderThickness="1"
-                             Margin="0,5,0,0"
-                             MaxHeight="120"
-                             ScrollViewer.VerticalScrollBarVisibility="Auto">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding}" FontFamily="Consolas" FontSize="12"/>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                <TextBlock Text="Визуализация трёхзначных чисел:" FontWeight="Bold" 
+                   Foreground="{DynamicResource MainTextForeground}" Margin="0,0,0,10"/>
+                <controls:HistogramControl Data="{Binding ThreeDigitNumbers}" 
+                                   Mode="Average"
+                                   AverageValue="{Binding AverageValue}"
+                                   Height="200" Width="450"/>
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- ============================================================ -->
+        <!-- DataTemplate для задачи "Обработка массива" (5-я работа)     -->
+        <!-- ============================================================ -->
+        <DataTemplate DataType="{x:Type tasks:ArrayTaskViewModel}">
+            <StackPanel Margin="10">
+                <TextBlock Text="Введите 12 целых чисел через запятую (или пробел):" FontWeight="Bold" 
+                   Foreground="{DynamicResource MainTextForeground}"/>
+                <TextBox Text="{Binding InputArray, UpdateSourceTrigger=PropertyChanged}" 
+                 Height="40" TextWrapping="Wrap" AcceptsReturn="True" 
+                 VerticalScrollBarVisibility="Auto" HorizontalAlignment="Stretch"/>
+
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Сгенерировать массив" 
+                    Command="{Binding GenerateArrayCommand}"
+                    Style="{StaticResource ComputeButtonStyle}"
+                    Margin="0,10,5,10"/>
+                    <Button Content="Обработать" 
+                    Command="{Binding ComputeCommand}"
+                    Style="{StaticResource ComputeButtonStyle}"
+                    Margin="5,10,5,10"/>
+                    <Button Content="Ход решения" 
+                    Command="{Binding ShowSolutionCommand}"
+                    Style="{StaticResource ComputeButtonStyle}"
+                    Margin="5,10,5,10"/>
+                    <Button Content="История" 
+                    Command="{Binding ShowHistoryCommand}"
+                    Style="{StaticResource ComputeButtonStyle}"
+                    Margin="5,10,5,10"/>
                 </StackPanel>
+
+                <Separator Margin="0,15,0,15" Background="{DynamicResource TileBorderBrush}"/>
+
+                <TextBlock Text="Результат:" FontWeight="Bold" 
+                   Foreground="{DynamicResource MainTextForeground}" Margin="0,0,0,10"/>
+                <TextBlock Text="{Binding ResultMessage}" 
+                   Foreground="{DynamicResource ResultForeground}" 
+                   FontSize="16" FontWeight="Bold" TextWrapping="Wrap"/>
+
+                <TextBlock Text="Исходный массив:" FontWeight="Bold" 
+                   Foreground="{DynamicResource MainTextForeground}" Margin="0,10,0,5"/>
+                <TextBlock Text="{Binding OriginalArrayDisplay}" 
+                   Foreground="{DynamicResource MainTextForeground}" FontFamily="Consolas" FontSize="14"/>
+
+                <TextBlock Text="Изменённый массив:" FontWeight="Bold" 
+                   Foreground="{DynamicResource MainTextForeground}" Margin="0,10,0,5"/>
+                <TextBlock Text="{Binding ModifiedArrayDisplay}" 
+                   Foreground="{DynamicResource MainTextForeground}" FontFamily="Consolas" FontSize="14"/>
             </StackPanel>
         </DataTemplate>
 
@@ -614,7 +567,6 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- Заголовок -->
             <Border Grid.Row="0" 
                     Background="{DynamicResource CaptionBackground}" 
                     MouseLeftButtonDown="CaptionBorder_MouseLeftButtonDown">
@@ -638,7 +590,6 @@
                 </Grid>
             </Border>
 
-            <!-- Вкладки -->
             <Grid Grid.Row="1" Margin="20">
                 <TabControl ItemsSource="{Binding Tasks}" SelectedIndex="0"
                             Background="{DynamicResource MainBackground}"

@@ -196,6 +196,7 @@
     <Compile Include="Converters\CountToVisibilityConverter.cs" />
     <Compile Include="Converters\StringToVisibilityConverter.cs" />
     <Compile Include="Core\Calculators\AreaChecker.cs" />
+    <Compile Include="Core\Calculators\ArrayProcessor.cs" />
     <Compile Include="Core\Calculators\AverageCalculator.cs" />
     <Compile Include="Core\Calculators\FractionCalculator.cs" />
     <Compile Include="Core\Calculators\GraphCalculator.cs" />
@@ -203,6 +204,7 @@
     <Compile Include="Helpers\HistoryStorage.cs" />
     <Compile Include="Helpers\TooltipService.cs" />
     <Compile Include="ViewModels\Tasks\AreaTaskViewModel.cs" />
+    <Compile Include="ViewModels\Tasks\ArrayTaskViewModel.cs" />
     <Compile Include="ViewModels\Tasks\AverageTaskViewModel.cs" />
     <Compile Include="ViewModels\Tasks\FractionTaskViewModel.cs" />
     <Compile Include="ViewModels\Tasks\GraphTaskViewModel.cs" />
@@ -211,9 +213,13 @@
     <Compile Include="ViewModels\Tasks\Work2ViewModel.cs" />
     <Compile Include="ViewModels\Tasks\Work3ViewModel.cs" />
     <Compile Include="ViewModels\Tasks\Work4ViewModel.cs" />
+    <Compile Include="ViewModels\Tasks\Work5ViewModel.cs" />
     <Compile Include="ViewModels\Tasks\WorkViewModel.cs" />
     <Compile Include="Views\AreaVisualizationWindow.xaml.cs">
       <DependentUpon>AreaVisualizationWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\HistogramControl.xaml.cs">
+      <DependentUpon>HistogramControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Cube3DWindow.xaml.cs">
       <DependentUpon>Cube3DWindow.xaml</DependentUpon>
@@ -223,6 +229,9 @@
     </Compile>
     <Compile Include="Views\GraphWindow.xaml.cs">
       <DependentUpon>GraphWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\HistoryWindow.xaml.cs">
+      <DependentUpon>HistoryWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SolutionWindow.xaml.cs">
       <DependentUpon>SolutionWindow.xaml</DependentUpon>
@@ -246,6 +255,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Controls\HistogramControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Cube3DWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -255,6 +268,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GraphWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\HistoryWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

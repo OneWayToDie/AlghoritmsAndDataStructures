@@ -28,16 +28,12 @@ namespace AlghoritmsAndDataStructures.Views
 		private bool _isRotating = false;
 		private double _rotationAngle = 0;
 		private Vector3D _rotationAxis = new Vector3D(0, 1, 0);
+		private Button _selectedAxisButton = null;
 
 		// Для подсветки грани
 		private GeometryModel3D _highlightedModel;
 		private DiffuseMaterial _originalMaterial;
 		private DiffuseMaterial _highlightMaterial;
-
-		// Для тултипа с задержкой
-		private DispatcherTimer _tooltipTimer;
-		private string _pendingTooltipText;
-		private bool _isTooltipShown = false;
 
 		public Cube3DWindow(double edge, double faceArea, double totalSurface, double volume)
 		{
@@ -53,10 +49,6 @@ namespace AlghoritmsAndDataStructures.Views
 
 			_highlightMaterial = new DiffuseMaterial(new SolidColorBrush(Color.FromArgb(180, 255, 255, 100)));
 
-			_tooltipTimer = new DispatcherTimer();
-			_tooltipTimer.Interval = TimeSpan.FromMilliseconds(350);
-			_tooltipTimer.Tick += TooltipTimer_Tick;
-
 			this.Loaded += (s, e) =>
 			{
 				BuildCube();
@@ -67,10 +59,10 @@ namespace AlghoritmsAndDataStructures.Views
 				ZoomSlider.Value = 50;
 				OpacitySlider.Value = 100;
 				HighlightAxisButton(AxisYButton);
+				_selectedAxisButton = AxisYButton;
 			};
 		}
 
-		// ---------- ПОСТРОЕНИЕ КУБА ----------
 		private void BuildCube()
 		{
 			var scene = SceneVisual;
@@ -81,9 +73,11 @@ namespace AlghoritmsAndDataStructures.Views
 			scene.Children.Add(_cubeContainer);
 			scene.Children.Add(_axesContainer);
 
+			// Материал граней
 			SolidColorBrush faceBrush = new SolidColorBrush(_currentColor) { Opacity = _currentOpacity };
 			DiffuseMaterial faceMaterial = new DiffuseMaterial(faceBrush);
 
+			// Материал рёбер — белый
 			SolidColorBrush edgeBrush = new SolidColorBrush(Colors.White) { Opacity = _currentOpacity * 0.9 };
 			DiffuseMaterial edgeMaterial = new DiffuseMaterial(edgeBrush);
 
@@ -128,6 +122,7 @@ namespace AlghoritmsAndDataStructures.Views
 				_cubeContainer.Children.Add(visual);
 			}
 
+			// РЁБРА
 			int[][] edgeIndices = new int[][]
 			{
 				new int[] {0,1}, new int[] {1,2}, new int[] {2,3}, new int[] {3,0},
@@ -147,6 +142,14 @@ namespace AlghoritmsAndDataStructures.Views
 					visual.Content = edgeModel;
 					_cubeContainer.Children.Add(visual);
 				}
+			}
+
+			// Восстанавливаем вращение
+			if (_rotationAngle != 0)
+			{
+				_cubeContainer.Transform = new RotateTransform3D(
+					new AxisAngleRotation3D(_rotationAxis, _rotationAngle * 180 / Math.PI)
+				);
 			}
 		}
 
@@ -199,7 +202,6 @@ namespace AlghoritmsAndDataStructures.Views
 			return model;
 		}
 
-		// ---------- ПОСТРОЕНИЕ ОСЕЙ ----------
 		private void BuildAxes()
 		{
 			if (_axesContainer == null) return;
@@ -370,12 +372,18 @@ namespace AlghoritmsAndDataStructures.Views
 		{
 			_currentColor = color;
 			BuildCube();
+			BuildAxes();
+			if (_selectedAxisButton != null)
+				HighlightAxisButton(_selectedAxisButton);
 		}
 
 		private void SetCubeOpacity(double opacity)
 		{
 			_currentOpacity = opacity;
 			BuildCube();
+			BuildAxes();
+			if (_selectedAxisButton != null)
+				HighlightAxisButton(_selectedAxisButton);
 		}
 
 		private void ColorButton_Click(object sender, RoutedEventArgs e)
@@ -495,6 +503,7 @@ namespace AlghoritmsAndDataStructures.Views
 				_rotationAngle = 0;
 			}
 			HighlightAxisButton(btn);
+			_selectedAxisButton = btn;
 		}
 
 		private void HighlightAxisButton(Button selected)
@@ -503,89 +512,6 @@ namespace AlghoritmsAndDataStructures.Views
 			AxisYButton.Background = System.Windows.Media.Brushes.Transparent;
 			AxisZButton.Background = System.Windows.Media.Brushes.Transparent;
 			selected.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.White) { Opacity = 0.3 };
-		}
-
-		// ---------- ПОДСВЕТКА ГРАНИ И ТУЛТИП ----------
-		private void Viewport3D_MouseMove(object sender, MouseEventArgs e)
-		{
-			Point mousePos = e.GetPosition(Viewport3D);
-			var hitResult = VisualTreeHelper.HitTest(Viewport3D, mousePos);
-			bool isOnFace = false;
-			GeometryModel3D currentModel = null;
-
-			if (hitResult != null && hitResult.VisualHit is ModelVisual3D visual && visual.Content is GeometryModel3D model)
-			{
-				currentModel = model;
-				isOnFace = true;
-			}
-
-			if (isOnFace)
-			{
-				// Подсветка (обновляется только при смене грани)
-				if (_highlightedModel != null && _highlightedModel != currentModel)
-				{
-					_highlightedModel.Material = _originalMaterial;
-					_highlightedModel.BackMaterial = _originalMaterial;
-				}
-				if (_highlightedModel != currentModel)
-				{
-					_originalMaterial = currentModel.Material as DiffuseMaterial;
-					currentModel.Material = _highlightMaterial;
-					currentModel.BackMaterial = _highlightMaterial;
-					_highlightedModel = currentModel;
-				}
-
-				// Тултип
-				if (!_isTooltipShown)
-				{
-					_pendingTooltipText = $"Площадь грани: {_faceArea:F2}";
-					_tooltipTimer.Stop();
-					_tooltipTimer.Start();
-				}
-				else
-				{
-					// Тултип уже показан, обновляем позицию
-					TooltipService.Show(_pendingTooltipText, e.GetPosition(this));
-				}
-			}
-			else
-			{
-				// Снимаем подсветку
-				if (_highlightedModel != null)
-				{
-					_highlightedModel.Material = _originalMaterial;
-					_highlightedModel.BackMaterial = _originalMaterial;
-					_highlightedModel = null;
-				}
-				// Отменяем тултип
-				_tooltipTimer.Stop();
-				_isTooltipShown = false;
-				TooltipService.Hide();
-			}
-		}
-
-		private void TooltipTimer_Tick(object sender, EventArgs e)
-		{
-			_tooltipTimer.Stop();
-			if (!string.IsNullOrEmpty(_pendingTooltipText))
-			{
-				TooltipService.Show(_pendingTooltipText, Mouse.GetPosition(this));
-				_isTooltipShown = true;
-			}
-		}
-
-		private void Viewport3D_MouseLeave(object sender, MouseEventArgs e)
-		{
-			_tooltipTimer.Stop();
-			_isTooltipShown = false;
-			TooltipService.Hide();
-
-			if (_highlightedModel != null)
-			{
-				_highlightedModel.Material = _originalMaterial;
-				_highlightedModel.BackMaterial = _originalMaterial;
-				_highlightedModel = null;
-			}
 		}
 
 		// ---------- УПРАВЛЕНИЕ КАМЕРОЙ МЫШЬЮ ----------

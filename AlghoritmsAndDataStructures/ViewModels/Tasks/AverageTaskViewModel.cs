@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Text;
 using System.Windows.Input;
 using AlghoritmsAndDataStructures.Core.Calculators;
@@ -13,6 +14,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 		private string _inputNumbers = "";
 		private string _resultDetail = "";
 		private ObservableCollection<int> _threeDigitNumbers = new ObservableCollection<int>();
+		private double? _averageValue;
 		private string _solutionSteps = "";
 
 		public string InputNumbers
@@ -33,7 +35,16 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			private set { _threeDigitNumbers = value; OnPropertyChanged(nameof(ThreeDigitNumbers)); }
 		}
 
+		public string ThreeDigitString => string.Join(", ", ThreeDigitNumbers);
+
+		public double? AverageValue
+		{
+			get => _averageValue;
+			private set { _averageValue = value; OnPropertyChanged(nameof(AverageValue)); }
+		}
+
 		public ICommand ShowSolutionCommand { get; }
+		public ICommand ShowHistoryCommand { get; }
 
 		public override string Title => "Задача 2: Среднее трёхзначных";
 		public override string HistoryKey => "Average";
@@ -41,15 +52,19 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 		public AverageTaskViewModel()
 		{
 			ShowSolutionCommand = new RelayCommand(ExecuteShowSolution);
+			ShowHistoryCommand = new RelayCommand(ExecuteShowHistory);
 		}
 
 		protected override void ExecuteCompute(object parameter)
 		{
 			var (threeDigit, avg, message) = AverageCalculator.ComputeAverage(InputNumbers);
 
-			ThreeDigitNumbers.Clear();
-			foreach (var num in threeDigit)
-				ThreeDigitNumbers.Add(num);
+			// Заменяем коллекцию новой
+			ThreeDigitNumbers = new ObservableCollection<int>(threeDigit);
+			OnPropertyChanged(nameof(ThreeDigitNumbers));
+			OnPropertyChanged(nameof(ThreeDigitString));
+			AverageValue = avg;
+			OnPropertyChanged(nameof(AverageValue));
 
 			if (avg.HasValue)
 			{
@@ -63,6 +78,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			}
 
 			AddHistoryEntry($"Вход: {InputNumbers} → {ResultText}");
+			OnPropertyChanged(nameof(ThreeDigitString));
 
 			// Генерируем пошаговое решение
 			var sb = new StringBuilder();
@@ -78,19 +94,20 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			sb.AppendLine($"Количество: {threeDigit.Count}");
 			double sum = 0;
 			foreach (var num in threeDigit)
-			{
 				sum += num;
-			}
 			sb.AppendLine($"Сумма: {sum}");
 			sb.AppendLine($"Среднее: {sum} / {threeDigit.Count} = {avg.Value:F2}");
 			_solutionSteps = sb.ToString();
+
+			Debug.WriteLine($"=== ExecuteCompute ===");
+			Debug.WriteLine($"ThreeDigitNumbers count: {ThreeDigitNumbers.Count}");
+			Debug.WriteLine($"AverageValue: {AverageValue}");
 		}
 
 		private void ExecuteShowSolution(object parameter)
 		{
 			if (string.IsNullOrEmpty(_solutionSteps))
 			{
-				// Если решение ещё не сгенерировано, вызываем вычисление
 				ExecuteCompute(null);
 				if (string.IsNullOrEmpty(_solutionSteps))
 				{
@@ -99,6 +116,12 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 				}
 			}
 			var window = new SolutionWindow(_solutionSteps);
+			window.ShowDialog();
+		}
+
+		private void ExecuteShowHistory(object parameter)
+		{
+			var window = new HistoryWindow(this);
 			window.ShowDialog();
 		}
 	}

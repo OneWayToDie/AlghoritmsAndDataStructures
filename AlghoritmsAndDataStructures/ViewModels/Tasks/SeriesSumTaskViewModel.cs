@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Windows.Input;
 using AlghoritmsAndDataStructures.Core.Calculators;
 using AlghoritmsAndDataStructures.Helpers;
@@ -9,7 +11,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 {
 	public class SeriesSumTaskViewModel : BaseTaskViewModel
 	{
-		private int _n = 2;
+		private int _n = 0;
 		private double _sum = 0;
 		private string _solutionSteps = "";
 
@@ -26,13 +28,24 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 		}
 
 		public ICommand ShowSolutionCommand { get; }
+		public ICommand ShowHistoryCommand { get; }
 
 		public override string Title => "Задача 1: Сумма ряда";
 		public override string HistoryKey => "SeriesSum";
 
+		public IEnumerable<double> MembersList
+		{
+			get
+			{
+				if (N < 2) return Enumerable.Empty<double>();
+				return Enumerable.Range(1, N).Select(k => (double)k / (k + 1));
+			}
+		}
+
 		public SeriesSumTaskViewModel()
 		{
 			ShowSolutionCommand = new RelayCommand(ExecuteShowSolution);
+			ShowHistoryCommand = new RelayCommand(ExecuteShowHistory);
 		}
 
 		protected override void ExecuteCompute(object parameter)
@@ -42,14 +55,15 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 				ResultText = "Ошибка: n должно быть больше 1.";
 				Sum = 0;
 				_solutionSteps = "";
+				OnPropertyChanged(nameof(MembersList));
 				return;
 			}
 
 			Sum = SeriesSumCalculator.ComputeSum(N);
 			ResultText = $"S = {Sum:F6}";
 			AddHistoryEntry($"n={N}, S={Sum:F6}");
+			OnPropertyChanged(nameof(MembersList));
 
-			// Генерируем пошаговое решение
 			var sb = new StringBuilder();
 			sb.AppendLine($"Сумма ряда: S = 1/2 + 2/3 + ... + {N}/({N}+1)\n");
 			double currentSum = 0;
@@ -67,7 +81,6 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 		{
 			if (string.IsNullOrEmpty(_solutionSteps))
 			{
-				// Если решение ещё не сгенерировано, вызываем вычисление (или показываем сообщение)
 				ExecuteCompute(null);
 				if (string.IsNullOrEmpty(_solutionSteps))
 				{
@@ -76,6 +89,12 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 				}
 			}
 			var window = new SolutionWindow(_solutionSteps);
+			window.ShowDialog();
+		}
+
+		private void ExecuteShowHistory(object parameter)
+		{
+			var window = new HistoryWindow(this);
 			window.ShowDialog();
 		}
 	}
