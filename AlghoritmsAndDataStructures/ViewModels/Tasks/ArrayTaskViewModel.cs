@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -9,6 +10,12 @@ using AlghoritmsAndDataStructures.Views;
 
 namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 {
+	public enum ArrayDisplayMode
+	{
+		Original,
+		Modified
+	}
+
 	public class ArrayTaskViewModel : BaseTaskViewModel
 	{
 		private string _inputArray = "";
@@ -17,7 +24,10 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 		private string _modifiedArrayDisplay = "";
 		private double _averageValue;
 		private ObservableCollection<int> _originalItems = new ObservableCollection<int>();
-		private ObservableCollection<double> _modifiedItems = new ObservableCollection<double>(); // теперь double
+		private ObservableCollection<double> _modifiedItems = new ObservableCollection<double>();
+		private ObservableCollection<double> _currentItems = new ObservableCollection<double>();
+		private ArrayDisplayMode _displayMode = ArrayDisplayMode.Original;
+		private IEnumerable<int> _specialIndices = Enumerable.Empty<int>();
 
 		public string InputArray
 		{
@@ -61,9 +71,35 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			private set { _modifiedItems = value; OnPropertyChanged(nameof(ModifiedItems)); }
 		}
 
+		public ObservableCollection<double> CurrentItems
+		{
+			get => _currentItems;
+			private set { _currentItems = value; OnPropertyChanged(nameof(CurrentItems)); }
+		}
+
+		public ArrayDisplayMode DisplayMode
+		{
+			get => _displayMode;
+			set
+			{
+				_displayMode = value;
+				OnPropertyChanged(nameof(DisplayMode));
+				UpdateCurrentItems();
+			}
+		}
+
+		public IEnumerable<int> HighlightIndices => new[] { 1, 3, 5, 7, 9, 11 };
+
+		public IEnumerable<int> SpecialIndices
+		{
+			get => _specialIndices;
+			private set { _specialIndices = value; OnPropertyChanged(nameof(SpecialIndices)); }
+		}
+
 		public ICommand ShowSolutionCommand { get; }
 		public ICommand ShowHistoryCommand { get; }
 		public ICommand GenerateArrayCommand { get; }
+		public ICommand SwitchDisplayModeCommand { get; }
 
 		public override string Title => "Задача: обработка массива (вар. 4)";
 		public override string HistoryKey => "ArrayTask";
@@ -73,6 +109,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			ShowSolutionCommand = new RelayCommand(ExecuteShowSolution);
 			ShowHistoryCommand = new RelayCommand(ExecuteShowHistory);
 			GenerateArrayCommand = new RelayCommand(ExecuteGenerateArray);
+			SwitchDisplayModeCommand = new RelayCommand(ExecuteSwitchDisplayMode);
 			InputArray = "";
 		}
 
@@ -111,12 +148,49 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			foreach (var item in modifiedArray)
 				ModifiedItems.Add(item);
 
+			var specialIndices = new System.Collections.Generic.List<int>();
+			for (int i = 0; i < inputArray.Length; i++)
+				if (inputArray[i] % 3 == 0)
+					specialIndices.Add(i);
+			SpecialIndices = specialIndices;
+
 			OriginalArrayDisplay = string.Join("  ", inputArray);
 			ModifiedArrayDisplay = string.Join("  ", modifiedArray.Select(x => x.ToString("F2")));
 
 			ResultMessage = $"Среднее на нечётных позициях: {average:F2}. Заменены элементы, кратные 3.";
 
+			DisplayMode = ArrayDisplayMode.Original;
+			UpdateCurrentItems();
+
 			AddHistoryEntry($"Исходный: {OriginalArrayDisplay} → Заменённый: {ModifiedArrayDisplay}, Среднее: {average:F2}");
+		}
+
+		private void UpdateCurrentItems()
+		{
+			var newItems = new ObservableCollection<double>();
+			if (DisplayMode == ArrayDisplayMode.Original)
+			{
+				foreach (var item in OriginalItems)
+					newItems.Add(item);
+			}
+			else
+			{
+				foreach (var item in ModifiedItems)
+					newItems.Add(item);
+			}
+			CurrentItems = newItems;
+			OnPropertyChanged(nameof(CurrentItems));
+		}
+
+		private void ExecuteSwitchDisplayMode(object parameter)
+		{
+			if (parameter is string modeStr)
+			{
+				if (Enum.TryParse<ArrayDisplayMode>(modeStr, out var mode))
+				{
+					DisplayMode = mode;
+				}
+			}
 		}
 
 		private void ExecuteShowSolution(object parameter)

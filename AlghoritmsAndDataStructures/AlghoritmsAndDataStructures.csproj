@@ -200,26 +200,33 @@
     <Compile Include="Core\Calculators\AverageCalculator.cs" />
     <Compile Include="Core\Calculators\FractionCalculator.cs" />
     <Compile Include="Core\Calculators\GraphCalculator.cs" />
+    <Compile Include="Core\Calculators\SeriesCalculator.cs" />
     <Compile Include="Core\Calculators\SeriesSumCalculator.cs" />
     <Compile Include="Helpers\HistoryStorage.cs" />
     <Compile Include="Helpers\TooltipService.cs" />
+    <Compile Include="Models\SeriesResult.cs" />
     <Compile Include="ViewModels\Tasks\AreaTaskViewModel.cs" />
     <Compile Include="ViewModels\Tasks\ArrayTaskViewModel.cs" />
     <Compile Include="ViewModels\Tasks\AverageTaskViewModel.cs" />
     <Compile Include="ViewModels\Tasks\FractionTaskViewModel.cs" />
     <Compile Include="ViewModels\Tasks\GraphTaskViewModel.cs" />
     <Compile Include="ViewModels\Tasks\SeriesSumTaskViewModel.cs" />
+    <Compile Include="ViewModels\Tasks\SeriesTaskViewModel.cs" />
     <Compile Include="ViewModels\Tasks\Work1ViewModel.cs" />
     <Compile Include="ViewModels\Tasks\Work2ViewModel.cs" />
     <Compile Include="ViewModels\Tasks\Work3ViewModel.cs" />
     <Compile Include="ViewModels\Tasks\Work4ViewModel.cs" />
     <Compile Include="ViewModels\Tasks\Work5ViewModel.cs" />
+    <Compile Include="ViewModels\Tasks\Work6ViewModel.cs" />
     <Compile Include="ViewModels\Tasks\WorkViewModel.cs" />
     <Compile Include="Views\AreaVisualizationWindow.xaml.cs">
       <DependentUpon>AreaVisualizationWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\HistogramControl.xaml.cs">
       <DependentUpon>HistogramControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ConvergenceWindow.xaml.cs">
+      <DependentUpon>ConvergenceWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Cube3DWindow.xaml.cs">
       <DependentUpon>Cube3DWindow.xaml</DependentUpon>
@@ -256,6 +263,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\HistogramControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ConvergenceWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

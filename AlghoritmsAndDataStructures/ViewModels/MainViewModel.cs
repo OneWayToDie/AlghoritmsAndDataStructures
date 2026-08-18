@@ -71,6 +71,12 @@ namespace AlghoritmsAndDataStructures.ViewModels
 					var taskWindow = new TaskWindow(vm);
 					taskWindow.ShowDialog();
 				}
+				else if (id == 6)
+				{
+					var vm = new Work6ViewModel();
+					var taskWindow = new TaskWindow(vm);
+					taskWindow.ShowDialog();
+				}
 				else
 				{
 					MessageBox.Show($"Работа {id} будет добавлена позже.");

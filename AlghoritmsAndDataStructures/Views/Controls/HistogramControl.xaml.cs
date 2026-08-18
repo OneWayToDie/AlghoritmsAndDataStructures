@@ -30,6 +30,14 @@ namespace AlghoritmsAndDataStructures.Views.Controls
 			DependencyProperty.Register("AverageValue", typeof(double?), typeof(HistogramControl),
 				new PropertyMetadata(null, OnDataChanged));
 
+		public static readonly DependencyProperty HighlightIndicesProperty =
+			DependencyProperty.Register("HighlightIndices", typeof(IEnumerable<int>), typeof(HistogramControl),
+				new PropertyMetadata(null, OnHighlightOrSpecialChanged));
+
+		public static readonly DependencyProperty SpecialIndicesProperty =
+			DependencyProperty.Register("SpecialIndices", typeof(IEnumerable<int>), typeof(HistogramControl),
+				new PropertyMetadata(null, OnHighlightOrSpecialChanged));
+
 		public IEnumerable Data
 		{
 			get => (IEnumerable)GetValue(DataProperty);
@@ -48,7 +56,24 @@ namespace AlghoritmsAndDataStructures.Views.Controls
 			set => SetValue(AverageValueProperty, value);
 		}
 
+		public IEnumerable<int> HighlightIndices
+		{
+			get => (IEnumerable<int>)GetValue(HighlightIndicesProperty);
+			set => SetValue(HighlightIndicesProperty, value);
+		}
+
+		public IEnumerable<int> SpecialIndices
+		{
+			get => (IEnumerable<int>)GetValue(SpecialIndicesProperty);
+			set => SetValue(SpecialIndicesProperty, value);
+		}
+
 		private static void OnDataChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			((HistogramControl)d).Render();
+		}
+
+		private static void OnHighlightOrSpecialChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
 			((HistogramControl)d).Render();
 		}
@@ -58,7 +83,10 @@ namespace AlghoritmsAndDataStructures.Views.Controls
 		private List<double> _allItems;
 		private int _currentIndex;
 		private double _maxValue;
-		private const double Padding = 60;
+		private double _minValue;
+		private bool _hasNegative;
+		private double _zeroY;
+		private const double Padding = 80;
 		private const int MaxDisplayCount = 25;
 
 		public HistogramControl()
@@ -113,11 +141,45 @@ namespace AlghoritmsAndDataStructures.Views.Controls
 				_displayItems = _allItems.ToList();
 			}
 
+			// Определяем min и max
 			_maxValue = _displayItems.Max();
+			_minValue = _displayItems.Min();
+			_hasNegative = _minValue < 0;
+
+			// Если есть отрицательные, считаем максимальный модуль для масштаба
+			double absMax = _hasNegative ? Math.Max(Math.Abs(_minValue), Math.Abs(_maxValue)) : _maxValue;
+			if (absMax == 0) absMax = 1;
+
+			// Для режима Average учитываем AverageValue
 			if (Mode == HistogramMode.Average && AverageValue.HasValue)
-				_maxValue = Math.Max(_maxValue, AverageValue.Value);
-			if (_maxValue == 0) _maxValue = 1;
-			_maxValue *= 1.1;
+			{
+				double avg = AverageValue.Value;
+				if (avg < 0 && avg < _minValue) _minValue = avg;
+				if (avg > 0 && avg > _maxValue) _maxValue = avg;
+				absMax = Math.Max(Math.Abs(_minValue), Math.Abs(_maxValue));
+				if (absMax == 0) absMax = 1;
+			}
+
+			// Рассчитываем масштаб и нулевую линию
+			double scaleFactor = 0;
+			if (_hasNegative)
+				scaleFactor = (height - Padding * 2) / (absMax * 2);
+			else
+				scaleFactor = (height - Padding * 2) / absMax;
+
+			if (double.IsInfinity(scaleFactor) || double.IsNaN(scaleFactor)) scaleFactor = 1;
+
+			_zeroY = _hasNegative ? (height - Padding) - ((-_minValue) * scaleFactor) : height - Padding;
+
+			// Для совместимости со старыми работами: если нет отрицательных, используем старую логику (столбцы от нижнего края)
+			if (!_hasNegative)
+			{
+				_maxValue = _displayItems.Max();
+				if (Mode == HistogramMode.Average && AverageValue.HasValue)
+					_maxValue = Math.Max(_maxValue, AverageValue.Value);
+				if (_maxValue == 0) _maxValue = 1;
+				_maxValue *= 1.1;
+			}
 
 			if (Mode == HistogramMode.Series && _displayItems.Count <= 50)
 			{
@@ -130,6 +192,26 @@ namespace AlghoritmsAndDataStructures.Views.Controls
 				DrawAll();
 				DrawAverageLine();
 			}
+
+			// Рисуем нулевую линию, если есть отрицательные
+			if (_hasNegative)
+				DrawZeroLine();
+		}
+
+		private void DrawZeroLine()
+		{
+			var canvas = DrawingCanvas;
+			Line zeroLine = new Line
+			{
+				X1 = Padding,
+				Y1 = _zeroY,
+				X2 = canvas.ActualWidth - Padding,
+				Y2 = _zeroY,
+				Stroke = new SolidColorBrush(Colors.Gray),
+				StrokeThickness = 1,
+				StrokeDashArray = new DoubleCollection { 3, 3 }
+			};
+			canvas.Children.Add(zeroLine);
 		}
 
 		private void AnimationTimer_Tick(object sender, EventArgs e)
@@ -161,43 +243,86 @@ namespace AlghoritmsAndDataStructures.Views.Controls
 
 			double colWidth = width / _displayItems.Count;
 			double left = Padding + index * colWidth;
-			double barHeight = (_displayItems[index] / _maxValue) * height;
+			double value = _displayItems[index];
+
+			double barHeight, top;
+			Color barColor = Colors.DodgerBlue;
+
+			if (_hasNegative)
+			{
+				double absMax = Math.Max(Math.Abs(_minValue), Math.Abs(_maxValue));
+				if (absMax == 0) absMax = 1;
+				double scale = (height) / (absMax * 2);
+				barHeight = Math.Abs(value) * scale;
+				if (value >= 0)
+				{
+					top = _zeroY - barHeight;
+					barColor = Colors.DodgerBlue;
+				}
+				else
+				{
+					top = _zeroY;
+					barColor = Colors.Orange; // отрицательные — оранжевые
+				}
+			}
+			else
+			{
+				barHeight = (value / _maxValue) * height;
+				top = canvas.ActualHeight - Padding - barHeight;
+				barColor = Colors.DodgerBlue;
+			}
+
+			// Корректировка минимальной высоты для видимости
+			if (barHeight < 1) barHeight = 1;
 
 			// Столбец
 			Rectangle rect = new Rectangle
 			{
 				Width = Math.Max(colWidth * 0.8, 2),
-				Height = Math.Max(barHeight, 1),
-				Fill = new SolidColorBrush(Colors.DodgerBlue),
+				Height = barHeight,
+				Fill = new SolidColorBrush(barColor),
 				Stroke = new SolidColorBrush(Colors.White),
 				StrokeThickness = 1
 			};
+
+			// Подсветка нечётных позиций
+			if (HighlightIndices != null && HighlightIndices.Contains(index))
+			{
+				rect.Fill = new SolidColorBrush(Colors.Gold);
+			}
+
+			// Особый маркер для специальных индексов
+			if (SpecialIndices != null && SpecialIndices.Contains(index))
+			{
+				rect.Stroke = new SolidColorBrush(Colors.Red);
+				rect.StrokeThickness = 3;
+			}
+
 			Canvas.SetLeft(rect, left + colWidth * 0.1);
-			Canvas.SetTop(rect, canvas.ActualHeight - Padding - barHeight);
+			Canvas.SetTop(rect, top);
 			canvas.Children.Add(rect);
 
-			// Вертикальная подпись снизу — всегда для выборки (до 30 элементов)
-			if (Mode == HistogramMode.Series)
+			// Подписи значений (вертикальные, снизу для положительных, сверху для отрицательных)
+			if (Mode == HistogramMode.Series && _displayItems.Count <= 25 && colWidth > 20)
 			{
-				// Показываем подписи, если отображаемых элементов не более 30
-				// (это всегда верно после прореживания, т.к. MaxDisplayCount=25)
-				bool showLabel = _displayItems.Count <= 30;
-
-				if (showLabel)
+				TextBlock tb = new TextBlock
 				{
-					TextBlock tb = new TextBlock
-					{
-						Text = _displayItems[index].ToString("F2"),
-						Foreground = new SolidColorBrush(Colors.LightGray),
-						FontSize = 12,
-						FontWeight = FontWeights.Bold,
-						HorizontalAlignment = HorizontalAlignment.Center,
-						RenderTransform = new RotateTransform(-90)
-					};
-					Canvas.SetLeft(tb, left + colWidth * 0.5 - 14);
-					Canvas.SetTop(tb, canvas.ActualHeight - Padding + 28);
-					canvas.Children.Add(tb);
-				}
+					Text = value.ToString("F2"),
+					Foreground = new SolidColorBrush(Colors.LightGray),
+					FontSize = 12,
+					FontWeight = FontWeights.Bold,
+					HorizontalAlignment = HorizontalAlignment.Center,
+					RenderTransform = new RotateTransform(-90)
+				};
+				double labelX = left + colWidth * 0.5 - 5;
+				double labelY;
+				if (_hasNegative && value < 0)
+					labelY = top - 20; // над столбцом
+				else
+					labelY = canvas.ActualHeight - Padding + 25; // под столбцом
+				Canvas.SetLeft(tb, left + colWidth * 0.5 - 12);
+				Canvas.SetTop(tb, labelY);
+				canvas.Children.Add(tb);
 			}
 		}
 
@@ -209,7 +334,21 @@ namespace AlghoritmsAndDataStructures.Views.Controls
 			double height = canvas.ActualHeight - Padding * 2;
 			if (width <= 0 || height <= 0) return;
 
-			double yPos = canvas.ActualHeight - Padding - (AverageValue.Value / _maxValue) * height;
+			double yPos;
+			double avg = AverageValue.Value;
+			if (_hasNegative)
+			{
+				double absMax = Math.Max(Math.Abs(_minValue), Math.Abs(_maxValue));
+				if (absMax == 0) absMax = 1;
+				double scale = height / (absMax * 2);
+				yPos = _zeroY - avg * scale;
+			}
+			else
+			{
+				if (_maxValue == 0) _maxValue = 1;
+				yPos = canvas.ActualHeight - Padding - (avg / _maxValue) * height;
+			}
+
 			if (yPos < 0) yPos = 0;
 			if (yPos > canvas.ActualHeight - Padding) yPos = canvas.ActualHeight - Padding;
 

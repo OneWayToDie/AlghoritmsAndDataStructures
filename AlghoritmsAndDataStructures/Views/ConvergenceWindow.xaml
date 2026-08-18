@@ -1,0 +1,139 @@
+﻿<Window x:Class="AlghoritmsAndDataStructures.Views.ConvergenceWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        Title="Сходимость ряда" Height="500" Width="700"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="CanResizeWithGrip"
+        Background="Transparent"
+        MouseDown="Window_MouseDown">
+
+    <Window.Resources>
+        <Style x:Key="CaptionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource CaptionForeground}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#3A3A5A"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource ButtonBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ButtonForeground}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="14,8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="5,5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource ButtonHoverBackground}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource ButtonPressedBackground}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Border Background="{DynamicResource MainBackground}"
+            BorderBrush="{DynamicResource WindowBorderBrush}"
+            BorderThickness="{DynamicResource WindowBorderThickness}"
+            CornerRadius="8">
+        <Border.Effect>
+            <DropShadowEffect Color="Black" Opacity="0.3" BlurRadius="15" ShadowDepth="0"/>
+        </Border.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Заголовок -->
+            <Border Grid.Row="0"
+                    Background="{DynamicResource CaptionBackground}"
+                    MouseLeftButtonDown="CaptionBorder_MouseLeftButtonDown">
+                <Grid>
+                    <TextBlock Text="Сходимость ряда e^(-x)" FontSize="20" FontWeight="Bold"
+                               Foreground="{DynamicResource CaptionForeground}"
+                               VerticalAlignment="Center" HorizontalAlignment="Left"
+                               Margin="20,0,0,0"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0">
+                        <Button Style="{StaticResource CaptionButtonStyle}" Click="MinimizeButton_Click">
+                            <TextBlock Text="─" FontSize="24"/>
+                        </Button>
+                        <Button Style="{StaticResource CaptionButtonStyle}" Click="MaximizeButton_Click">
+                            <TextBlock Text="☐" FontSize="22"/>
+                        </Button>
+                        <Button Style="{StaticResource CaptionButtonStyle}" Click="CloseButton_Click">
+                            <TextBlock Text="✕" FontSize="20"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- График -->
+            <oxy:PlotView Grid.Row="1" x:Name="PlotView" Margin="20"/>
+
+            <!-- Информационная панель -->
+            <Border Grid.Row="2" Background="{DynamicResource CaptionBackground}" Padding="15,8">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left">
+                        <TextBlock Text="Точное значение: " Foreground="{DynamicResource MainTextForeground}" FontWeight="Bold"/>
+                        <TextBlock x:Name="ExactValueText" Foreground="{DynamicResource ResultForeground}" FontWeight="Bold" FontSize="16"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="Сумма: " Foreground="{DynamicResource MainTextForeground}" FontWeight="Bold"/>
+                        <TextBlock x:Name="SumValueText" Foreground="{DynamicResource ResultForeground}" FontWeight="Bold" FontSize="16"/>
+                        <TextBlock Text="  (N = " Foreground="{DynamicResource MainTextForeground}" FontWeight="Bold"/>
+                        <TextBlock x:Name="TermsText" Foreground="{DynamicResource ResultForeground}" FontWeight="Bold" FontSize="16"/>
+                        <TextBlock Text=")" Foreground="{DynamicResource MainTextForeground}" FontWeight="Bold"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <TextBlock Text="Погрешность: " Foreground="{DynamicResource MainTextForeground}" FontWeight="Bold"/>
+                        <TextBlock x:Name="ErrorText" Foreground="{DynamicResource ResultForeground}" FontWeight="Bold" FontSize="16"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</Window>

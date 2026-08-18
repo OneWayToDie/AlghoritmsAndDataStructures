@@ -16,6 +16,13 @@
         <conv:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
         <conv:CountToVisibilityConverter x:Key="CountToVisibilityConverter"/>
 
+        <Style x:Key="CenteredTextBlock" TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="4,0"/>
+        </Style>
+
         <!-- Стиль для кнопок заголовка -->
         <Style x:Key="CaptionButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
@@ -539,15 +546,254 @@
                    Foreground="{DynamicResource ResultForeground}" 
                    FontSize="16" FontWeight="Bold" TextWrapping="Wrap"/>
 
-                <TextBlock Text="Исходный массив:" FontWeight="Bold" 
-                   Foreground="{DynamicResource MainTextForeground}" Margin="0,10,0,5"/>
-                <TextBlock Text="{Binding OriginalArrayDisplay}" 
-                   Foreground="{DynamicResource MainTextForeground}" FontFamily="Consolas" FontSize="14"/>
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                    <TextBlock Text="Исходный массив: " FontWeight="Bold" Foreground="{DynamicResource MainTextForeground}" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding OriginalArrayDisplay}" 
+                       Foreground="{DynamicResource MainTextForeground}" FontFamily="Consolas" FontSize="14" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                    <TextBlock Text="Изменённый массив: " FontWeight="Bold" Foreground="{DynamicResource MainTextForeground}" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding ModifiedArrayDisplay}" 
+                       Foreground="{DynamicResource MainTextForeground}" FontFamily="Consolas" FontSize="14" VerticalAlignment="Center"/>
+                </StackPanel>
 
-                <TextBlock Text="Изменённый массив:" FontWeight="Bold" 
-                   Foreground="{DynamicResource MainTextForeground}" Margin="0,10,0,5"/>
-                <TextBlock Text="{Binding ModifiedArrayDisplay}" 
-                   Foreground="{DynamicResource MainTextForeground}" FontFamily="Consolas" FontSize="14"/>
+                <!-- Гистограмма -->
+                <Separator Margin="0,15,0,15" Background="{DynamicResource TileBorderBrush}"/>
+                <TextBlock Text="Визуализация:" FontWeight="Bold" 
+                   Foreground="{DynamicResource MainTextForeground}" Margin="0,0,0,5"/>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <Button Content="Исходный массив" Command="{Binding SwitchDisplayModeCommand}" CommandParameter="Original"
+                    Style="{StaticResource ComputeButtonStyle}" Margin="0,0,10,0"/>
+                    <Button Content="Изменённый массив" Command="{Binding SwitchDisplayModeCommand}" CommandParameter="Modified"
+                    Style="{StaticResource ComputeButtonStyle}" Margin="0,0,0,0"/>
+                </StackPanel>
+
+                <controls:HistogramControl Data="{Binding CurrentItems}" 
+                                   HighlightIndices="{Binding HighlightIndices}"
+                                   SpecialIndices="{Binding SpecialIndices}"
+                                   Height="250" Width="500"/>
+
+                <!-- Легенда -->
+                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                    <Rectangle Width="20" Height="10" Fill="DodgerBlue" Margin="5"/>
+                    <TextBlock Text="Обычные" Foreground="{DynamicResource MainTextForeground}" Margin="5,0,15,0"/>
+                    <Rectangle Width="20" Height="10" Fill="Gold" Margin="5"/>
+                    <TextBlock Text="Нечётные позиции" Foreground="{DynamicResource MainTextForeground}" Margin="5,0,15,0"/>
+                    <Rectangle Width="20" Height="10" Fill="Transparent" Stroke="Red" StrokeThickness="2" Margin="5"/>
+                    <TextBlock Text="Кратные 3" Foreground="{DynamicResource MainTextForeground}" Margin="5,0,0,0"/>
+                </StackPanel>
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- ============================================================ -->
+        <!-- DataTemplate для задачи "Разложение e^(-x) в ряд" (6-я работа) -->
+        <!-- ============================================================ -->
+        <DataTemplate DataType="{x:Type tasks:SeriesTaskViewModel}">
+            <StackPanel Margin="10">
+                <TextBlock Text="Введите параметры (или нажмите 'Сгенерировать'):" FontWeight="Bold" 
+                   Foreground="{DynamicResource MainTextForeground}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Content="A =" Foreground="{DynamicResource MainTextForeground}"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding AStr, UpdateSourceTrigger=PropertyChanged}" Width="80"/>
+                    <Label Grid.Row="0" Grid.Column="2" Content="B =" Foreground="{DynamicResource MainTextForeground}" Margin="15,0,0,0"/>
+                    <TextBox Grid.Row="0" Grid.Column="3" Text="{Binding BStr, UpdateSourceTrigger=PropertyChanged}" Width="80"/>
+
+                    <Label Grid.Row="1" Grid.Column="0" Content="dx =" Foreground="{DynamicResource MainTextForeground}"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding DxStr, UpdateSourceTrigger=PropertyChanged}" Width="80"/>
+                    <Label Grid.Row="1" Grid.Column="2" Content="eps =" Foreground="{DynamicResource MainTextForeground}" Margin="15,0,0,0"/>
+                    <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding EpsStr, UpdateSourceTrigger=PropertyChanged}" Width="80"/>
+                </Grid>
+
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Сгенерировать" 
+                            Command="{Binding GenerateCommand}"
+                            Style="{StaticResource ComputeButtonStyle}"
+                            Margin="0,10,10,10"/>
+                    <Button Content="Вычислить" 
+                            Command="{Binding ComputeCommand}"
+                            Style="{StaticResource ComputeButtonStyle}"
+                            Margin="0,10,10,10"/>
+                    <Button Content="Ход решения" 
+                            Command="{Binding ShowSolutionCommand}"
+                            Style="{StaticResource ComputeButtonStyle}"
+                            Margin="0,10,10,10"/>
+                    <Button Content="История" 
+                            Command="{Binding ShowHistoryCommand}"
+                            Style="{StaticResource ComputeButtonStyle}"
+                            Margin="0,10,10,10"/>
+                    <Button Content="Сходимость" 
+                            Command="{Binding ShowConvergenceCommand}"
+                            Style="{StaticResource ComputeButtonStyle}"
+                            Margin="0,10,10,10"/>
+                </StackPanel>
+
+                <TextBlock Text="{Binding ResultMessage}" 
+                   Foreground="{DynamicResource ResultForeground}" 
+                   FontSize="14" FontWeight="Bold" Margin="0,10,0,0"/>
+
+                <!-- Таблица (оставляем как есть) -->
+                <DataGrid ItemsSource="{Binding Results}" 
+                          AutoGenerateColumns="False"
+                          Background="{DynamicResource TileBackground}"
+                          BorderBrush="{DynamicResource TileBorderBrush}"
+                          BorderThickness="1"
+                          Margin="0,10,0,0"
+                          MaxHeight="300"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                          GridLinesVisibility="Vertical"
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False"
+                          CanUserResizeRows="False"
+                          IsReadOnly="True"
+                          HorizontalAlignment="Stretch"
+                          ColumnHeaderHeight="30">
+                    <DataGrid.Resources>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Foreground" Value="{DynamicResource MainTextForeground}"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="BorderBrush" Value="{DynamicResource TileBorderBrush}"/>
+                            <Setter Property="BorderThickness" Value="0,0,1,0"/>
+                            <Setter Property="VerticalAlignment" Value="Stretch"/>
+                            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                            <Setter Property="Padding" Value="5,2"/>
+                        </Style>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Foreground" Value="{DynamicResource MainTextForeground}"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="Background" Value="{DynamicResource CaptionBackground}"/>
+                            <Setter Property="BorderBrush" Value="{DynamicResource TileBorderBrush}"/>
+                            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                            <Setter Property="Height" Value="30"/>
+                            <Setter Property="Padding" Value="5,2"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        </Style>
+                        <Style TargetType="DataGridRow">
+                            <Setter Property="Background" Value="{DynamicResource TileBackground}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource MainTextForeground}"/>
+                        </Style>
+                    </DataGrid.Resources>
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="X" Width="70">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding X, StringFormat=F3}" 
+                                       TextAlignment="Center" 
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Stretch"
+                                       Foreground="{DynamicResource MainTextForeground}"/>
+                                </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                    <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="X" 
+                                       TextAlignment="Center" 
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Stretch"
+                                       FontWeight="Bold"
+                                       Foreground="{DynamicResource MainTextForeground}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Сумма ряда" Width="110">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Sum, StringFormat=F6}" 
+                                       TextAlignment="Center" 
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Stretch"
+                                       Foreground="{DynamicResource MainTextForeground}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="Сумма ряда" 
+                                       TextAlignment="Center" 
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Stretch"
+                                       FontWeight="Bold"
+                                       Foreground="{DynamicResource MainTextForeground}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Членов" Width="70">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Terms}" 
+                                       TextAlignment="Center" 
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Stretch"
+                                       Foreground="{DynamicResource MainTextForeground}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="Членов" 
+                                       TextAlignment="Center" 
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Stretch"
+                                       FontWeight="Bold"
+                                       Foreground="{DynamicResource MainTextForeground}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Точное значение" Width="110">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Exact, StringFormat=F6}" 
+                                       TextAlignment="Center" 
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Stretch"
+                                       Foreground="{DynamicResource MainTextForeground}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="Точное значение" 
+                                       TextAlignment="Center" 
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Stretch"
+                                       FontWeight="Bold"
+                                       Foreground="{DynamicResource MainTextForeground}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Погрешность" Width="130">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Error, StringFormat=E6}" 
+                                       TextAlignment="Center" 
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Stretch"
+                                       Foreground="{DynamicResource MainTextForeground}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="Погрешность" 
+                                       TextAlignment="Center" 
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Stretch"
+                                       FontWeight="Bold"
+                                       Foreground="{DynamicResource MainTextForeground}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
             </StackPanel>
         </DataTemplate>
 
