@@ -640,6 +640,7 @@
                             Margin="0,10,10,10"/>
                 </StackPanel>
 
+                
                 <TextBlock Text="{Binding ResultMessage}" 
                    Foreground="{DynamicResource ResultForeground}" 
                    FontSize="14" FontWeight="Bold" Margin="0,10,0,0"/>
