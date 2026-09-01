@@ -107,7 +107,7 @@ namespace AlghoritmsAndDataStructures.Views.Controls
 			if (Data == null) return;
 			_allItems = Data.Cast<object>().Select(x => Convert.ToDouble(x)).ToList();
 			if (_allItems.Count == 0) return;
-
+			
 			double width = DrawingCanvas.ActualWidth;
 			double height = DrawingCanvas.ActualHeight;
 			if (width <= 0 || height <= 0)
