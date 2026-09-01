@@ -14,7 +14,7 @@ namespace AlghoritmsAndDataStructures.Core.Calculators
 							   .Select(x => x.Value)
 							   .ToList();
 
-			var threeDigit = numbers.Where(x => x >= 100 && x <= 999).ToList();
+			var threeDigit = numbers.Where(x => Math.Abs(x) >= 100 && Math.Abs(x) <= 999).ToList();
 
 			if (threeDigit.Count == 0)
 				return (threeDigit, null, "Трёхзначных чисел нет в последовательности.");

@@ -146,11 +146,18 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 				System.Windows.MessageBox.Show("Сначала выполните вычисление.", "Информация", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
 				return;
 			}
-			var first = Results.FirstOrDefault();
-			if (first == null) return;
-			var steps = $"Для x = {first.X:F3}, точное значение e^(-x) = {Math.Exp(-first.X):F6}\n" +
-						$"Сумма ряда: {first.Sum:F6}, членов: {first.Terms}, погрешность: {first.Error:F8}";
-			var window = new SolutionWindow(steps);
+
+			var sb = new System.Text.StringBuilder();
+			sb.AppendLine($"Точность eps = {double.Parse(EpsStr):E2}\n");
+
+			foreach (var r in Results)
+			{
+				double exact = Math.Exp(-r.X);
+				sb.AppendLine(string.Format("x = {0:F3}:  сумма = {1:F6},  членов = {2},  точное = {3:F6},  погрешность = {4:E2}",
+					r.X, r.Sum, r.Terms, exact, r.Error));
+			}
+
+			var window = new SolutionWindow(sb.ToString());
 			window.ShowDialog();
 		}
 

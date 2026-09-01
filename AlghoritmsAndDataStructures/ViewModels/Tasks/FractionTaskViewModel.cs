@@ -71,8 +71,8 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			CalculationSteps =
 				$"Формулы:\n" +
 				$"{M} / {N} = {integerPart} целых, остаток {remainder}\n" +
-				$"Младшая цифра целой части: {integerPart} % 10 = {IntegerLastDigit}\n" +
-				$"Старшая цифра дробной части: ({remainder} * 10) / {N} = {FractionFirstDigit}";
+				$"Старшая цифра дробной части: ({remainder} * 10) / {N} = {FractionFirstDigit}\n" +
+				$"Младшая цифра целой части: {integerPart} % 10 = {IntegerLastDigit}";
 
 			string historyEntry = $"M={M}, N={N} → целая(мл.):{IntegerLastDigit}, дробная(ст.):{FractionFirstDigit}";
 			AddHistoryEntry(historyEntry);
