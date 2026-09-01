@@ -819,6 +819,10 @@
                     Command="{Binding ShowSolutionCommand}"
                     Style="{StaticResource ComputeButtonStyle}"
                     Margin="5,10,5,10"/>
+                    <Button Content="Визуализация" 
+                    Command="{Binding ShowVisualizationCommand}"
+                    Style="{StaticResource ComputeButtonStyle}"
+                    Margin="5,10,5,10"/>
                     <Button Content="История" 
                     Command="{Binding ShowHistoryCommand}"
                     Style="{StaticResource ComputeButtonStyle}"

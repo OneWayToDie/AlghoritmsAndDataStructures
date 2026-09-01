@@ -243,6 +243,9 @@
     <Compile Include="Views\GraphWindow.xaml.cs">
       <DependentUpon>GraphWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\QuickSortVisualizationWindow.xaml.cs">
+      <DependentUpon>QuickSortVisualizationWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\HistoryWindow.xaml.cs">
       <DependentUpon>HistoryWindow.xaml</DependentUpon>
     </Compile>
@@ -285,6 +288,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GraphWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\QuickSortVisualizationWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

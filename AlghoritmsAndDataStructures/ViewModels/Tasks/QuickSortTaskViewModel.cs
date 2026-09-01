@@ -79,6 +79,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 		public ICommand ShowHistoryCommand { get; }
 		public ICommand GenerateArrayCommand { get; }
 		public ICommand SwitchDisplayModeCommand { get; }
+		public ICommand ShowVisualizationCommand { get; }
 
 		public override string Title => "Задача: быстрая сортировка массива";
 		public override string HistoryKey => "QuickSortTask";
@@ -89,6 +90,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			ShowHistoryCommand = new RelayCommand(ExecuteShowHistory);
 			GenerateArrayCommand = new RelayCommand(ExecuteGenerateArray);
 			SwitchDisplayModeCommand = new RelayCommand(ExecuteSwitchDisplayMode);
+			ShowVisualizationCommand = new RelayCommand(ExecuteShowVisualization);
 		}
 
 		private void ExecuteGenerateArray(object parameter)
@@ -176,6 +178,17 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			var steps = QuickSortCalculator.GetSortSteps(_originalArray, _sortedArray);
 
 			var window = new SolutionWindow(steps);
+			window.ShowDialog();
+		}
+
+		private void ExecuteShowVisualization(object parameter)
+		{
+			if (OriginalItems.Count == 0)
+			{
+				ExecuteGenerateArray(null);
+			}
+
+			var window = new QuickSortVisualizationWindow(_originalArray);
 			window.ShowDialog();
 		}
 
