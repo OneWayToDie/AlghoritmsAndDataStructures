@@ -202,6 +202,8 @@
     <Compile Include="Core\Calculators\GraphCalculator.cs" />
     <Compile Include="Core\Calculators\SeriesCalculator.cs" />
     <Compile Include="Core\Calculators\SeriesSumCalculator.cs" />
+    <Compile Include="Core\Calculators\QuickSortCalculator.cs" />
+    <Compile Include="Core\Calculators\NeighborhoodAverageCalculator.cs" />
     <Compile Include="Helpers\HistoryStorage.cs" />
     <Compile Include="Helpers\TooltipService.cs" />
     <Compile Include="Models\SeriesResult.cs" />
@@ -218,6 +220,10 @@
     <Compile Include="ViewModels\Tasks\Work4ViewModel.cs" />
     <Compile Include="ViewModels\Tasks\Work5ViewModel.cs" />
     <Compile Include="ViewModels\Tasks\Work6ViewModel.cs" />
+    <Compile Include="ViewModels\Tasks\Work7ViewModel.cs" />
+    <Compile Include="ViewModels\Tasks\Work8ViewModel.cs" />
+    <Compile Include="ViewModels\Tasks\QuickSortTaskViewModel.cs" />
+    <Compile Include="ViewModels\Tasks\NeighborhoodAverageTaskViewModel.cs" />
     <Compile Include="ViewModels\Tasks\WorkViewModel.cs" />
     <Compile Include="Views\AreaVisualizationWindow.xaml.cs">
       <DependentUpon>AreaVisualizationWindow.xaml</DependentUpon>

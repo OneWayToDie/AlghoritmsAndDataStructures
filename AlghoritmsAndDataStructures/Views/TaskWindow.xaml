@@ -798,6 +798,135 @@
             </StackPanel>
         </DataTemplate>
 
+        <!-- ============================================================ -->
+        <!-- DataTemplate для задачи "Быстрая сортировка" (7-я работа)    -->
+        <!-- ============================================================ -->
+        <DataTemplate DataType="{x:Type tasks:QuickSortTaskViewModel}">
+            <StackPanel Margin="10">
+                <TextBlock Text="Нажмите «Сгенерировать» для создания массива из 25 случайных чисел:" FontWeight="Bold" 
+                   Foreground="{DynamicResource MainTextForeground}"/>
+
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Сгенерировать массив" 
+                    Command="{Binding GenerateArrayCommand}"
+                    Style="{StaticResource ComputeButtonStyle}"
+                    Margin="0,10,5,10"/>
+                    <Button Content="Выполнить сортировку" 
+                    Command="{Binding ComputeCommand}"
+                    Style="{StaticResource ComputeButtonStyle}"
+                    Margin="5,10,5,10"/>
+                    <Button Content="Ход решения" 
+                    Command="{Binding ShowSolutionCommand}"
+                    Style="{StaticResource ComputeButtonStyle}"
+                    Margin="5,10,5,10"/>
+                    <Button Content="История" 
+                    Command="{Binding ShowHistoryCommand}"
+                    Style="{StaticResource ComputeButtonStyle}"
+                    Margin="5,10,5,10"/>
+                </StackPanel>
+
+                <Separator Margin="0,15,0,15" Background="{DynamicResource TileBorderBrush}"/>
+
+                <TextBlock Text="Результат:" FontWeight="Bold" 
+                   Foreground="{DynamicResource MainTextForeground}" Margin="0,0,0,10"/>
+                <TextBlock Text="{Binding ResultMessage}" 
+                   Foreground="{DynamicResource ResultForeground}" 
+                   FontSize="16" FontWeight="Bold" TextWrapping="Wrap"/>
+
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                    <TextBlock Text="Исходный массив: " FontWeight="Bold" Foreground="{DynamicResource MainTextForeground}" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding OriginalArrayDisplay}" 
+                       Foreground="{DynamicResource MainTextForeground}" FontFamily="Consolas" FontSize="14" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                    <TextBlock Text="Отсортированный: " FontWeight="Bold" Foreground="{DynamicResource MainTextForeground}" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding SortedArrayDisplay}" 
+                       Foreground="{DynamicResource MainTextForeground}" FontFamily="Consolas" FontSize="14" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                </StackPanel>
+
+                <!-- Гистограмма -->
+                <Separator Margin="0,15,0,15" Background="{DynamicResource TileBorderBrush}"/>
+                <TextBlock Text="Визуализация:" FontWeight="Bold" 
+                   Foreground="{DynamicResource MainTextForeground}" Margin="0,0,0,5"/>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <Button Content="Исходный массив" Command="{Binding SwitchDisplayModeCommand}" CommandParameter="Original"
+                    Style="{StaticResource ComputeButtonStyle}" Margin="0,0,10,0"/>
+                    <Button Content="Отсортированный" Command="{Binding SwitchDisplayModeCommand}" CommandParameter="Sorted"
+                    Style="{StaticResource ComputeButtonStyle}" Margin="0,0,0,0"/>
+                </StackPanel>
+
+                <controls:HistogramControl Data="{Binding CurrentItems}" 
+                                   Height="250" Width="500"/>
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- ============================================================ -->
+        <!-- DataTemplate для задачи "Среднее арифм. соседей" (8-я работа) -->
+        <!-- ============================================================ -->
+        <DataTemplate DataType="{x:Type tasks:NeighborhoodAverageTaskViewModel}">
+            <StackPanel Margin="10">
+                <TextBlock Text="Введите целые числа через запятую (или пробел):" FontWeight="Bold" 
+                   Foreground="{DynamicResource MainTextForeground}"/>
+                <TextBox Text="{Binding InputArray, UpdateSourceTrigger=PropertyChanged}" 
+                 Height="40" TextWrapping="Wrap" AcceptsReturn="True" 
+                 VerticalScrollBarVisibility="Auto" HorizontalAlignment="Stretch"/>
+
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Сгенерировать массив" 
+                    Command="{Binding GenerateArrayCommand}"
+                    Style="{StaticResource ComputeButtonStyle}"
+                    Margin="0,10,5,10"/>
+                    <Button Content="Обработать" 
+                    Command="{Binding ComputeCommand}"
+                    Style="{StaticResource ComputeButtonStyle}"
+                    Margin="5,10,5,10"/>
+                    <Button Content="Ход решения" 
+                    Command="{Binding ShowSolutionCommand}"
+                    Style="{StaticResource ComputeButtonStyle}"
+                    Margin="5,10,5,10"/>
+                    <Button Content="История" 
+                    Command="{Binding ShowHistoryCommand}"
+                    Style="{StaticResource ComputeButtonStyle}"
+                    Margin="5,10,5,10"/>
+                </StackPanel>
+
+                <Separator Margin="0,15,0,15" Background="{DynamicResource TileBorderBrush}"/>
+
+                <TextBlock Text="Результат:" FontWeight="Bold" 
+                   Foreground="{DynamicResource MainTextForeground}" Margin="0,0,0,10"/>
+                <TextBlock Text="{Binding ResultMessage}" 
+                   Foreground="{DynamicResource ResultForeground}" 
+                   FontSize="16" FontWeight="Bold" TextWrapping="Wrap"/>
+
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                    <TextBlock Text="Исходный массив: " FontWeight="Bold" Foreground="{DynamicResource MainTextForeground}" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding OriginalArrayDisplay}" 
+                       Foreground="{DynamicResource MainTextForeground}" FontFamily="Consolas" FontSize="14" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                    <TextBlock Text="Результат: " FontWeight="Bold" Foreground="{DynamicResource MainTextForeground}" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding ModifiedArrayDisplay}" 
+                       Foreground="{DynamicResource MainTextForeground}" FontFamily="Consolas" FontSize="14" VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Гистограмма -->
+                <Separator Margin="0,15,0,15" Background="{DynamicResource TileBorderBrush}"/>
+                <TextBlock Text="Визуализация:" FontWeight="Bold" 
+                   Foreground="{DynamicResource MainTextForeground}" Margin="0,0,0,5"/>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <Button Content="Исходный массив" Command="{Binding SwitchDisplayModeCommand}" CommandParameter="Original"
+                    Style="{StaticResource ComputeButtonStyle}" Margin="0,0,10,0"/>
+                    <Button Content="Изменённый массив" Command="{Binding SwitchDisplayModeCommand}" CommandParameter="Modified"
+                    Style="{StaticResource ComputeButtonStyle}" Margin="0,0,0,0"/>
+                </StackPanel>
+
+                <controls:HistogramControl Data="{Binding CurrentItems}" 
+                                   Height="250" Width="500"/>
+            </StackPanel>
+        </DataTemplate>
+
     </Window.Resources>
 
     <Border Background="{DynamicResource MainBackground}"

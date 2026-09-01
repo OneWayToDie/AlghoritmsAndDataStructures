@@ -302,25 +302,35 @@ namespace AlghoritmsAndDataStructures.Views.Controls
 			Canvas.SetTop(rect, top);
 			canvas.Children.Add(rect);
 
-			// Подписи значений (вертикальные, снизу для положительных, сверху для отрицательных)
-			if (Mode == HistogramMode.Series && _displayItems.Count <= 25 && colWidth > 20)
+			// Подписи значений (над/под столбцами, центрированы по столбцу)
+			if (Mode == HistogramMode.Series && _displayItems.Count <= 30 && colWidth > 4)
 			{
+				double fontSize = Math.Min(Math.Max(colWidth * 0.55, 9), 14);
+				double gap = Math.Min(colWidth * 0.3, 8);
+
+				string text = value.ToString("F2");
+				double naturalWidth = text.Length * fontSize * 0.62;
+				double naturalHeight = fontSize * 1.3;
+
 				TextBlock tb = new TextBlock
 				{
-					Text = value.ToString("F2"),
+					Text = text,
 					Foreground = new SolidColorBrush(Colors.LightGray),
-					FontSize = 12,
+					FontSize = fontSize,
 					FontWeight = FontWeights.Bold,
-					HorizontalAlignment = HorizontalAlignment.Center,
+					RenderTransformOrigin = new System.Windows.Point(0.5, 0.5),
 					RenderTransform = new RotateTransform(-90)
 				};
-				double labelX = left + colWidth * 0.5 - 5;
+
+				double barCenterX = left + colWidth * 0.5;
+
 				double labelY;
 				if (_hasNegative && value < 0)
-					labelY = top - 20; // над столбцом
+					labelY = top + barHeight + gap;
 				else
-					labelY = canvas.ActualHeight - Padding + 25; // под столбцом
-				Canvas.SetLeft(tb, left + colWidth * 0.5 - 12);
+					labelY = top - gap - naturalWidth;
+
+				Canvas.SetLeft(tb, barCenterX - naturalWidth / 2);
 				Canvas.SetTop(tb, labelY);
 				canvas.Children.Add(tb);
 			}
