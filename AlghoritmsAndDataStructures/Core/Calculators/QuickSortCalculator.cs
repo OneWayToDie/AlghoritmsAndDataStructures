@@ -42,29 +42,50 @@ namespace AlghoritmsAndDataStructures.Core.Calculators
 
 		public static void SortDescending(int[] arr, int low, int high)
 		{
+			int comparisons = 0;
+			int swaps = 0;
+			SortDescendingCounted(arr, low, high, ref comparisons, ref swaps);
+		}
+
+		public static (int[] sorted, int comparisons, int swaps) SortWithMetrics(int[] arr)
+		{
+			var clone = (int[])arr.Clone();
+			int comparisons = 0;
+			int swaps = 0;
+			SortDescendingCounted(clone, 0, clone.Length - 1, ref comparisons, ref swaps);
+			return (clone, comparisons, swaps);
+		}
+
+		private static void SortDescendingCounted(int[] arr, int low, int high,
+			ref int comparisons, ref int swaps)
+		{
 			if (low < high)
 			{
-				int pivotIndex = Partition(arr, low, high);
-				SortDescending(arr, low, pivotIndex - 1);
-				SortDescending(arr, pivotIndex + 1, high);
+				int pivotIndex = PartitionCounted(arr, low, high, ref comparisons, ref swaps);
+				SortDescendingCounted(arr, low, pivotIndex - 1, ref comparisons, ref swaps);
+				SortDescendingCounted(arr, pivotIndex + 1, high, ref comparisons, ref swaps);
 			}
 		}
 
-		private static int Partition(int[] arr, int low, int high)
+		private static int PartitionCounted(int[] arr, int low, int high,
+			ref int comparisons, ref int swaps)
 		{
 			int pivot = arr[high];
 			int i = low - 1;
 
 			for (int j = low; j < high; j++)
 			{
+				comparisons++;
 				if (arr[j] >= pivot)
 				{
 					i++;
 					Swap(arr, i, j);
+					swaps++;
 				}
 			}
 
 			Swap(arr, i + 1, high);
+			swaps++;
 			return i + 1;
 		}
 
@@ -81,21 +102,27 @@ namespace AlghoritmsAndDataStructures.Core.Calculators
 			steps.Add("Исходный массив: [" + string.Join(", ", original) + "]");
 			steps.Add("Количество элементов: " + original.Length);
 			steps.Add("");
-			stepQuickSort(original.ToArray(), 0, original.Length - 1, steps);
+
+			int comparisons = 0;
+			int swaps = 0;
+			stepQuickSort(original.ToArray(), 0, original.Length - 1, steps, ref comparisons, ref swaps);
+
 			steps.Add("");
 			steps.Add("Результат сортировки (по убыванию): [" + string.Join(", ", sorted) + "]");
+			steps.Add(string.Format("Всего выполнено: {0} сравнений, {1} перестановок.", comparisons, swaps));
 			return string.Join("\n", steps);
 		}
 
-		private static void stepQuickSort(int[] arr, int low, int high, List<string> steps)
+		private static void stepQuickSort(int[] arr, int low, int high, List<string> steps,
+			ref int comparisons, ref int swaps)
 		{
 			if (low < high)
 			{
-				int pivotIndex = Partition(arr, low, high);
+				int pivotIndex = PartitionCounted(arr, low, high, ref comparisons, ref swaps);
 				steps.Add(string.Format("Опорный элемент: arr[{0}] = {1}. После разбиения: [{2}]",
 					pivotIndex, arr[pivotIndex], string.Join(", ", arr)));
-				stepQuickSort(arr, low, pivotIndex - 1, steps);
-				stepQuickSort(arr, pivotIndex + 1, high, steps);
+				stepQuickSort(arr, low, pivotIndex - 1, steps, ref comparisons, ref swaps);
+				stepQuickSort(arr, pivotIndex + 1, high, steps, ref comparisons, ref swaps);
 			}
 		}
 

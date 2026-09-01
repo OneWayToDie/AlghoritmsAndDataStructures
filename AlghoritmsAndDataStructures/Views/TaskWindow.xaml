@@ -837,6 +837,13 @@
                    Foreground="{DynamicResource ResultForeground}" 
                    FontSize="16" FontWeight="Bold" TextWrapping="Wrap"/>
 
+                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                    <TextBlock Text="Сравнений: " FontWeight="Bold" Foreground="{DynamicResource MainTextForeground}" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding ComparisonsCount}" Foreground="{DynamicResource ResultForeground}" FontWeight="Bold" VerticalAlignment="Center"/>
+                    <TextBlock Text="    Перестановок: " FontWeight="Bold" Foreground="{DynamicResource MainTextForeground}" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding SwapsCount}" Foreground="{DynamicResource ResultForeground}" FontWeight="Bold" VerticalAlignment="Center"/>
+                </StackPanel>
+
                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                     <TextBlock Text="Исходный массив: " FontWeight="Bold" Foreground="{DynamicResource MainTextForeground}" VerticalAlignment="Center"/>
                     <TextBlock Text="{Binding OriginalArrayDisplay}" 

@@ -27,6 +27,8 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 		private QuickSortDisplayMode _displayMode = QuickSortDisplayMode.Original;
 		private int[] _originalArray = Array.Empty<int>();
 		private int[] _sortedArray = Array.Empty<int>();
+		private int _comparisonsCount;
+		private int _swapsCount;
 
 		public string ResultMessage
 		{
@@ -75,6 +77,18 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			}
 		}
 
+		public int ComparisonsCount
+		{
+			get => _comparisonsCount;
+			private set { _comparisonsCount = value; OnPropertyChanged(nameof(ComparisonsCount)); }
+		}
+
+		public int SwapsCount
+		{
+			get => _swapsCount;
+			private set { _swapsCount = value; OnPropertyChanged(nameof(SwapsCount)); }
+		}
+
 		public ICommand ShowSolutionCommand { get; }
 		public ICommand ShowHistoryCommand { get; }
 		public ICommand GenerateArrayCommand { get; }
@@ -109,6 +123,9 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			foreach (var item in _sortedArray)
 				SortedItems.Add(item);
 
+			ComparisonsCount = 0;
+			SwapsCount = 0;
+
 			ResultMessage = $"Сгенерировано {OriginalItems.Count} случайных чисел. Нажмите «Вычислить» для сортировки.";
 
 			DisplayMode = QuickSortDisplayMode.Original;
@@ -122,21 +139,23 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 				ExecuteGenerateArray(null);
 			}
 
-			_sortedArray = new int[_originalArray.Length];
-			Array.Copy(_originalArray, _sortedArray, _originalArray.Length);
-			QuickSortCalculator.SortDescending(_sortedArray, 0, _sortedArray.Length - 1);
+			var (sorted, comparisons, swaps) = QuickSortCalculator.SortWithMetrics(_originalArray);
+			_sortedArray = sorted;
 
 			SortedArrayDisplay = string.Join("  ", _sortedArray);
 			SortedItems.Clear();
 			foreach (var item in _sortedArray)
 				SortedItems.Add(item);
 
-			ResultMessage = $"Массив из {OriginalItems.Count} элементов отсортирован по убыванию.";
+			ComparisonsCount = comparisons;
+			SwapsCount = swaps;
+
+			ResultMessage = $"Массив из {OriginalItems.Count} элементов отсортирован по убыванию. Сравнений: {comparisons}, перестановок: {swaps}.";
 
 			DisplayMode = QuickSortDisplayMode.Sorted;
 			UpdateCurrentItems();
 
-			AddHistoryEntry($"Исходный: {OriginalArrayDisplay} → Отсортированный: {SortedArrayDisplay}");
+			AddHistoryEntry($"Исходный: {OriginalArrayDisplay} → Отсортированный: {SortedArrayDisplay}; сравнений: {comparisons}, перестановок: {swaps}");
 		}
 
 		private void UpdateCurrentItems()
