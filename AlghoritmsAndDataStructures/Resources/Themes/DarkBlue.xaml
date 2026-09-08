@@ -1,0 +1,31 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Основные цвета: тёмный графит, синие акценты -->
+    <SolidColorBrush x:Key="MainBackground" Color="#161A24"/>
+    <SolidColorBrush x:Key="CaptionBackground" Color="#28344F"/>
+    <SolidColorBrush x:Key="FooterBackground" Color="#141824"/>
+
+    <!-- Текст -->
+    <SolidColorBrush x:Key="MainTextForeground" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="CaptionForeground" Color="#8FB6FF"/>
+    <SolidColorBrush x:Key="ResultForeground" Color="#63A4FF"/>
+
+    <!-- Элементы -->
+    <SolidColorBrush x:Key="TileBackground" Color="#222A3A"/>
+    <SolidColorBrush x:Key="TileForeground" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="TileBorderBrush" Color="#3E4A63"/>
+    <SolidColorBrush x:Key="TileHoverBackground" Color="#2A3448"/>
+    <SolidColorBrush x:Key="TilePressedBackground" Color="#1D2535"/>
+
+    <!-- Кнопка "Вычислить" и активная вкладка -->
+    <SolidColorBrush x:Key="ButtonBackground" Color="#3F7BFF"/>
+    <SolidColorBrush x:Key="ButtonForeground" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="ButtonHoverBackground" Color="#5A90FF"/>
+    <SolidColorBrush x:Key="ButtonPressedBackground" Color="#3063D8"/>
+
+    <!-- Рамка окна -->
+    <SolidColorBrush x:Key="WindowBorderBrush" Color="#3F7BFF"/>
+    <Thickness x:Key="WindowBorderThickness">2</Thickness>
+
+    <SolidColorBrush x:Key="FooterForeground" Color="#8A94A6"/>
+</ResourceDictionary>

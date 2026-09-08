@@ -28,6 +28,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 		private ObservableCollection<double> _currentItems = new ObservableCollection<double>();
 		private ArrayDisplayMode _displayMode = ArrayDisplayMode.Original;
 		private IEnumerable<int> _specialIndices = Enumerable.Empty<int>();
+		private int _seed;
 
 		public string InputArray
 		{
@@ -96,9 +97,16 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			private set { _specialIndices = value; OnPropertyChanged(nameof(SpecialIndices)); }
 		}
 
+		public int Seed
+		{
+			get => _seed;
+			private set { _seed = value; OnPropertyChanged(nameof(Seed)); }
+		}
+
 		public ICommand ShowSolutionCommand { get; }
 		public ICommand ShowHistoryCommand { get; }
 		public ICommand GenerateArrayCommand { get; }
+		public ICommand PasteSeedCommand { get; }
 		public ICommand SwitchDisplayModeCommand { get; }
 
 		public override string Title => "Задача: обработка массива (вар. 4)";
@@ -109,13 +117,34 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			ShowSolutionCommand = new RelayCommand(ExecuteShowSolution);
 			ShowHistoryCommand = new RelayCommand(ExecuteShowHistory);
 			GenerateArrayCommand = new RelayCommand(ExecuteGenerateArray);
+			PasteSeedCommand = new RelayCommand(ExecutePasteSeed);
 			SwitchDisplayModeCommand = new RelayCommand(ExecuteSwitchDisplayMode);
 			InputArray = "";
 		}
 
 		private void ExecuteGenerateArray(object parameter)
 		{
-			var rand = new Random();
+			Seed = new Random().Next(1, int.MaxValue);
+			Regenerate(Seed);
+		}
+
+		private void ExecutePasteSeed(object parameter)
+		{
+			string clip = System.Windows.Clipboard.ContainsText() ? System.Windows.Clipboard.GetText().Trim() : "";
+			if (int.TryParse(clip, out int seed) && seed > 0)
+			{
+				Seed = seed;
+				Regenerate(seed);
+				return;
+			}
+			System.Windows.MessageBox.Show(
+				"В буфере обмена нет корректного кода набора. Скопируйте его из истории (кнопка «Скопировать код набора»).",
+				"Информация", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+		}
+
+		private void Regenerate(int seed)
+		{
+			var rand = new Random(seed);
 			var numbers = new int[12];
 			for (int i = 0; i < 12; i++)
 				numbers[i] = rand.Next(-20, 21);
@@ -162,7 +191,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			DisplayMode = ArrayDisplayMode.Original;
 			UpdateCurrentItems();
 
-			AddHistoryEntry($"Исходный: {OriginalArrayDisplay} → Заменённый: {ModifiedArrayDisplay}, Среднее: {average:F2}");
+			AddHistoryEntry($"Исходный: {OriginalArrayDisplay} → Заменённый: {ModifiedArrayDisplay}, Среднее: {average:F2}; код={Seed}");
 		}
 
 		private void UpdateCurrentItems()

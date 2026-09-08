@@ -103,17 +103,6 @@
                                 HorizontalAlignment="Right" 
                                 VerticalAlignment="Center"
                                 Margin="0,0,10,0">
-                        <!-- Кнопки переключения тем -->
-                        <Button Style="{StaticResource CaptionButtonStyle}" 
-                                Command="{Binding SwitchThemeCommand}" CommandParameter="DarkYellow"
-                                ToolTip="Черно-желтая тема">
-                            <Border Width="20" Height="20" Background="#1A1A1A" BorderBrush="#F5C518" BorderThickness="2"/>
-                        </Button>
-                        <Button Style="{StaticResource CaptionButtonStyle}" 
-                                Command="{Binding SwitchThemeCommand}" CommandParameter="LightGreen"
-                                ToolTip="Бело-зеленая тема">
-                            <Border Width="20" Height="20" Background="#F0F0F0" BorderBrush="#2E7D32" BorderThickness="2"/>
-                        </Button>
                         <!-- Настройки -->
                         <Button Style="{StaticResource CaptionButtonStyle}" 
                                 Command="{Binding OpenSettingsCommand}"

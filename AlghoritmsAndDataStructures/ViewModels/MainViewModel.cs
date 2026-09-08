@@ -98,8 +98,8 @@ namespace AlghoritmsAndDataStructures.ViewModels
 
 		private void ExecuteOpenSettings(object parameter)
 		{
-			// Временно показываем сообщение, позже откроем окно настроек
-			MessageBox.Show("Окно настроек будет реализовано позже");
+			var settingsWindow = new SettingsWindow();
+			settingsWindow.ShowDialog();
 		}
 
 		private void ExecuteSwitchTheme(object parameter)
@@ -108,15 +108,7 @@ namespace AlghoritmsAndDataStructures.ViewModels
 			if (string.IsNullOrEmpty(themeName))
 				return;
 
-			var app = Application.Current;
-			var newDict = new ResourceDictionary();
-			newDict.Source = new Uri($"Resources/Themes/{themeName}.xaml", UriKind.Relative);
-
-			app.Resources.MergedDictionaries.Clear();
-			app.Resources.MergedDictionaries.Add(newDict);
-
-			// Обновляем флаг темы
-			App.IsDarkTheme = themeName == "DarkYellow";
+			ThemeManager.Apply(themeName);
 		}
 	}
 }

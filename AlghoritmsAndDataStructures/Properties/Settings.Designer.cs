@@ -26,5 +26,80 @@ namespace AlghoritmsAndDataStructures.Properties
 				return defaultInstance;
 			}
 		}
+
+		[global::System.Configuration.UserScopedSettingAttribute()]
+		[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+		[global::System.Configuration.DefaultSettingValueAttribute("DarkYellow")]
+		public string Theme
+		{
+			get
+			{
+				return ((string)(this["Theme"]));
+			}
+			set
+			{
+				this["Theme"] = value;
+			}
+		}
+
+		[global::System.Configuration.UserScopedSettingAttribute()]
+		[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+		[global::System.Configuration.DefaultSettingValueAttribute("True")]
+		public bool HistoryEnabled
+		{
+			get
+			{
+				return ((bool)(this["HistoryEnabled"]));
+			}
+			set
+			{
+				this["HistoryEnabled"] = value;
+			}
+		}
+
+		[global::System.Configuration.UserScopedSettingAttribute()]
+		[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+		[global::System.Configuration.DefaultSettingValueAttribute("20")]
+		public int HistoryLimit
+		{
+			get
+			{
+				return ((int)(this["HistoryLimit"]));
+			}
+			set
+			{
+				this["HistoryLimit"] = value;
+			}
+		}
+
+		[global::System.Configuration.UserScopedSettingAttribute()]
+		[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+		[global::System.Configuration.DefaultSettingValueAttribute("5000")]
+		public int MaxSeriesPoints
+		{
+			get
+			{
+				return ((int)(this["MaxSeriesPoints"]));
+			}
+			set
+			{
+				this["MaxSeriesPoints"] = value;
+			}
+		}
+
+		[global::System.Configuration.UserScopedSettingAttribute()]
+		[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+		[global::System.Configuration.DefaultSettingValueAttribute("5000")]
+		public int MaxSeriesSumN
+		{
+			get
+			{
+				return ((int)(this["MaxSeriesSumN"]));
+			}
+			set
+			{
+				this["MaxSeriesSumN"] = value;
+			}
+		}
 	}
 }

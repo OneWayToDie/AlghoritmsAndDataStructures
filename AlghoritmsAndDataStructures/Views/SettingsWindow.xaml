@@ -1,0 +1,189 @@
+<Window x:Class="AlghoritmsAndDataStructures.Views.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Настройки" Height="580" Width="520"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="CanResizeWithGrip"
+        Background="Transparent"
+        MouseDown="Window_MouseDown">
+
+    <Window.Resources>
+        <Style x:Key="CaptionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource CaptionForeground}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#3A3A5A"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ComputeButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource ButtonBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ButtonForeground}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource ButtonHoverBackground}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource ButtonPressedBackground}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Border Background="{DynamicResource MainBackground}"
+            BorderBrush="{DynamicResource WindowBorderBrush}"
+            BorderThickness="{DynamicResource WindowBorderThickness}"
+            CornerRadius="8">
+        <Border.Effect>
+            <DropShadowEffect Color="Black" Opacity="0.3" BlurRadius="15" ShadowDepth="0"/>
+        </Border.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Заголовок -->
+            <Border Grid.Row="0"
+                    Background="{DynamicResource CaptionBackground}"
+                    MouseLeftButtonDown="CaptionBorder_MouseLeftButtonDown">
+                <Grid>
+                    <TextBlock Text="Настройки" FontSize="20" FontWeight="Bold"
+                               Foreground="{DynamicResource CaptionForeground}"
+                               VerticalAlignment="Center" HorizontalAlignment="Left"
+                               Margin="20,0,0,0"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0">
+                        <Button Style="{StaticResource CaptionButtonStyle}" Click="MinimizeButton_Click">
+                            <TextBlock Text="─" FontSize="24"/>
+                        </Button>
+                        <Button Style="{StaticResource CaptionButtonStyle}" Click="MaximizeButton_Click">
+                            <TextBlock Text="☐" FontSize="22"/>
+                        </Button>
+                        <Button Style="{StaticResource CaptionButtonStyle}" Click="CloseButton_Click">
+                            <TextBlock Text="✕" FontSize="20"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Содержимое -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="20,10,20,10">
+
+                    <TextBlock Text="Тема интерфейса" FontWeight="Bold" FontSize="16"
+                               Foreground="{DynamicResource MainTextForeground}"/>
+                    <ComboBox Width="260" HorizontalAlignment="Left" Margin="0,8,0,0"
+                              ItemsSource="{Binding Themes}"
+                              DisplayMemberPath="Display"
+                              SelectedValuePath="Value"
+                              SelectedValue="{Binding SelectedTheme, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              Background="White"
+                              Foreground="Black"
+                              BorderBrush="{DynamicResource TileBorderBrush}">
+                        <ComboBox.ItemContainerStyle>
+                            <Style TargetType="ComboBoxItem">
+                                <Setter Property="Foreground" Value="Black"/>
+                            </Style>
+                        </ComboBox.ItemContainerStyle>
+                    </ComboBox>
+                    <TextBlock Text="Изменения применяются сразу после сохранения."
+                               Foreground="{DynamicResource FooterForeground}" FontSize="12"/>
+
+                    <Separator Margin="0,15,0,15" Background="{DynamicResource TileBorderBrush}"/>
+
+                    <TextBlock Text="История вычислений" FontWeight="Bold" FontSize="16"
+                               Foreground="{DynamicResource MainTextForeground}"/>
+                    <CheckBox Content="Вести историю вычислений"
+                              IsChecked="{Binding HistoryEnabled}"
+                              Foreground="{DynamicResource MainTextForeground}"
+                              Margin="0,8,0,0"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                        <TextBlock Text="Лимит записей на задачу (1–200):" 
+                                   Foreground="{DynamicResource MainTextForeground}"
+                                   VerticalAlignment="Center"/>
+                        <TextBox Text="{Binding HistoryLimitStr, UpdateSourceTrigger=PropertyChanged}"
+                                 Width="80" Margin="10,0,0,0"
+                                 Background="{DynamicResource TileBackground}"
+                                 Foreground="{DynamicResource MainTextForeground}"
+                                 BorderBrush="{DynamicResource TileBorderBrush}"/>
+                    </StackPanel>
+                    <Button Content="Очистить всю историю" 
+                            Command="{Binding ClearAllHistoryCommand}"
+                            Style="{StaticResource ComputeButtonStyle}"
+                            HorizontalAlignment="Left" Margin="0,8,0,0"/>
+
+                    <Separator Margin="0,15,0,15" Background="{DynamicResource TileBorderBrush}"/>
+
+                    <TextBlock Text="Лимиты вычислений" FontWeight="Bold" FontSize="16"
+                               Foreground="{DynamicResource MainTextForeground}"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                        <TextBlock Text="Максимум точек в таблице ряда (100–10000):"
+                                   Foreground="{DynamicResource MainTextForeground}"
+                                   VerticalAlignment="Center"/>
+                        <TextBox Text="{Binding MaxSeriesPointsStr, UpdateSourceTrigger=PropertyChanged}"
+                                 Width="100" Margin="10,0,0,0"
+                                 Background="{DynamicResource TileBackground}"
+                                 Foreground="{DynamicResource MainTextForeground}"
+                                 BorderBrush="{DynamicResource TileBorderBrush}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                        <TextBlock Text="Максимум n для суммы ряда (100–100000):"
+                                   Foreground="{DynamicResource MainTextForeground}"
+                                   VerticalAlignment="Center"/>
+                        <TextBox Text="{Binding MaxSeriesSumNStr, UpdateSourceTrigger=PropertyChanged}"
+                                 Width="100" Margin="10,0,0,0"
+                                 Background="{DynamicResource TileBackground}"
+                                 Foreground="{DynamicResource MainTextForeground}"
+                                 BorderBrush="{DynamicResource TileBorderBrush}"/>
+                    </StackPanel>
+                    <TextBlock Text="Значения за пределами диапазонов приводятся к ближайшим границам."
+                               Foreground="{DynamicResource FooterForeground}" FontSize="12"/>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Кнопки -->
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,10">
+                <Button Content="Сохранить" Command="{Binding SaveCommand}"
+                        Style="{StaticResource ComputeButtonStyle}" Width="120"/>
+                <Button Content="Отмена" Command="{Binding CancelCommand}"
+                        Style="{StaticResource ComputeButtonStyle}" Width="120"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

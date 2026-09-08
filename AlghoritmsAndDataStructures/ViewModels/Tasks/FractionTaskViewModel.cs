@@ -13,6 +13,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 		private int _integerLastDigit;
 		private int _fractionFirstDigit;
 		private string _calculationSteps = string.Empty;
+		private int _seed;
 		public override string HistoryKey => "Fraction";
 
 
@@ -47,6 +48,12 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			private set { _calculationSteps = value; OnPropertyChanged(nameof(CalculationSteps)); }
 		}
 
+		public int Seed
+		{
+			get => _seed;
+			private set { _seed = value; OnPropertyChanged(nameof(Seed)); }
+		}
+
 		public override string Title => "Задача 2: Дробь M/N";
 
 		protected override void ExecuteCompute(object parameter)
@@ -74,20 +81,72 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 				$"Старшая цифра дробной части: ({remainder} * 10) / {N} = {FractionFirstDigit}\n" +
 				$"Младшая цифра целой части: {integerPart} % 10 = {IntegerLastDigit}";
 
-			string historyEntry = $"M={M}, N={N} → целая(мл.):{IntegerLastDigit}, дробная(ст.):{FractionFirstDigit}";
+			string historyEntry = $"M={M}, N={N} → целая(мл.):{IntegerLastDigit}, дробная(ст.):{FractionFirstDigit}; код={Seed}";
 			AddHistoryEntry(historyEntry);
 		}
 
+		private void ExecuteGenerate(object parameter)
+		{
+			Seed = new System.Random().Next(1, int.MaxValue);
+			Regenerate(Seed);
+		}
+
+		private void ExecutePasteSeed(object parameter)
+		{
+			string clip = System.Windows.Clipboard.ContainsText() ? System.Windows.Clipboard.GetText().Trim() : "";
+			if (int.TryParse(clip, out int seed) && seed > 0)
+			{
+				Seed = seed;
+				Regenerate(seed);
+				return;
+			}
+			System.Windows.MessageBox.Show(
+				"В буфере обмена нет корректного кода набора. Скопируйте его из истории (кнопка «Скопировать код набора»).",
+				"Информация", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+		}
+
+		private void Regenerate(int seed)
+		{
+			var rand = new System.Random(seed);
+			M = rand.Next(1, 1000);
+			N = rand.Next(1, 100);
+		}
+
 		public ICommand ShowVisualizationCommand { get; }
+		public ICommand ShowSolutionCommand { get; }
+		public ICommand ShowHistoryCommand { get; }
+		public ICommand GenerateCommand { get; }
+		public ICommand PasteSeedCommand { get; }
 
 		public FractionTaskViewModel()
 		{
 			ShowVisualizationCommand = new RelayCommand(ExecuteShowVisualization);
+			ShowSolutionCommand = new RelayCommand(ExecuteShowSolution);
+			ShowHistoryCommand = new RelayCommand(ExecuteShowHistory);
+			GenerateCommand = new RelayCommand(ExecuteGenerate);
+			PasteSeedCommand = new RelayCommand(ExecutePasteSeed);
 		}
 
 		private void ExecuteShowVisualization(object parameter)
 		{
 			var window = new FractionVisualizationWindow(M, N);
+			window.ShowDialog();
+		}
+
+		private void ExecuteShowSolution(object parameter)
+		{
+			if (string.IsNullOrEmpty(CalculationSteps))
+			{
+				System.Windows.MessageBox.Show("Сначала выполните вычисление.", "Информация", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+				return;
+			}
+			var window = new SolutionWindow(CalculationSteps);
+			window.ShowDialog();
+		}
+
+		private void ExecuteShowHistory(object parameter)
+		{
+			var window = new HistoryWindow(this);
 			window.ShowDialog();
 		}
 	}

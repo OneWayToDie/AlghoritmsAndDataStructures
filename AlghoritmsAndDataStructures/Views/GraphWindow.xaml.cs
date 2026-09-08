@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
@@ -398,6 +399,20 @@ namespace AlghoritmsAndDataStructures.Views
 			{
 				MessageBox.Show(string.Format("Ошибка копирования: {0}", ex.Message), "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
+		}
+
+		// ---------------------- СОХРАНЕНИЕ CSV ----------------------
+		private void SaveCsvButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (_allPoints == null || _allPoints.Count == 0) return;
+
+			var headers = new[] { "X", "Y" };
+			var rows = _allPoints.Select(p => new[]
+			{
+				p.X.ToString("F4", System.Globalization.CultureInfo.InvariantCulture),
+				p.Y.ToString("F4", System.Globalization.CultureInfo.InvariantCulture)
+			});
+			Helpers.CsvExporter.Save(headers, rows, string.Format("graph_R{0:F2}_X{1:F2}", _r, _x));
 		}
 
 		// ---------------------- ОБРАБОТЧИКИ ЗАГОЛОВКА ----------------------

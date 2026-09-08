@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using AlghoritmsAndDataStructures.Helpers;
+using AlghoritmsAndDataStructures.Properties;
 
 namespace AlghoritmsAndDataStructures.ViewModels.Base
 {
@@ -9,7 +10,6 @@ namespace AlghoritmsAndDataStructures.ViewModels.Base
 	{
 		private string _resultText = string.Empty;
 		private ObservableCollection<string> _history = new ObservableCollection<string>();
-		private const int MaxHistoryCount = 20;
 
 		public virtual string ResultText
 		{
@@ -54,8 +54,15 @@ namespace AlghoritmsAndDataStructures.ViewModels.Base
 
 		protected void AddHistoryEntry(string entry)
 		{
+			if (!Settings.Default.HistoryEnabled)
+				return;
+
+			int limit = Settings.Default.HistoryLimit;
+			if (limit < 1)
+				limit = 20;
+
 			History.Insert(0, entry);
-			if (History.Count > MaxHistoryCount)
+			if (History.Count > limit)
 				History.RemoveAt(History.Count - 1);
 			HistoryStorage.Save(HistoryKey, new List<string>(History));
 		}

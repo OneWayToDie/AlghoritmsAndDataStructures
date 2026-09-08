@@ -29,6 +29,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 		private int[] _sortedArray = Array.Empty<int>();
 		private int _comparisonsCount;
 		private int _swapsCount;
+		private int _seed;
 
 		public string ResultMessage
 		{
@@ -89,9 +90,16 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			private set { _swapsCount = value; OnPropertyChanged(nameof(SwapsCount)); }
 		}
 
+		public int Seed
+		{
+			get => _seed;
+			private set { _seed = value; OnPropertyChanged(nameof(Seed)); }
+		}
+
 		public ICommand ShowSolutionCommand { get; }
 		public ICommand ShowHistoryCommand { get; }
 		public ICommand GenerateArrayCommand { get; }
+		public ICommand PasteSeedCommand { get; }
 		public ICommand SwitchDisplayModeCommand { get; }
 		public ICommand ShowVisualizationCommand { get; }
 
@@ -103,13 +111,34 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			ShowSolutionCommand = new RelayCommand(ExecuteShowSolution);
 			ShowHistoryCommand = new RelayCommand(ExecuteShowHistory);
 			GenerateArrayCommand = new RelayCommand(ExecuteGenerateArray);
+			PasteSeedCommand = new RelayCommand(ExecutePasteSeed);
 			SwitchDisplayModeCommand = new RelayCommand(ExecuteSwitchDisplayMode);
 			ShowVisualizationCommand = new RelayCommand(ExecuteShowVisualization);
 		}
 
 		private void ExecuteGenerateArray(object parameter)
 		{
-			_originalArray = QuickSortCalculator.GenerateRandomArray(25, -20, 20);
+			Seed = new Random().Next(1, int.MaxValue);
+			Regenerate(Seed);
+		}
+
+		private void ExecutePasteSeed(object parameter)
+		{
+			string clip = System.Windows.Clipboard.ContainsText() ? System.Windows.Clipboard.GetText().Trim() : "";
+			if (int.TryParse(clip, out int seed) && seed > 0)
+			{
+				Seed = seed;
+				Regenerate(seed);
+				return;
+			}
+			System.Windows.MessageBox.Show(
+				"В буфере обмена нет корректного кода набора. Скопируйте его из истории (кнопка «Скопировать код набора»).",
+				"Информация", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+		}
+
+		private void Regenerate(int seed)
+		{
+			_originalArray = QuickSortCalculator.GenerateRandomArray(25, -20, 20, seed);
 			OriginalArrayDisplay = string.Join("  ", _originalArray);
 			OriginalItems.Clear();
 			foreach (var item in _originalArray)
@@ -155,7 +184,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			DisplayMode = QuickSortDisplayMode.Sorted;
 			UpdateCurrentItems();
 
-			AddHistoryEntry($"Исходный: {OriginalArrayDisplay} → Отсортированный: {SortedArrayDisplay}; сравнений: {comparisons}, перестановок: {swaps}");
+			AddHistoryEntry($"Исходный: {OriginalArrayDisplay} → Отсортированный: {SortedArrayDisplay}; сравнений: {comparisons}, перестановок: {swaps}; код={Seed}");
 		}
 
 		private void UpdateCurrentItems()

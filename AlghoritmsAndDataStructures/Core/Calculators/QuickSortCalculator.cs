@@ -40,6 +40,15 @@ namespace AlghoritmsAndDataStructures.Core.Calculators
 			return arr;
 		}
 
+		public static int[] GenerateRandomArray(int count, int min, int max, int seed)
+		{
+			var rand = new Random(seed);
+			var arr = new int[count];
+			for (int i = 0; i < count; i++)
+				arr[i] = rand.Next(min, max + 1);
+			return arr;
+		}
+
 		public static void SortDescending(int[] arr, int low, int high)
 		{
 			int comparisons = 0;

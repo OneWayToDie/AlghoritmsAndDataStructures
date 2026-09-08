@@ -156,6 +156,24 @@ namespace AlghoritmsAndDataStructures.Views
 				Canvas.SetTop(rect, top);
 				SortCanvas.Children.Add(rect);
 
+				// Подсказка и подсветка при наведении
+				rect.Cursor = System.Windows.Input.Cursors.Hand;
+				int barIndex = i;
+				string roleText =
+					i == step.PivotIndex && step.PivotIndex >= 0 ? " — опорный элемент" :
+					i == step.IndexB && step.IndexB >= 0 ? " — сравниваемый (j)" :
+					i == step.IndexA && step.IndexA >= 0 ? " — граница разбиения (i)" : "";
+				rect.MouseEnter += (s, e2) =>
+				{
+					rect.Opacity = 0.85;
+					Helpers.TooltipService.Show($"Индекс {barIndex}: {value}{roleText}", e2.GetPosition(SortCanvas));
+				};
+				rect.MouseLeave += (s, e2) =>
+				{
+					rect.Opacity = 1.0;
+					Helpers.TooltipService.Hide();
+				};
+
 				// Значение (зависит от ширины столбца)
 				if (count <= MaxBarCount && colWidth > 5)
 				{

@@ -4,6 +4,7 @@ using System.Text;
 using System.Windows.Input;
 using AlghoritmsAndDataStructures.Core.Calculators;
 using AlghoritmsAndDataStructures.Helpers;
+using AlghoritmsAndDataStructures.Properties;
 using AlghoritmsAndDataStructures.ViewModels.Base;
 using AlghoritmsAndDataStructures.Views;
 
@@ -53,6 +54,15 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			if (N < 2)
 			{
 				ResultText = "Ошибка: n должно быть больше 1.";
+				Sum = 0;
+				_solutionSteps = "";
+				OnPropertyChanged(nameof(MembersList));
+				return;
+			}
+
+			if (N > Settings.Default.MaxSeriesSumN)
+			{
+				ResultText = $"Ошибка: n слишком велико (максимум {Settings.Default.MaxSeriesSumN}).";
 				Sum = 0;
 				_solutionSteps = "";
 				OnPropertyChanged(nameof(MembersList));

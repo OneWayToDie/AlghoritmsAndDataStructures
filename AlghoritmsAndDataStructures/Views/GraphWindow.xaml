@@ -141,6 +141,7 @@
                 <Button Content="🔄 Обновить" Style="{StaticResource ActionButtonStyle}" Click="UpdateButton_Click" Margin="15,0,0,0"/>
                 <Button Content="💾 Сохранить" Style="{StaticResource ActionButtonStyle}" Click="SaveButton_Click" Margin="10,0,0,0"/>
                 <Button Content="📋 Копировать" Style="{StaticResource ActionButtonStyle}" Click="CopyButton_Click" Margin="10,0,0,0"/>
+                <Button Content="💾 CSV" Style="{StaticResource ActionButtonStyle}" Click="SaveCsvButton_Click" Margin="10,0,0,0"/>
             </StackPanel>
 
             <!-- График -->

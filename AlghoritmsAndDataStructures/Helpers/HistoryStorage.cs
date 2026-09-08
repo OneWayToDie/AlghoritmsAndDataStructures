@@ -31,6 +31,19 @@ namespace AlghoritmsAndDataStructures.Helpers
 			return new List<string>();
 		}
 
+		public static void ClearAll()
+		{
+			try
+			{
+				if (File.Exists(FilePath))
+					File.Delete(FilePath);
+			}
+			catch
+			{
+				// игнорируем ошибки удаления
+			}
+		}
+
 		public static void Save(string key, List<string> history)
 		{
 			try

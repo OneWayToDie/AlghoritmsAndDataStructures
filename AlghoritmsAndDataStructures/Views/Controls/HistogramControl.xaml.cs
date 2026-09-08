@@ -302,6 +302,24 @@ namespace AlghoritmsAndDataStructures.Views.Controls
 			Canvas.SetTop(rect, top);
 			canvas.Children.Add(rect);
 
+			// Подсказка и подсветка при наведении
+			rect.Cursor = System.Windows.Input.Cursors.Hand;
+			string tooltipText = $"Позиция {index}: {value:F2}";
+			if (HighlightIndices != null && HighlightIndices.Contains(index))
+				tooltipText += "\n[Подсвечена]";
+			if (SpecialIndices != null && SpecialIndices.Contains(index))
+				tooltipText += "\n[Особый индекс]";
+			rect.MouseEnter += (s, e2) =>
+			{
+				rect.Opacity = 0.85;
+				Helpers.TooltipService.Show(tooltipText, e2.GetPosition(this));
+			};
+			rect.MouseLeave += (s, e2) =>
+			{
+				rect.Opacity = 1.0;
+				Helpers.TooltipService.Hide();
+			};
+
 			// Подписи значений (над/под столбцами, центрированы по столбцу)
 			if (Mode == HistogramMode.Series && _displayItems.Count <= 30 && colWidth > 4)
 			{

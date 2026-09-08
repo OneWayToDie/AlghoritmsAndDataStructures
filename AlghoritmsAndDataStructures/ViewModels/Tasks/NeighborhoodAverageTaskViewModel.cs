@@ -26,6 +26,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 		private ObservableCollection<double> _modifiedItems = new ObservableCollection<double>();
 		private ObservableCollection<double> _currentItems = new ObservableCollection<double>();
 		private NeighborhoodDisplayMode _displayMode = NeighborhoodDisplayMode.Original;
+		private int _seed;
 
 		public string InputArray
 		{
@@ -80,9 +81,16 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			}
 		}
 
+		public int Seed
+		{
+			get => _seed;
+			private set { _seed = value; OnPropertyChanged(nameof(Seed)); }
+		}
+
 		public ICommand ShowSolutionCommand { get; }
 		public ICommand ShowHistoryCommand { get; }
 		public ICommand GenerateArrayCommand { get; }
+		public ICommand PasteSeedCommand { get; }
 		public ICommand SwitchDisplayModeCommand { get; }
 
 		public override string Title => "Задача: среднее арифметическое соседей";
@@ -93,13 +101,34 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			ShowSolutionCommand = new RelayCommand(ExecuteShowSolution);
 			ShowHistoryCommand = new RelayCommand(ExecuteShowHistory);
 			GenerateArrayCommand = new RelayCommand(ExecuteGenerateArray);
+			PasteSeedCommand = new RelayCommand(ExecutePasteSeed);
 			SwitchDisplayModeCommand = new RelayCommand(ExecuteSwitchDisplayMode);
 			InputArray = "";
 		}
 
 		private void ExecuteGenerateArray(object parameter)
 		{
-			var rand = new Random();
+			Seed = new Random().Next(1, int.MaxValue);
+			Regenerate(Seed);
+		}
+
+		private void ExecutePasteSeed(object parameter)
+		{
+			string clip = System.Windows.Clipboard.ContainsText() ? System.Windows.Clipboard.GetText().Trim() : "";
+			if (int.TryParse(clip, out int seed) && seed > 0)
+			{
+				Seed = seed;
+				Regenerate(seed);
+				return;
+			}
+			System.Windows.MessageBox.Show(
+				"В буфере обмена нет корректного кода набора. Скопируйте его из истории (кнопка «Скопировать код набора»).",
+				"Информация", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+		}
+
+		private void Regenerate(int seed)
+		{
+			var rand = new Random(seed);
 			int count = rand.Next(5, 13);
 			var numbers = new int[count];
 			for (int i = 0; i < count; i++)
@@ -140,7 +169,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			DisplayMode = NeighborhoodDisplayMode.Original;
 			UpdateCurrentItems();
 
-			AddHistoryEntry($"Исходный: {OriginalArrayDisplay} → Результат: {ModifiedArrayDisplay}");
+			AddHistoryEntry($"Исходный: {OriginalArrayDisplay} → Результат: {ModifiedArrayDisplay}; код={Seed}");
 		}
 
 		private void UpdateCurrentItems()
