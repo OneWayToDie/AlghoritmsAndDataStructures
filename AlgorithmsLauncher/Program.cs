@@ -20,14 +20,16 @@ namespace AlgorithmsLauncher
 			{
 				ConsoleUI.Clear();
 				ShowMainMenu();
-				int choice = ConsoleUI.AskChoice(0, 3);
-				switch (choice)
-				{
-					case 1: LauncherHelper.LaunchWpf(); ConsoleUI.Pause(); break;
-					case 2: RunTasksMenu(); break;
-					case 3: ShowAbout(); ConsoleUI.Pause(); break;
-					default: return;
-				}
+			int choice = ConsoleUI.AskChoice(0, 5);
+			switch (choice)
+			{
+				case 1: LauncherHelper.LaunchWpf(); ConsoleUI.Pause(); break;
+				case 2: RunTasksMenu(); break;
+				case 3: Tasks.AutoTestRunner.Run(); break;
+				case 4: Tasks.HistoryViewer.Run(); break;
+				case 5: ShowAbout(); ConsoleUI.Pause(); break;
+				default: return;
+			}
 			}
 		}
 
@@ -36,7 +38,9 @@ namespace AlgorithmsLauncher
 			ConsoleUI.Header("ЛАУНЧЕР «АЛГОРИТМЫ И СТРУКТУРЫ ДАННЫХ»");
 			ConsoleUI.MenuItem(1, "Запустить графическую версию (WPF)");
 			ConsoleUI.MenuItem(2, "Решения задач в консоли");
-			ConsoleUI.MenuItem(3, "О программе");
+			ConsoleUI.MenuItem(3, "Автотесты всех задач");
+			ConsoleUI.MenuItem(4, "История запусков");
+			ConsoleUI.MenuItem(5, "О программе");
 			ConsoleUI.MenuItem(0, "Выход");
 			Console.WriteLine();
 		}

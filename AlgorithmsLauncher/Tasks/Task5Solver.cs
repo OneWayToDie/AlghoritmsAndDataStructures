@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using AlghoritmsAndDataStructures.Core.Calculators;
 
@@ -46,7 +47,9 @@ namespace AlgorithmsLauncher.Tasks
 				arr = ConsoleUI.ReadIntArray("Введите ровно 12 целых чисел:", 12, 12);
 			}
 
+			var sw = Stopwatch.StartNew();
 			(double average, double[] modified) = ArrayProcessor.ProcessArray(arr);
+			sw.Stop();
 
 			Console.WriteLine();
 			ConsoleUI.Step("Исходный массив: " + ArrayText(arr));
@@ -76,6 +79,17 @@ namespace AlgorithmsLauncher.Tasks
 
 			Console.WriteLine();
 			ConsoleUI.Good("Итоговый массив: " + ArrayText(modified));
+			Console.WriteLine();
+			ConsoleUI.PrintBarChart(arr, "Исходный массив");
+			ConsoleUI.PrintBarChart(modified, "Результат");
+			ConsoleUI.Hint("Время вычисления: " + ConsoleUI.FormatTime(sw.Elapsed));
+			HistoryStorage.Save(new HistoryEntry
+			{
+				Timestamp = DateTime.Now, TaskName = "ПР 5 — Массив",
+				InputSummary = "12 элементов",
+				ResultSummary = $"avg={average:0.##}",
+				Elapsed = ConsoleUI.FormatTime(sw.Elapsed)
+			});
 			ConsoleUI.Pause();
 		}
 

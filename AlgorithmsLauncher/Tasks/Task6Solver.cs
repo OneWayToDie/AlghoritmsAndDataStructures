@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using AlghoritmsAndDataStructures.Core.Calculators;
 
 namespace AlgorithmsLauncher.Tasks
@@ -67,6 +68,7 @@ namespace AlgorithmsLauncher.Tasks
 			bool showAll = points <= 20;
 			int skipMarker = 0;
 			ConsoleColor white = ConsoleColor.White;
+			var sw = Stopwatch.StartNew();
 			for (int i = 0; i < points; i++)
 			{
 				double x = a + i * dx;
@@ -84,9 +86,18 @@ namespace AlgorithmsLauncher.Tasks
 					PrintRow(x, sum, terms, white);
 				}
 			}
+			sw.Stop();
 
 			Console.WriteLine();
 			ConsoleUI.Good("Сумма ряда вычислена для всех точек интервала.");
+			ConsoleUI.Hint("Время вычисления: " + ConsoleUI.FormatTime(sw.Elapsed));
+			HistoryStorage.Save(new HistoryEntry
+			{
+				Timestamp = DateTime.Now, TaskName = "ПР 6 — e^(-x)",
+				InputSummary = $"A={a:0.##}, B={b:0.##}",
+				ResultSummary = $"{points} точек",
+				Elapsed = ConsoleUI.FormatTime(sw.Elapsed)
+			});
 			ConsoleUI.Pause();
 		}
 

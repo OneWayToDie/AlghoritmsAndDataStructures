@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using AlghoritmsAndDataStructures.Core.Calculators;
 
 namespace AlgorithmsLauncher.Tasks
@@ -45,7 +46,9 @@ namespace AlgorithmsLauncher.Tasks
 				a = ConsoleUI.ReadDouble("Введите сторону куба a (a > 0):", 0.0001, 1e9).Value;
 			}
 
+			var sw = Stopwatch.StartNew();
 			CubeResult r = CubeCalculator.Compute(a);
+			sw.Stop();
 			if (!r.Success)
 			{
 				ConsoleUI.Error("Некорректный ввод: сторону куба нужно задать положительным числом.");
@@ -59,6 +62,14 @@ namespace AlgorithmsLauncher.Tasks
 			ConsoleUI.Step($"V     = a³        = {a:0.##}³       = {r.Volume:0.###}");
 			Console.WriteLine();
 			ConsoleUI.Good($"Ответ: Sгр = {r.FaceArea:0.###}; Sполн = {r.TotalSurface:0.###}; V = {r.Volume:0.###}.");
+			ConsoleUI.Hint("Время вычисления: " + ConsoleUI.FormatTime(sw.Elapsed));
+			HistoryStorage.Save(new HistoryEntry
+			{
+				Timestamp = DateTime.Now, TaskName = "ПР 1.1 — Куб",
+				InputSummary = $"a = {a:0.##}",
+				ResultSummary = $"Sгр={r.FaceArea:0.##}, V={r.Volume:0.##}",
+				Elapsed = ConsoleUI.FormatTime(sw.Elapsed)
+			});
 			ConsoleUI.Pause();
 		}
 
@@ -88,7 +99,9 @@ namespace AlgorithmsLauncher.Tasks
 				n = ConsoleUI.ReadInt("Введите N (знаменатель, натуральное):", 1, int.MaxValue).Value;
 			}
 
+			var sw = Stopwatch.StartNew();
 			FractionResult res = FractionCalculator.Compute(m, n);
+			sw.Stop();
 			if (!res.Success)
 			{
 				ConsoleUI.Error("Некорректный ввод: знаменатель N должен быть положительным числом.");
@@ -106,6 +119,14 @@ namespace AlgorithmsLauncher.Tasks
 			ConsoleUI.Step($"Старшая цифра дробной части: {remainder}×10 / {n} = {seniorDigit}");
 			Console.WriteLine();
 			ConsoleUI.Good($"Ответ: младшая цифра целой части = {res.IntegerLastDigit}; старшая цифра дробной части = {res.FractionFirstDigit}.");
+			ConsoleUI.Hint("Время вычисления: " + ConsoleUI.FormatTime(sw.Elapsed));
+			HistoryStorage.Save(new HistoryEntry
+			{
+				Timestamp = DateTime.Now, TaskName = "ПР 1.2 — Дробь",
+				InputSummary = $"M={m}, N={n}",
+				ResultSummary = $"целая={res.IntegerLastDigit}, дробная={res.FractionFirstDigit}",
+				Elapsed = ConsoleUI.FormatTime(sw.Elapsed)
+			});
 			ConsoleUI.Pause();
 		}
 	}

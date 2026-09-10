@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using AlghoritmsAndDataStructures.Core.Calculators;
 
@@ -48,13 +49,26 @@ namespace AlgorithmsLauncher.Tasks
 				arr = ConsoleUI.ReadIntArray("Введите целые числа (от 2 до 30):", 2, 30);
 			}
 
+			var sw = Stopwatch.StartNew();
 			double[] result = NeighborhoodAverageCalculator.ComputeAverages(arr);
+			sw.Stop();
 
 			Console.WriteLine();
 			ConsoleUI.Step("Шаги вычисления:");
 			ConsoleUI.Block(NeighborhoodAverageCalculator.GetComputationSteps(arr, result));
 			ConsoleUI.Good("Ответ: массив результатов (округление до сотых): [" +
 				string.Join(", ", result.Select(x => x.ToString("F2")).ToArray()) + "].");
+			Console.WriteLine();
+			ConsoleUI.PrintBarChart(arr, "Исходный массив");
+			ConsoleUI.PrintBarChart(result, "Результат (среднее арифметическое соседей)");
+			ConsoleUI.Hint("Время вычисления: " + ConsoleUI.FormatTime(sw.Elapsed));
+			HistoryStorage.Save(new HistoryEntry
+			{
+				Timestamp = DateTime.Now, TaskName = "ПР 8 — Соседи",
+				InputSummary = $"{arr.Length} элементов",
+				ResultSummary = $"[{string.Join(",", result.Select(x => x.ToString("0.#")).Take(5))}{(result.Length > 5 ? ",..." : "")}]",
+				Elapsed = ConsoleUI.FormatTime(sw.Elapsed)
+			});
 			ConsoleUI.Pause();
 		}
 	}

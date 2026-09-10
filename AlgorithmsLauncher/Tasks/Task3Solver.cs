@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using AlghoritmsAndDataStructures.Core.Calculators;
 
 namespace AlgorithmsLauncher.Tasks
@@ -53,7 +54,9 @@ namespace AlgorithmsLauncher.Tasks
 				y = ConsoleUI.ReadDouble("y точки:", -1e9, 1e9).Value;
 			}
 
+			var sw = Stopwatch.StartNew();
 			bool inside = AreaChecker.Check(x, y, a, b, r, out string message);
+			sw.Stop();
 
 			string tf(bool v) => v ? "истина" : "ложь";
 			bool zoneLeftCond = x <= 0 && y <= 0;
@@ -82,6 +85,14 @@ namespace AlgorithmsLauncher.Tasks
 			ConsoleUI.Step($"  → зона B: {tf(zoneRight)}");
 			Console.WriteLine();
 			ConsoleUI.Good(message);
+			ConsoleUI.Hint("Время вычисления: " + ConsoleUI.FormatTime(sw.Elapsed));
+			HistoryStorage.Save(new HistoryEntry
+			{
+				Timestamp = DateTime.Now, TaskName = "ПР 3 — Область",
+				InputSummary = $"({x:0.##};{y:0.##}), r={r:0.##}",
+				ResultSummary = inside ? "inside" : "outside",
+				Elapsed = ConsoleUI.FormatTime(sw.Elapsed)
+			});
 			ConsoleUI.Pause();
 		}
 	}

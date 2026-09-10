@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using AlghoritmsAndDataStructures.Core.Calculators;
 
@@ -47,7 +48,9 @@ namespace AlgorithmsLauncher.Tasks
 				n = ConsoleUI.ReadInt("Введите n (n >= 2):", 2, 5000).Value;
 			}
 
+			var sw = Stopwatch.StartNew();
 			double total = SeriesSumCalculator.ComputeSum(n);
+			sw.Stop();
 			Console.WriteLine();
 			ConsoleUI.Step("Слагаемые ряда k/(k+1):");
 
@@ -67,6 +70,14 @@ namespace AlgorithmsLauncher.Tasks
 			ConsoleUI.Step($"Сумма {n} слагаемых = {total:0.########}");
 			Console.WriteLine();
 			ConsoleUI.Good($"Ответ: S = {total:0.########}.");
+			ConsoleUI.Hint("Время вычисления: " + ConsoleUI.FormatTime(sw.Elapsed));
+			HistoryStorage.Save(new HistoryEntry
+			{
+				Timestamp = DateTime.Now, TaskName = "ПР 4.1 — Сумма ряда",
+				InputSummary = $"n={n}",
+				ResultSummary = $"S={total:0.######}",
+				Elapsed = ConsoleUI.FormatTime(sw.Elapsed)
+			});
 			ConsoleUI.Pause();
 		}
 
@@ -122,11 +133,21 @@ namespace AlgorithmsLauncher.Tasks
 			}
 
 			ConsoleUI.Step("Трёхзначные числа: " + string.Join(", ", threeDigit));
+			var sw = Stopwatch.StartNew();
 			double average = threeDigit.Average();
+			sw.Stop();
 			string sumExpr = string.Join(" + ", threeDigit);
 			ConsoleUI.Step($"Среднее = ({sumExpr}) / {threeDigit.Count} = {average:0.###}");
 			Console.WriteLine();
 			ConsoleUI.Good($"Ответ: найдено {threeDigit.Count} трёхзначных чисел, среднее арифметическое = {average:0.###}.");
+			ConsoleUI.Hint("Время вычисления: " + ConsoleUI.FormatTime(sw.Elapsed));
+			HistoryStorage.Save(new HistoryEntry
+			{
+				Timestamp = DateTime.Now, TaskName = "ПР 4.2 — Среднее",
+				InputSummary = $"{nums.Count} чисел",
+				ResultSummary = $"{threeDigit.Count} трёхзнач., avg={average:0.##}",
+				Elapsed = ConsoleUI.FormatTime(sw.Elapsed)
+			});
 			ConsoleUI.Pause();
 		}
 	}

@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using AlghoritmsAndDataStructures.Core.Calculators;
 
 namespace AlgorithmsLauncher.Tasks
@@ -50,7 +51,9 @@ namespace AlgorithmsLauncher.Tasks
 				x = ConsoleUI.ReadDouble("Введите X:", -1e9, 1e9).Value;
 			}
 
+			var sw = Stopwatch.StartNew();
 			double? result = GraphCalculator.Compute(x, r, out string errorMessage);
+			sw.Stop();
 			if (result == null)
 			{
 				ConsoleUI.Error(errorMessage);
@@ -75,6 +78,14 @@ namespace AlgorithmsLauncher.Tasks
 			ConsoleUI.Step(branch);
 			Console.WriteLine();
 			ConsoleUI.Good($"Ответ: при X = {x:0.##}, R = {r:0.##} значение функции Y = {y:0.###}.");
+			ConsoleUI.Hint("Время вычисления: " + ConsoleUI.FormatTime(sw.Elapsed));
+			HistoryStorage.Save(new HistoryEntry
+			{
+				Timestamp = DateTime.Now, TaskName = "ПР 2 — Функция",
+				InputSummary = $"x={x:0.##}, R={r:0.##}",
+				ResultSummary = $"y={y:0.###}",
+				Elapsed = ConsoleUI.FormatTime(sw.Elapsed)
+			});
 			ConsoleUI.Pause();
 		}
 	}
