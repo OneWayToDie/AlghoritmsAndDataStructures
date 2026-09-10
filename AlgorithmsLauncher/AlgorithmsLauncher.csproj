@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{907D0FEA-6B8C-496C-B7A3-7502E256E8E9}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>AlgorithmsLauncher</RootNamespace>
+    <AssemblyName>AlgorithmsLauncher</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <!-- Общие с WPF-проектом источники: Core\Calculators (link, не копируются). -->
+  <ItemGroup>
+    <Compile Include="..\AlghoritmsAndDataStructures\Core\Calculators\AreaChecker.cs">
+      <Link>Core\Calculators\AreaChecker.cs</Link>
+    </Compile>
+    <Compile Include="..\AlghoritmsAndDataStructures\Core\Calculators\ArrayProcessor.cs">
+      <Link>Core\Calculators\ArrayProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\AlghoritmsAndDataStructures\Core\Calculators\AverageCalculator.cs">
+      <Link>Core\Calculators\AverageCalculator.cs</Link>
+    </Compile>
+    <Compile Include="..\AlghoritmsAndDataStructures\Core\Calculators\CubeCalculator.cs">
+      <Link>Core\Calculators\CubeCalculator.cs</Link>
+    </Compile>
+    <Compile Include="..\AlghoritmsAndDataStructures\Core\Calculators\FractionCalculator.cs">
+      <Link>Core\Calculators\FractionCalculator.cs</Link>
+    </Compile>
+    <Compile Include="..\AlghoritmsAndDataStructures\Core\Calculators\GraphCalculator.cs">
+      <Link>Core\Calculators\GraphCalculator.cs</Link>
+    </Compile>
+    <Compile Include="..\AlghoritmsAndDataStructures\Core\Calculators\ICoreCalculator.cs">
+      <Link>Core\Calculators\ICoreCalculator.cs</Link>
+    </Compile>
+    <Compile Include="..\AlghoritmsAndDataStructures\Core\Calculators\NeighborhoodAverageCalculator.cs">
+      <Link>Core\Calculators\NeighborhoodAverageCalculator.cs</Link>
+    </Compile>
+    <Compile Include="..\AlghoritmsAndDataStructures\Core\Calculators\QuickSortCalculator.cs">
+      <Link>Core\Calculators\QuickSortCalculator.cs</Link>
+    </Compile>
+    <Compile Include="..\AlghoritmsAndDataStructures\Core\Calculators\SeriesCalculator.cs">
+      <Link>Core\Calculators\SeriesCalculator.cs</Link>
+    </Compile>
+    <Compile Include="..\AlghoritmsAndDataStructures\Core\Calculators\SeriesSumCalculator.cs">
+      <Link>Core\Calculators\SeriesSumCalculator.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ConsoleUI.cs" />
+    <Compile Include="LauncherHelper.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tasks\Task1Solver.cs" />
+    <Compile Include="Tasks\Task2Solver.cs" />
+    <Compile Include="Tasks\Task3Solver.cs" />
+    <Compile Include="Tasks\Task4Solver.cs" />
+    <Compile Include="Tasks\Task5Solver.cs" />
+    <Compile Include="Tasks\Task6Solver.cs" />
+    <Compile Include="Tasks\Task7Solver.cs" />
+    <Compile Include="Tasks\Task8Solver.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
