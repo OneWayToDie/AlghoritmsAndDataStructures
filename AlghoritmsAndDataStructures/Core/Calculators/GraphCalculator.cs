@@ -20,9 +20,9 @@ namespace AlghoritmsAndDataStructures.Core.Calculators
 				errorMessage = "Параметр R должен быть положительным.";
 				return null;
 			}
-			if (r == 5 || r == 8)
+			if (r >= 5)
 			{
-				errorMessage = "Параметр R не может быть равен 5 или 8 (деление на ноль).";
+				errorMessage = "Параметр R должен быть меньше 5 (иначе участки графика не определены корректно).";
 				return null;
 			}
 
@@ -35,7 +35,7 @@ namespace AlghoritmsAndDataStructures.Core.Calculators
 			{
 				// Левая наклонная прямая: от (-5, -3) до (-r, 0)
 				double slope = 3.0 / (5.0 - r);
-				return slope * (x + 5.0) - 3.0;
+				return slope * (x + r);
 			}
 			else if (x <= r)
 			{
@@ -51,13 +51,13 @@ namespace AlghoritmsAndDataStructures.Core.Calculators
 			}
 			else if (x <= 8)
 			{
-				// Правая наклонная прямая: от (r, 0) до (8, -3)
-				double slope = -3.0 / (8.0 - r);
+				// Правая наклонная прямая: от (r, 0) до (8, 3)
+				double slope = 3.0 / (8.0 - r);
 				return slope * (x - r);
 			}
 			else // x > 8
 			{
-				return -3.0;
+				return 3.0;
 			}
 		}
 	}

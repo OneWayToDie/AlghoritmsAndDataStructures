@@ -11,11 +11,11 @@ namespace AlghoritmsAndDataStructures.Core.Calculators
 			if (inputArray.Length != 12)
 				throw new ArgumentException("Массив должен содержать ровно 12 элементов.");
 
-			// Шаг 1: элементы на нечётных позициях (индексы 1, 3, 5, 7, 9, 11)
+			// Шаг 1: элементы на нечётных позициях (индексы 0, 2, 4, 6, 8, 10 — позиции 1, 3, 5, 7, 9, 11)
 			var oddPositions = new List<double>();
 			for (int i = 0; i < inputArray.Length; i++)
 			{
-				if (i % 2 == 1)
+				if (i % 2 == 0)
 					oddPositions.Add(inputArray[i]);
 			}
 

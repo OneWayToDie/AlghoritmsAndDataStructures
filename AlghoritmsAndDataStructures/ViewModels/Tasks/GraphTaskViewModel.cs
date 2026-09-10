@@ -100,7 +100,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			double r;
 			do
 			{
-				r = 0.5 + rand.NextDouble() * 7.5;
+				r = 0.5 + rand.NextDouble() * 4.5;
 			} while (Math.Abs(r - 5.0) < 0.05);
 			R = Math.Round(r, 2);
 			X = Math.Round(rand.Next(-8, 9) + rand.NextDouble(), 2);
@@ -125,8 +125,8 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			{
 				double slope = 3.0 / (5.0 - R);
 				branch = string.Format(
-					"-5 < X = {0:F2} <= -R = {1:F2} → левая наклонная прямая\nY = (3/(5-R))*(X+5) - 3 = {2:F4}*({3:F2}) - 3 = {4:F4}",
-					X, -R, slope, X + 5, result.Value);
+					"-5 < X = {0:F2} <= -R = {1:F2} → левая наклонная прямая\nY = (3/(5-R))*(X+R) = {2:F4}*({3:F2}) = {4:F4}",
+					X, -R, slope, X + R, result.Value);
 			}
 			else if (X <= R)
 			{
@@ -136,9 +136,9 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			}
 			else if (X <= 8)
 			{
-				double slope = -3.0 / (8.0 - R);
+				double slope = 3.0 / (8.0 - R);
 				branch = string.Format(
-					"R = {0:F2} < X = {1:F2} <= 8 → правая наклонная прямая\nY = (-3/(8-R))*(X-R) = {2:F4}*({3:F2}) = {4:F4}",
+					"R = {0:F2} < X = {1:F2} <= 8 → правая наклонная прямая\nY = (3/(8-R))*(X-R) = {2:F4}*({3:F2}) = {4:F4}",
 					R, X, slope, X - R, result.Value);
 			}
 			else
@@ -149,7 +149,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			var steps =
 				"Вычисление функции по графику\n\n" +
 				string.Format("Входные данные: X = {0:F2}, R = {1:F2}\n", X, R) +
-				string.Format("Проверка: R = {0:F2} > 0, R != 5, R != 8 — допустимо.\n\n", R) +
+				string.Format("Проверка: R = {0:F2} > 0, R < 5 — допустимо.\n\n", R) +
 				"Выбранная ветка:\n" + branch + "\n\n" +
 				string.Format("Результат: Y = {0:F4}", result.Value);
 

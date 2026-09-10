@@ -89,7 +89,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			}
 		}
 
-		public IEnumerable<int> HighlightIndices => new[] { 1, 3, 5, 7, 9, 11 };
+		public IEnumerable<int> HighlightIndices => new[] { 0, 2, 4, 6, 8, 10 };
 
 		public IEnumerable<int> SpecialIndices
 		{
@@ -230,11 +230,11 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 				return;
 			}
 
-			var oddValues = OriginalItems.Where((x, i) => i % 2 == 1).Select(x => x.ToString());
+			var oddValues = OriginalItems.Where((x, i) => i % 2 == 0).Select(x => x.ToString());
 			var modifiedDisplay = string.Join("  ", ModifiedItems.Select(x => x.ToString("F2")));
 
 			var steps = $"Исходный массив: {OriginalArrayDisplay}\n\n" +
-						$"Позиции с нечётным индексом (1, 3, 5, 7, 9, 11):\n" +
+						$"Элементы на нечётных позициях (1, 3, 5, 7, 9, 11):\n" +
 						$"{string.Join("  ", oddValues)}\n" +
 						$"Среднее арифметическое: {AverageValue:F2}\n\n" +
 						$"Элементы, кратные 3, заменены на среднее:\n" +

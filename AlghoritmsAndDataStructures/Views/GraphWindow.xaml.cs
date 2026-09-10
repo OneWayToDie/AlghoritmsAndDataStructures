@@ -79,11 +79,11 @@ namespace AlghoritmsAndDataStructures.Views
 			StopAnimation();
 
 			// --- Проверка на недопустимые значения R ---
-			if (_r == 5 || _r == 8)
+			if (_r >= 5)
 			{
 				var errorModel = new PlotModel
 				{
-					Title = "Ошибка: R не может быть равен 5 или 8 (деление на ноль).",
+					Title = "Ошибка: R должен быть меньше 5.",
 					TitleColor = OxyColors.Red,
 					Background = _isDarkTheme ? OxyColors.Black : OxyColors.White
 				};
@@ -337,7 +337,7 @@ namespace AlghoritmsAndDataStructures.Views
 			}
 			else
 			{
-				if (!double.IsNaN(X) && !double.IsInfinity(X) && !double.IsNaN(R) && !double.IsInfinity(R) && R > 0 && R != 5 && R != 8)
+				if (!double.IsNaN(X) && !double.IsInfinity(X) && !double.IsNaN(R) && !double.IsInfinity(R) && R > 0 && R < 5)
 				{
 					BuildPlot();
 				}
