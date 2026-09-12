@@ -120,6 +120,18 @@ namespace AlgorithmsLauncher.Tasks
 			else
 				Fail("  N=0:       ожидается отказ вычисления");
 
+			var f4 = FractionCalculator.Compute(-7, 3);
+			if (f4.Success && f4.IntegerLastDigit == 2 && f4.FractionFirstDigit == 3)
+				Pass("  M=-7/N=3:  целая=2, дробная=3");
+			else
+				Fail($"  M=-7/N=3:  ожидается (2,3), получено ({f4.IntegerLastDigit},{f4.FractionFirstDigit})");
+
+			var f5 = FractionCalculator.Compute(-1, 7);
+			if (f5.Success && f5.IntegerLastDigit == 0 && f5.FractionFirstDigit == 1)
+				Pass("  M=-1/N=7:  целая=0, дробная=1");
+			else
+				Fail($"  M=-1/N=7:  ожидается (0,1), получено ({f5.IntegerLastDigit},{f5.FractionFirstDigit})");
+
 			Console.WriteLine();
 		}
 
@@ -214,6 +226,18 @@ namespace AlgorithmsLauncher.Tasks
 				Pass($"  n=100: S={s3:0.##} (> 0)");
 			else
 				Fail($"  n=100: ожидается S > 0, получено S={s3}");
+
+			double s4 = SeriesSumCalculator.ComputeSum(1);
+			if (Eq(s4, 0.5))
+				Pass($"  n=1:   S={s4:0.######}");
+			else
+				Fail($"  n=1:   ожидается S=0.5, получено S={s4}");
+
+			double s5 = SeriesSumCalculator.ComputeSum(0);
+			if (Eq(s5, 0))
+				Pass($"  n=0:   S=0 (пустая сумма)");
+			else
+				Fail($"  n=0:   ожидается S=0, получено S={s5}");
 
 			Console.WriteLine();
 		}

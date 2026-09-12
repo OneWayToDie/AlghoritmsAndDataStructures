@@ -1,7 +1,18 @@
-﻿namespace AlghoritmsAndDataStructures.Core.Calculators
+﻿using System;
+
+namespace AlghoritmsAndDataStructures.Core.Calculators
 {
 	public static class AreaChecker
 	{
+		private const double OnCircleTolerance = 1e-6;
+
+		public static bool IsOnCircle(double x, double y, double r)
+		{
+			double distanceSq = x * x + y * y;
+			double radiusSq = r * r;
+			return Math.Abs(distanceSq - radiusSq) <= OnCircleTolerance * Math.Max(1.0, radiusSq);
+		}
+
 		public static bool Check(double x, double y, double a, double b, double r, out string message)
 		{
 			if (a <= 0 || b <= 0 || r <= 0)

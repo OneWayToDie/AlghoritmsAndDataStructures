@@ -1,4 +1,6 @@
-﻿namespace AlghoritmsAndDataStructures.Core.Calculators
+﻿using System;
+
+namespace AlghoritmsAndDataStructures.Core.Calculators
 {
 	public static class FractionCalculator
 	{
@@ -13,7 +15,7 @@
 			int lastDigit = integerPart % 10;
 			if (integerPart < 0) lastDigit = -lastDigit;
 
-			int firstFractionDigit = (remainder * 10) / n;
+			int firstFractionDigit = (Math.Abs(remainder) * 10) / n;
 
 			return new FractionResult(lastDigit, firstFractionDigit, true);
 		}

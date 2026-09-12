@@ -9,7 +9,7 @@ namespace AlghoritmsAndDataStructures.Helpers
 	{
 		private static readonly string FilePath = Path.Combine(
 			AppDomain.CurrentDomain.BaseDirectory,
-			"history.json"
+			"wpf-history.json"
 		);
 
 		public static List<string> Load(string key)

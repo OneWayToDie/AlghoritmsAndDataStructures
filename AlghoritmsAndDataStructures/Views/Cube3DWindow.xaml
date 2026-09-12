@@ -72,7 +72,7 @@
             </Grid.RowDefinitions>
 
             <!-- Заголовок -->
-            <Border Grid.Row="0" Grid.ColumnSpan="2"
+            <Border x:Name="CaptionBorder" Grid.Row="0" Grid.ColumnSpan="2"
                     Background="{DynamicResource CaptionBackground}"
                     MouseLeftButtonDown="CaptionBorder_MouseLeftButtonDown">
                 <Grid>

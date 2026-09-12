@@ -46,7 +46,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 		public ICommand ShowSolutionCommand { get; }
 		public ICommand ShowHistoryCommand { get; }
 
-		public override string Title => "Задача 2: Среднее трёхзначных";
+		public override string Title => "ПР 4: Среднее трёхзначных";
 		public override string HistoryKey => "Average";
 
 		public AverageTaskViewModel()

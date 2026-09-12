@@ -29,7 +29,8 @@ namespace AlgorithmsLauncher.Tasks
 			ConsoleUI.Header("6 — СУММА РЯДА e^(-x)");
 			ConsoleUI.Condition(
 				"На интервале [A; B] с шагом Dx вычислить значение суммы ряда\n" +
-				"e^(-x) = 1 - x + x²/2! - x³/3! + ... с точностью eps и сравнить с точным значением e^(-x).");
+				"e^(-x) = 1 - x + x²/2! - x³/3! + ... с точностью eps и сравнить с точным значением e^(-x).\n" +
+				"При большом числе точек в таблице показываются первые и последние строки; расчёт выполняется для всех точек интервала.");
 
 			int mode = ConsoleUI.AskMode();
 			if (mode == 0) return;
@@ -67,11 +68,13 @@ namespace AlgorithmsLauncher.Tasks
 
 			bool showAll = points <= 20;
 			int skipMarker = 0;
-			ConsoleColor white = ConsoleUI.Pal.Info;
 			var sw = Stopwatch.StartNew();
 			for (int i = 0; i < points; i++)
 			{
 				double x = a + i * dx;
+
+				(double sum, int terms) = SeriesCalculator.ComputeExpSeries(x, eps);
+
 				bool show = showAll || i < 12 || i >= points - 4;
 				if (!show && skipMarker != 1)
 				{
@@ -82,8 +85,7 @@ namespace AlgorithmsLauncher.Tasks
 				}
 				if (show)
 				{
-					(double sum, int terms) = SeriesCalculator.ComputeExpSeries(x, eps);
-					PrintRow(x, sum, terms, white);
+					PrintRow(x, sum, terms, ConsoleUI.Pal.Info);
 				}
 			}
 			sw.Stop();

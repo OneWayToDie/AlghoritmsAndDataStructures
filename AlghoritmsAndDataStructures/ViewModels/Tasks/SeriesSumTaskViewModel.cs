@@ -31,14 +31,14 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 		public ICommand ShowSolutionCommand { get; }
 		public ICommand ShowHistoryCommand { get; }
 
-		public override string Title => "Задача 1: Сумма ряда";
+		public override string Title => "ПР 4: Сумма ряда";
 		public override string HistoryKey => "SeriesSum";
 
 		public IEnumerable<double> MembersList
 		{
 			get
 			{
-				if (N < 2) return Enumerable.Empty<double>();
+				if (N < 1) return Enumerable.Empty<double>();
 				return Enumerable.Range(1, N).Select(k => (double)k / (k + 1));
 			}
 		}
@@ -51,9 +51,9 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 
 		protected override void ExecuteCompute(object parameter)
 		{
-			if (N < 2)
+			if (N < 1)
 			{
-				ResultText = "Ошибка: n должно быть больше 1.";
+				ResultText = "Ошибка: n должно быть не меньше 1.";
 				Sum = 0;
 				_solutionSteps = "";
 				OnPropertyChanged(nameof(MembersList));

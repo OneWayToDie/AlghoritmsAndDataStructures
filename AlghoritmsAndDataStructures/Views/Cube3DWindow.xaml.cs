@@ -519,10 +519,19 @@ namespace AlghoritmsAndDataStructures.Views
 		{
 			if (e.LeftButton == MouseButtonState.Pressed)
 			{
+				if (IsClickInCaption(e.GetPosition(this)))
+					return;
 				_lastMousePos = e.GetPosition(this);
 				this.MouseMove += OnMouseMove;
 				this.MouseUp += OnMouseUp;
 			}
+		}
+
+		private bool IsClickInCaption(Point p)
+		{
+			if (CaptionBorder == null) return false;
+			var topLeft = CaptionBorder.TranslatePoint(new Point(0, 0), this);
+			return p.Y >= topLeft.Y && p.Y <= topLeft.Y + CaptionBorder.ActualHeight;
 		}
 
 		private void OnMouseMove(object sender, MouseEventArgs e)

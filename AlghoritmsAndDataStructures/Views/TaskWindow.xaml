@@ -462,7 +462,7 @@
         <!-- ============================================================ -->
         <DataTemplate DataType="{x:Type tasks:SeriesSumTaskViewModel}">
             <StackPanel Margin="10">
-                <TextBlock Text="Введите n (n > 1):" FontWeight="Bold" 
+                <TextBlock Text="Введите n (n ≥ 1):" FontWeight="Bold" 
                            Foreground="{DynamicResource MainTextForeground}"/>
                 <TextBox Text="{Binding N, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"/>
 
@@ -1045,7 +1045,7 @@
                     Background="{DynamicResource CaptionBackground}" 
                     MouseLeftButtonDown="CaptionBorder_MouseLeftButtonDown">
                 <Grid>
-                    <TextBlock Text="Практическая работа" 
+                    <TextBlock Text="{Binding Title}" 
                                FontSize="20" FontWeight="Bold"
                                Foreground="{DynamicResource CaptionForeground}"
                                VerticalAlignment="Center" HorizontalAlignment="Left"

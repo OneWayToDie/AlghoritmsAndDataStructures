@@ -13,6 +13,11 @@ namespace AlghoritmsAndDataStructures.Views
 		private double _x = 0, _y = 0, _a = 4, _b = 3, _r = 5;
 		private double _lastValidX = 0, _lastValidY = 0, _lastValidA = 4, _lastValidB = 3, _lastValidR = 5;
 		private const double Limit = 1000;
+		private bool _syncingSliders;
+		private double _zoomFactor = 1.0;
+		private double _panX = 0, _panY = 0;
+		private bool _isPanning;
+		private Point _lastPanPosition;
 
 		public AreaVisualizationWindow(double x, double y, double a, double b, double r)
 		{
@@ -23,9 +28,11 @@ namespace AlghoritmsAndDataStructures.Views
 			InputA.Text = a.ToString("F1");
 			InputB.Text = b.ToString("F1");
 			InputR.Text = r.ToString("F1");
+			_syncingSliders = true;
 			SliderA.Value = Math.Min(a, Limit);
 			SliderB.Value = Math.Min(b, Limit);
 			SliderR.Value = Math.Min(r, Limit);
+			_syncingSliders = false;
 			ApplyVisualization();
 		}
 
@@ -73,11 +80,13 @@ namespace AlghoritmsAndDataStructures.Views
 			double centerY = height / 2;
 			double maxVal = Math.Max(Math.Max(a, b), r) * 1.2;
 			if (maxVal < 1) maxVal = 1;
-			double scale = Math.Min((width / 2) / maxVal, (height / 2) / maxVal);
+			double baseScale = Math.Min((width / 2) / maxVal, (height / 2) / maxVal);
+			double scale = baseScale * _zoomFactor;
 
 			Func<double, double, Point> toPixel = (wx, wy) =>
-				new Point(centerX + wx * scale, centerY - wy * scale);
+				new Point(centerX + wx * scale + _panX, centerY - wy * scale + _panY);
 
+			DrawGrid(canvas, toPixel, maxVal);
 			DrawAxis(canvas, toPixel, maxVal, a, b, r);
 			DrawRectangle(canvas, toPixel, a, b);
 			DrawCircle(canvas, toPixel, r);
@@ -89,6 +98,50 @@ namespace AlghoritmsAndDataStructures.Views
 		private void DrawCanvas()
 		{
 			DrawCanvasWithParams(_lastValidX, _lastValidY, _lastValidA, _lastValidB, _lastValidR);
+		}
+
+		private void DrawGrid(Canvas canvas, Func<double, double, Point> toPixel, double maxVal)
+		{
+			double step = NiceStep(maxVal / 4.0);
+			var lineBrush = new SolidColorBrush(Colors.LightGray) { Opacity = 0.35 };
+			var labelBrush = new SolidColorBrush(Colors.LightGray);
+
+			double half = Math.Ceiling(maxVal / step) * step;
+			for (double v = -half; v <= half + step * 1e-6; v += step)
+			{
+				if (Math.Abs(v) < step * 1e-6) continue;
+				var pX = toPixel(v, 0);
+				var pY = toPixel(0, v);
+
+				var vl = new Line() { X1 = pX.X, Y1 = 0, X2 = pX.X, Y2 = canvas.Height, Stroke = lineBrush, StrokeThickness = 1 };
+				canvas.Children.Add(vl);
+				var hl = new Line() { X1 = 0, Y1 = pY.Y, X2 = canvas.Width, Y2 = pY.Y, Stroke = lineBrush, StrokeThickness = 1 };
+				canvas.Children.Add(hl);
+
+				var labelX = new TextBlock() { Text = FormatGridValue(v), Foreground = labelBrush, FontSize = 9 };
+				Canvas.SetLeft(labelX, pX.X + 2);
+				Canvas.SetTop(labelX, canvas.Height / 2 + 4);
+				canvas.Children.Add(labelX);
+
+				var labelY = new TextBlock() { Text = FormatGridValue(v), Foreground = labelBrush, FontSize = 9 };
+				Canvas.SetLeft(labelY, canvas.Width / 2 + 4);
+				Canvas.SetTop(labelY, pY.Y - 4);
+				canvas.Children.Add(labelY);
+			}
+		}
+
+		private double NiceStep(double target)
+		{
+			if (target <= 0) return 1;
+			double mag = Math.Pow(10, Math.Floor(Math.Log10(target)));
+			double norm = target / mag;
+			double nice = norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 5 ? 5 : 10;
+			return nice * mag;
+		}
+
+		private string FormatGridValue(double v)
+		{
+			return v.ToString(v % 1 == 0 ? "0" : "0.###");
 		}
 
 		private void DrawAxis(Canvas canvas, Func<double, double, Point> toPixel, double maxVal, double a, double b, double r)
@@ -233,6 +286,8 @@ namespace AlghoritmsAndDataStructures.Views
 			if (ResultText == null) return;
 			string msg;
 			bool ok = AreaChecker.Check(_x, _y, _a, _b, _r, out msg);
+			if (AreaChecker.IsOnCircle(_x, _y, _r) && !msg.StartsWith("Ошибка", StringComparison.Ordinal))
+				msg += " Точка лежит на окружности.";
 			ResultText.Text = msg;
 			ResultText.Foreground = ok ? new SolidColorBrush(Colors.LimeGreen) : new SolidColorBrush(Colors.Red);
 		}
@@ -241,6 +296,7 @@ namespace AlghoritmsAndDataStructures.Views
 		{
 			if (SliderA == null || SliderB == null || SliderR == null ||
 				InputA == null || InputB == null || InputR == null) return;
+			if (_syncingSliders) return;
 
 			_a = SliderA.Value;
 			_b = SliderB.Value;
@@ -260,9 +316,11 @@ namespace AlghoritmsAndDataStructures.Views
 			double.TryParse(InputA.Text, out _a);
 			double.TryParse(InputB.Text, out _b);
 			double.TryParse(InputR.Text, out _r);
+			_syncingSliders = true;
 			SliderA.Value = Math.Min(_a, Limit);
 			SliderB.Value = Math.Min(_b, Limit);
 			SliderR.Value = Math.Min(_r, Limit);
+			_syncingSliders = false;
 			ApplyVisualization();
 		}
 
@@ -271,14 +329,69 @@ namespace AlghoritmsAndDataStructures.Views
 			if (e.ClickCount == 1) this.DragMove();
 		}
 
+		private void MapCanvas_MouseWheel(object sender, MouseWheelEventArgs e)
+		{
+			Point p = e.GetPosition(MapCanvas);
+			ZoomAt(p, e.Delta > 0 ? 1.1 : 1.0 / 1.1);
+			e.Handled = true;
+		}
+
+		private void MapCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+		{
+			if (e.ClickCount >= 2)
+			{
+				_zoomFactor = 1.0;
+				_panX = 0; _panY = 0;
+				ApplyVisualization();
+				return;
+			}
+			_isPanning = true;
+			_lastPanPosition = e.GetPosition(MapCanvas);
+			MapCanvas.CaptureMouse();
+		}
+
+		private void MapCanvas_MouseMove(object sender, MouseEventArgs e)
+		{
+			if (!_isPanning) return;
+			Point p = e.GetPosition(MapCanvas);
+			_panX += p.X - _lastPanPosition.X;
+			_panY += p.Y - _lastPanPosition.Y;
+			_lastPanPosition = p;
+			ApplyVisualization();
+		}
+
+		private void MapCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+		{
+			if (!_isPanning) return;
+			_isPanning = false;
+			MapCanvas.ReleaseMouseCapture();
+		}
+
+		private double GetCurrentBaseScale()
+		{
+			double maxVal = Math.Max(Math.Max(_a, _b), _r) * 1.2;
+			if (maxVal < 1) maxVal = 1;
+			return Math.Min((MapCanvas.Width / 2) / maxVal, (MapCanvas.Height / 2) / maxVal);
+		}
+
+		private void ZoomAt(Point p, double factor)
+		{
+			double baseScale = GetCurrentBaseScale();
+			double scale = baseScale * _zoomFactor;
+			double wx = (p.X - _panX - (MapCanvas.Width / 2)) / scale;
+			double wy = ((MapCanvas.Height / 2) + _panY - p.Y) / scale;
+
+			_zoomFactor = Math.Max(0.1, Math.Min(20, _zoomFactor * factor));
+
+			double newScale = baseScale * _zoomFactor;
+			_panX = p.X - (MapCanvas.Width / 2) - wx * newScale;
+			_panY = p.Y - (MapCanvas.Height / 2) + wy * newScale;
+
+			ApplyVisualization();
+		}
+
 		private void MinimizeButton_Click(object sender, RoutedEventArgs e) => this.WindowState = WindowState.Minimized;
 		private void MaximizeButton_Click(object sender, RoutedEventArgs e) => this.WindowState = (this.WindowState == WindowState.Maximized) ? WindowState.Normal : WindowState.Maximized;
 		private void CloseButton_Click(object sender, RoutedEventArgs e) => this.Close();
-
-		private void Window_MouseDown(object sender, MouseButtonEventArgs e)
-		{
-			if (e.LeftButton == MouseButtonState.Pressed && this.WindowState == WindowState.Normal)
-				this.DragMove();
-		}
 	}
 }

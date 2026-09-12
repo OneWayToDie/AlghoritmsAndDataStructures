@@ -73,7 +73,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 		public ICommand ShowConvergenceCommand { get; }
 		public ICommand ExportCommand { get; }
 
-		public override string Title => "Задача: разложение e^(-x) в ряд";
+		public override string Title => "ПР 6: разложение e^(-x) в ряд";
 		public override string HistoryKey => "SeriesTask";
 
 		public SeriesTaskViewModel()
@@ -192,7 +192,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			OnPropertyChanged(nameof(Results));
 
 			ResultMessage = $"Таблица построена для {Results.Count} точек. Точность eps = {eps:E2}.";
-			AddHistoryEntry($"A={a}, B={b}, dx={dx}, eps={eps}, точек={Results.Count}; код={Seed}");
+			AddHistoryEntry(WithCode($"A={a}, B={b}, dx={dx}, eps={eps}, точек={Results.Count}", Seed));
 		}
 
 		private double ParseEpsOrDefault()

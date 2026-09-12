@@ -68,7 +68,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			private set { _calculationSteps = value; OnPropertyChanged(nameof(CalculationSteps)); }
 		}
 
-		public override string Title => "Задача 1: Куб";
+		public override string Title => "ПР 1: Куб";
 
 		protected override void ExecuteCompute(object parameter)
 		{
@@ -96,9 +96,10 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 				string.Format("V = a³ = {0:F2}³ = {1:F2}", Edge, Volume);
 
 			// Добавляем в историю
-			string historyEntry = string.Format(
-				"a={0:F2} → Sгр={1:F2}, Sп={2:F2}, V={3:F2}; код={4}",
-				Edge, FaceArea, TotalSurface, Volume, Seed);
+			string historyEntry = WithCode(
+				string.Format("a={0:F2} → Sгр={1:F2}, Sп={2:F2}, V={3:F2}",
+					Edge, FaceArea, TotalSurface, Volume),
+				Seed);
 			AddHistoryEntry(historyEntry);
 		}
 

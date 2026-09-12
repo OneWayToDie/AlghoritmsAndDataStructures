@@ -31,7 +31,7 @@ namespace AlgorithmsLauncher.Tasks
 			ConsoleUI.Header("4.1 — СУММА РЯДА");
 			ConsoleUI.Condition(
 				"Найти сумму ряда: S = Σ k/(k+1), где k = 1..n.\n" +
-				"Ряд сходится к n - (H(n+1) - 1), но в задаче требуется последовательно посчитать сумму.");
+				"Точное значение: S = n - (H(n+1) - 1), где H(m) — гармоническое число. В задаче сумма находится последовательно.");
 
 			int mode = ConsoleUI.AskMode();
 			if (mode == 0) return;
@@ -45,7 +45,7 @@ namespace AlgorithmsLauncher.Tasks
 			}
 			else
 			{
-				n = ConsoleUI.ReadInt("Введите n (n >= 2):", 2, 5000).Value;
+				n = ConsoleUI.ReadInt("Введите n (n >= 1):", 1, 5000).Value;
 			}
 
 			var sw = Stopwatch.StartNew();
@@ -124,7 +124,9 @@ namespace AlgorithmsLauncher.Tasks
 			Console.WriteLine();
 			ConsoleUI.Info("Последовательность: " + string.Join(", ", nums));
 
+			var sw = Stopwatch.StartNew();
 			var (threeDigit, average, _) = AverageCalculator.ComputeAverage(input);
+			sw.Stop();
 			if (threeDigit.Count == 0)
 			{
 				ConsoleUI.Warn("Трёхзначных чисел нет в последовательности.");
@@ -133,8 +135,6 @@ namespace AlgorithmsLauncher.Tasks
 			}
 
 			ConsoleUI.Step("Трёхзначные числа: " + string.Join(", ", threeDigit));
-			var sw = Stopwatch.StartNew();
-			sw.Stop();
 			string sumExpr = string.Join(" + ", threeDigit);
 			ConsoleUI.Step($"Среднее = ({sumExpr}) / {threeDigit.Count} = {average:0.###}");
 			Console.WriteLine();

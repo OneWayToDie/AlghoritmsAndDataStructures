@@ -103,7 +103,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 		public ICommand SwitchDisplayModeCommand { get; }
 		public ICommand ShowVisualizationCommand { get; }
 
-		public override string Title => "Задача: быстрая сортировка массива";
+		public override string Title => "ПР 7: быстрая сортировка массива";
 		public override string HistoryKey => "QuickSortTask";
 
 		public QuickSortTaskViewModel()
@@ -184,7 +184,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			DisplayMode = QuickSortDisplayMode.Sorted;
 			UpdateCurrentItems();
 
-			AddHistoryEntry($"Исходный: {OriginalArrayDisplay} → Отсортированный: {SortedArrayDisplay}; сравнений: {comparisons}, перестановок: {swaps}; код={Seed}");
+			AddHistoryEntry(WithCode($"Исходный: {OriginalArrayDisplay} → Отсортированный: {SortedArrayDisplay}; сравнений: {comparisons}, перестановок: {swaps}", Seed));
 		}
 
 		private void UpdateCurrentItems()

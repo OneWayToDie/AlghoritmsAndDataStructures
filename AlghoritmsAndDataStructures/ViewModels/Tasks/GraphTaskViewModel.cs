@@ -47,7 +47,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 		public ICommand GenerateCommand { get; }
 		public ICommand PasteSeedCommand { get; }
 
-		public override string Title => "Задача: вычисление функции по графику";
+		public override string Title => "ПР 2: вычисление функции по графику";
 
 		public GraphTaskViewModel()
 		{
@@ -66,7 +66,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			if (result.HasValue)
 			{
 				ResultText = string.Format("Y = {0:F4}", result.Value);
-				AddHistoryEntry(string.Format("X={0:F2}, R={1:F2} → Y = {2:F4}; код={3}", X, R, result.Value, Seed));
+				AddHistoryEntry(WithCode(string.Format("X={0:F2}, R={1:F2} → Y = {2:F4}", X, R, result.Value), Seed));
 			}
 			else
 			{

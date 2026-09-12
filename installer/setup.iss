@@ -3,7 +3,7 @@
 ; Устанавливает WPF-приложение и консольный лаунчер в одну папку {app}
 
 #define MyAppName "AlghoritmsAndDataStructures"
-#define MyAppVersion "1.0"
+#define MyAppVersion "1.1"
 #define MyAppPublisher "ТулГУ"
 
 [Setup]
@@ -11,11 +11,11 @@ AppId={{B7B57F2A-9D1E-4C6B-A8E1-3F0F5C8D12AB}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
-; Установка в корень C: — приложение пишет history.json рядом с exe без прав администратора
+; Установка в корень C: — приложение пишет wpf-history.json / history.json рядом с exe без прав администратора
 DefaultDirName=C:\AlghoritmsAndDataStructures
 DefaultGroupName={#MyAppName}
 OutputDir=C:\Users\Danila\source\repos\AlghoritmsAndDataStructures\installer
-OutputBaseFilename=setup
+OutputBaseFilename=AlghoritmsSetup
 Compression=lzma2/ultra64
 SolidCompression=yes
 WizardStyle=modern

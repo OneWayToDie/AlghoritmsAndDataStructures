@@ -12,6 +12,8 @@ namespace AlghoritmsAndDataStructures.Views
 			InitializeComponent();
 			DataContext = viewModel;
 			Owner = Application.Current.MainWindow;
+			if (viewModel is IWorkViewModel work)
+				Title = work.Title;
 		}
 
 		private void CaptionBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

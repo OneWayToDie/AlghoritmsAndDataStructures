@@ -69,21 +69,26 @@ namespace AlgorithmsLauncher.Tasks
 			bool outCircle = x * x + y * y >= r * r;
 			bool zoneRight = zoneRightRect && outCircle;
 
+			bool onCircle = AreaChecker.IsOnCircle(x, y, r);
+			string circleStatus = onCircle ? "на окружности" : inCircle ? "внутри" : "снаружи";
+
 			Console.WriteLine();
 			ConsoleUI.Info($"Точка ({x:0.##}; {y:0.##}), прямоугольник {a:0.##}×{b:0.##}, окружность r = {r:0.##}.");
 			Console.WriteLine();
 			ConsoleUI.Step("Зона A (III квадрант): внутри прямоугольника и внутри окружности");
 			ConsoleUI.Step($"  x ≤ 0 и y ≤ 0 ........... {tf(zoneLeftCond)}");
 			ConsoleUI.Step($"  |x| ≤ a и |y| ≤ b ....... {tf(zoneLeftRect)}");
-			ConsoleUI.Step($"  x² + y² ≤ r² ............ {tf(inCircle)}");
+			ConsoleUI.Step($"  x² + y² ≤ r² ............ {circleStatus}");
 			ConsoleUI.Step($"  → зона A: {tf(zoneLeft)}");
 			Console.WriteLine();
 			ConsoleUI.Step("Зона B (I квадрант): внутри прямоугольника и снаружи окружности");
 			ConsoleUI.Step($"  x ≥ 0 и y ≥ 0 ........... {tf(zoneRightCond)}");
 			ConsoleUI.Step($"  x ≤ a и y ≤ b ........... {tf(zoneRightRect)}");
-			ConsoleUI.Step($"  x² + y² ≥ r² ............ {tf(outCircle)}");
+			ConsoleUI.Step($"  x² + y² ≥ r² ............ {circleStatus}");
 			ConsoleUI.Step($"  → зона B: {tf(zoneRight)}");
 			Console.WriteLine();
+			if (onCircle)
+				ConsoleUI.Good("Точка лежит на окружности (x² + y² = R²).");
 			ConsoleUI.Good(message);
 			ConsoleUI.Hint("Время вычисления: " + ConsoleUI.FormatTime(sw.Elapsed));
 			HistoryStorage.Save(new HistoryEntry

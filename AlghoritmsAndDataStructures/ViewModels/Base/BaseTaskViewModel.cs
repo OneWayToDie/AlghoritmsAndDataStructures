@@ -67,6 +67,11 @@ namespace AlghoritmsAndDataStructures.ViewModels.Base
 			HistoryStorage.Save(HistoryKey, new List<string>(History));
 		}
 
+		protected static string WithCode(string entry, int seed)
+		{
+			return seed > 0 ? $"{entry}; код={seed}" : entry;
+		}
+
 		private void ExecuteClearHistory(object parameter)
 		{
 			History.Clear();

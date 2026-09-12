@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Windows.Input;
 using AlghoritmsAndDataStructures.Core.Calculators;
 using AlghoritmsAndDataStructures.ViewModels.Base;
 using AlghoritmsAndDataStructures.Views;
@@ -54,7 +55,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			private set { _seed = value; OnPropertyChanged(nameof(Seed)); }
 		}
 
-		public override string Title => "Задача 2: Дробь M/N";
+		public override string Title => "ПР 1: Дробь M/N";
 
 		protected override void ExecuteCompute(object parameter)
 		{
@@ -78,10 +79,10 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			CalculationSteps =
 				$"Формулы:\n" +
 				$"{M} / {N} = {integerPart} целых, остаток {remainder}\n" +
-				$"Старшая цифра дробной части: ({remainder} * 10) / {N} = {FractionFirstDigit}\n" +
+				$"Старшая цифра дробной части: ({Math.Abs(remainder)} * 10) / {N} = {FractionFirstDigit}\n" +
 				$"Младшая цифра целой части: {integerPart} % 10 = {IntegerLastDigit}";
 
-			string historyEntry = $"M={M}, N={N} → целая(мл.):{IntegerLastDigit}, дробная(ст.):{FractionFirstDigit}; код={Seed}";
+			string historyEntry = WithCode($"M={M}, N={N} → целая(мл.):{IntegerLastDigit}, дробная(ст.):{FractionFirstDigit}", Seed);
 			AddHistoryEntry(historyEntry);
 		}
 

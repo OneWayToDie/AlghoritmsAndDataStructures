@@ -109,7 +109,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 		public ICommand PasteSeedCommand { get; }
 		public ICommand SwitchDisplayModeCommand { get; }
 
-		public override string Title => "Задача: обработка массива (вар. 4)";
+		public override string Title => "ПР 5: обработка массива (вар. 4)";
 		public override string HistoryKey => "ArrayTask";
 
 		public ArrayTaskViewModel()
@@ -153,7 +153,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 
 		protected override void ExecuteCompute(object parameter)
 		{
-			var numbers = InputArray.Split(new[] { ',', ' ', ';', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+			var numbers = InputArray.Split(new[] { ',', ' ', ';', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
 									.Select(s => int.TryParse(s, out int val) ? (int?)val : null)
 									.Where(x => x.HasValue)
 									.Select(x => x.Value)
@@ -191,7 +191,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			DisplayMode = ArrayDisplayMode.Original;
 			UpdateCurrentItems();
 
-			AddHistoryEntry($"Исходный: {OriginalArrayDisplay} → Заменённый: {ModifiedArrayDisplay}, Среднее: {average:F2}; код={Seed}");
+			AddHistoryEntry(WithCode($"Исходный: {OriginalArrayDisplay} → Заменённый: {ModifiedArrayDisplay}, Среднее: {average:F2}", Seed));
 		}
 
 		private void UpdateCurrentItems()

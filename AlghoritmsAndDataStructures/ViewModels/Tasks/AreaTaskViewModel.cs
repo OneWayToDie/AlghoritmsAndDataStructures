@@ -35,7 +35,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 		public ICommand PasteSeedCommand { get; }
 
 		public override string HistoryKey => "Area";
-		public override string Title => "Задача: попадание точки в область";
+		public override string Title => "ПР 3: попадание точки в область";
 
 		public AreaTaskViewModel()
 		{
@@ -50,10 +50,13 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 		{
 			string message;
 			bool result = AreaChecker.Check(X, Y, A, B, R, out message);
-			ResultText = message;
+			if (AreaChecker.IsOnCircle(X, Y, R) && !message.StartsWith("Ошибка", StringComparison.Ordinal))
+				ResultText = message + " Точка лежит на окружности.";
+			else
+				ResultText = message;
 			if (!message.StartsWith("Ошибка", StringComparison.Ordinal))
 			{
-				string historyEntry = $"X={X:F2}, Y={Y:F2}, a={A:F2}, b={B:F2}, R={R:F2} → {message}; код={Seed}";
+				string historyEntry = WithCode($"X={X:F2}, Y={Y:F2}, a={A:F2}, b={B:F2}, R={R:F2} → {message}", Seed);
 				AddHistoryEntry(historyEntry);
 			}
 		}
@@ -101,6 +104,8 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			bool inRectLeft = (X >= -A) && (X <= 0) && (Y >= -B) && (Y <= 0);
 			bool inRectRight = (X >= 0) && (X <= A) && (Y >= 0) && (Y <= B);
 			bool inCircle = X * X + Y * Y <= R * R;
+			bool onCircle = AreaChecker.IsOnCircle(X, Y, R);
+			string circleStatus = onCircle ? "на окружности" : inCircle ? "внутри" : "снаружи";
 
 			var sb = new System.Text.StringBuilder();
 			sb.AppendLine("Проверка попадания точки в заштрихованную область");
@@ -113,13 +118,18 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			sb.AppendLine();
 			sb.AppendLine("Проверка по шагам:");
 			sb.AppendLine(string.Format("  1. Точка в прямоугольнике [-a..0]x[-b..0] (III кв.): {0}", inRectLeft ? "да" : "нет"));
-			sb.AppendLine(string.Format("  2. Точка в окружности: x^2+y^2 = {0:F2}, R^2 = {1:F2} → {2}", X * X + Y * Y, R * R, inCircle ? "внутри" : "снаружи"));
+			sb.AppendLine(string.Format("  2. Точка в окружности: x^2+y^2 = {0:F2}, R^2 = {1:F2} → {2}", X * X + Y * Y, R * R, circleStatus));
 			sb.AppendLine(string.Format("  3. Точка в прямоугольнике [0..a]x[0..b] (I кв.): {0}", inRectRight ? "да" : "нет"));
 			sb.AppendLine();
 			sb.AppendLine("Все условия вместе:");
 			sb.AppendLine(string.Format("  (III кв. и внутри прямоугольника и внутри окружности) = {0}", inRectLeft && inCircle));
 			sb.AppendLine(string.Format("  (I кв. и внутри прямоугольника и снаружи окружности) = {0}", inRectRight && !inCircle));
 			sb.AppendLine();
+			if (onCircle)
+			{
+				sb.AppendLine("Точка лежит на окружности (x^2 + y^2 = R^2).");
+				sb.AppendLine();
+			}
 			sb.AppendLine("Итог: " + message);
 
 			var window = new SolutionWindow(sb.ToString());

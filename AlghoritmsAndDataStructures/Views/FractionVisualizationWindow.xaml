@@ -9,7 +9,7 @@
         AllowsTransparency="True"
         ResizeMode="NoResize"
         Background="Transparent"
-        MouseDown="Window_MouseDown">
+        >
 
     <Window.Resources>
         <Style x:Key="CaptionButtonStyle" TargetType="Button">

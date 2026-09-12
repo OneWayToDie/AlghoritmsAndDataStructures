@@ -93,7 +93,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 		public ICommand PasteSeedCommand { get; }
 		public ICommand SwitchDisplayModeCommand { get; }
 
-		public override string Title => "Задача: среднее арифметическое соседей";
+		public override string Title => "ПР 8: среднее арифметическое соседей";
 		public override string HistoryKey => "NeighborhoodAverageTask";
 
 		public NeighborhoodAverageTaskViewModel()
@@ -169,7 +169,7 @@ namespace AlghoritmsAndDataStructures.ViewModels.Tasks
 			DisplayMode = NeighborhoodDisplayMode.Original;
 			UpdateCurrentItems();
 
-			AddHistoryEntry($"Исходный: {OriginalArrayDisplay} → Результат: {ModifiedArrayDisplay}; код={Seed}");
+			AddHistoryEntry(WithCode($"Исходный: {OriginalArrayDisplay} → Результат: {ModifiedArrayDisplay}", Seed));
 		}
 
 		private void UpdateCurrentItems()
