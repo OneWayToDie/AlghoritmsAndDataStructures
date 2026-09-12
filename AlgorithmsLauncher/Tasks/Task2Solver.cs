@@ -12,8 +12,8 @@ namespace AlgorithmsLauncher.Tasks
 			{
 				ConsoleUI.Clear();
 				ConsoleUI.Header("ПРАКТИЧЕСКАЯ РАБОТА 2");
-				ConsoleUI.MenuItem(1, "Вычислить значение функции по графику");
-				ConsoleUI.MenuItem(0, "Назад в меню");
+				ConsoleUI.MenuItem(1, "Вычислить значение функции по графику", "\uD83D\uDCC8");
+				ConsoleUI.MenuItem(0, "Назад в меню", "\u21A9\uFE0F");
 				Console.WriteLine();
 				int choice = ConsoleUI.AskChoice(0, 1);
 				if (choice == 0) return;
@@ -24,7 +24,7 @@ namespace AlgorithmsLauncher.Tasks
 		private static void Solve()
 		{
 			ConsoleUI.Clear();
-			ConsoleUI.Header("2 — ФУНКЦИЯ, ЗАДАННАЯ ГРАФИКОМ", ConsoleColor.Cyan);
+			ConsoleUI.Header("2 — ФУНКЦИЯ, ЗАДАННАЯ ГРАФИКОМ");
 			ConsoleUI.Condition(
 				"Вычислить значение функции, заданной графиком. Параметр R вводится (0 < R < 5):\n" +
 				"  x ≤ -5              →  y = -3\n" +

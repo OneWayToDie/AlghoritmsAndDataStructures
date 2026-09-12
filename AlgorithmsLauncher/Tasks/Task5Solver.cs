@@ -14,8 +14,8 @@ namespace AlgorithmsLauncher.Tasks
 			{
 				ConsoleUI.Clear();
 				ConsoleUI.Header("ПРАКТИЧЕСКАЯ РАБОТА 5");
-				ConsoleUI.MenuItem(1, "Массив: среднее на нечётных местах");
-				ConsoleUI.MenuItem(0, "Назад в меню");
+				ConsoleUI.MenuItem(1, "Массив: среднее на нечётных местах", "\uD83D\uDCCB");
+				ConsoleUI.MenuItem(0, "Назад в меню", "\u21A9\uFE0F");
 				Console.WriteLine();
 				int choice = ConsoleUI.AskChoice(0, 1);
 				if (choice == 0) return;
@@ -26,7 +26,7 @@ namespace AlgorithmsLauncher.Tasks
 		private static void Solve()
 		{
 			ConsoleUI.Clear();
-			ConsoleUI.Header("5 — СРЕДНЕЕ НА НЕЧЁТНЫХ МЕСТАХ", ConsoleColor.Cyan);
+			ConsoleUI.Header("5 — СРЕДНЕЕ НА НЕЧЁТНЫХ МЕСТАХ");
 			ConsoleUI.Condition(
 				"Дан массив A(N), N = 12. Найти среднее арифметическое элементов, стоящих на\n" +
 				"нечётных позициях (1, 3, 5, 7, 9, 11), и заменить этим средним элементы, кратные 3.");
@@ -87,7 +87,7 @@ namespace AlgorithmsLauncher.Tasks
 			{
 				Timestamp = DateTime.Now, TaskName = "ПР 5 — Массив",
 				InputSummary = "12 элементов",
-				ResultSummary = $"avg={average:0.##}",
+				ResultSummary = $"ср.={average:0.##}",
 				Elapsed = ConsoleUI.FormatTime(sw.Elapsed)
 			});
 			ConsoleUI.Pause();

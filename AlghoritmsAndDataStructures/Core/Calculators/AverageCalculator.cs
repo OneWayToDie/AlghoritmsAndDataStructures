@@ -8,7 +8,7 @@ namespace AlghoritmsAndDataStructures.Core.Calculators
 	{
 		public static (List<int> threeDigitNumbers, double? average, string message) ComputeAverage(string input)
 		{
-			var numbers = input.Split(new[] { ',', ' ', ';', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+			var numbers = input.Split(new[] { ',', ' ', ';', '\n', '\t' }, StringSplitOptions.RemoveEmptyEntries)
 							   .Select(s => int.TryParse(s, out int val) ? (int?)val : null)
 							   .Where(x => x.HasValue)
 							   .Select(x => x.Value)

@@ -23,6 +23,7 @@ namespace AlgorithmsLauncher.Tasks
 			TestTask2Graph();
 			TestTask3Area();
 			TestTask4SeriesSum();
+			TestTask4Average();
 			TestTask5Array();
 			TestTask6ExpSeries();
 			TestTask7QuickSort();
@@ -90,9 +91,9 @@ namespace AlgorithmsLauncher.Tasks
 
 			var r3 = CubeCalculator.Compute(-1);
 			if (!r3.Success)
-				Pass("  a=-1:  Success=false (корректно)");
+				Pass("  a=-1:  отказ вычисления (корректно)");
 			else
-				Fail("  a=-1:  ожидается Success=false");
+				Fail("  a=-1:  ожидается отказ вычисления");
 
 			Console.WriteLine();
 		}
@@ -115,9 +116,9 @@ namespace AlgorithmsLauncher.Tasks
 
 			var f3 = FractionCalculator.Compute(7, 0);
 			if (!f3.Success)
-				Pass("  N=0:       Success=false (корректно)");
+				Pass("  N=0:       отказ вычисления (корректно)");
 			else
-				Fail("  N=0:       ожидается Success=false");
+				Fail("  N=0:       ожидается отказ вычисления");
 
 			Console.WriteLine();
 		}
@@ -165,21 +166,21 @@ namespace AlgorithmsLauncher.Tasks
 
 			bool inside1 = AreaChecker.Check(-1, -1, 2, 2, 1.5, out msg);
 			if (inside1)
-				Pass("  (-1;-1), a=2,b=2,r=1.5:  inside (zone A)");
+				Pass("  (-1;-1), a=2,b=2,r=1.5:  внутри (зона A)");
 			else
-				Fail($"  (-1;-1), a=2,b=2,r=1.5:  ожидается inside, получено outside");
+				Fail($"  (-1;-1), a=2,b=2,r=1.5:  ожидается «внутри», получено «снаружи»");
 
 			bool inside2 = AreaChecker.Check(2, 2, 3, 3, 1.5, out msg);
 			if (inside2)
-				Pass("  (2;2), a=3,b=3,r=1.5:    inside (zone B)");
+				Pass("  (2;2), a=3,b=3,r=1.5:    внутри (зона B)");
 			else
-				Fail($"  (2;2), a=3,b=3,r=1.5:    ожидается inside, получено outside");
+				Fail($"  (2;2), a=3,b=3,r=1.5:    ожидается «внутри», получено «снаружи»");
 
 			bool inside3 = AreaChecker.Check(5, 5, 2, 2, 1.5, out msg);
 			if (!inside3)
-				Pass("  (5;5), a=2,b=2,r=1.5:    outside");
+				Pass("  (5;5), a=2,b=2,r=1.5:    снаружи");
 			else
-				Fail($"  (5;5), a=2,b=2,r=1.5:    ожидается outside");
+				Fail($"  (5;5), a=2,b=2,r=1.5:    ожидается «снаружи»");
 
 			bool inside4 = AreaChecker.Check(1, 1, -1, 2, 1.5, out msg);
 			if (!inside4 && msg.Contains("Ошибка"))
@@ -217,6 +218,37 @@ namespace AlgorithmsLauncher.Tasks
 			Console.WriteLine();
 		}
 
+		private static void TestTask4Average()
+		{
+			ConsoleUI.Info("Задача 4.2 — Среднее арифметическое трёхзначных чисел");
+
+			var a1 = AverageCalculator.ComputeAverage("123 45 678 -999 1000");
+			if (a1.average.HasValue && Eq(a1.average.Value, -66.0) && a1.threeDigitNumbers.Count == 3)
+				Pass("  [123 45 678 -999 1000]:  три трёхзначных (123,678,-999), ср.=-66");
+			else
+				Fail($"  [123 45 678 -999 1000]:  ожидается ср.=-66, получено {a1.average}");
+
+			var a2 = AverageCalculator.ComputeAverage("1 22 333 4444 555 66");
+			if (a2.average.HasValue && Eq(a2.average.Value, 444.0) && a2.threeDigitNumbers.Count == 2)
+				Pass("  [1 22 333 4444 555 66]:    два трёхзначных (333,555), ср.=444");
+			else
+				Fail($"  [1 22 333 4444 555 66]:    ожидается ср.=444, получено {a2.average}");
+
+			var a3 = AverageCalculator.ComputeAverage("1 2 3");
+			if (!a3.average.HasValue && a3.threeDigitNumbers.Count == 0)
+				Pass("  [1 2 3]:                   трёхзначных чисел нет (корректно)");
+			else
+				Fail($"  [1 2 3]:                   ожидается отсутствие трёхзначных, получено {a3.average}");
+
+			var a4 = AverageCalculator.ComputeAverage("-999 -100");
+			if (a4.average.HasValue && Eq(a4.average.Value, -549.5) && a4.threeDigitNumbers.Count == 2)
+				Pass("  [-999 -100]:               два трёхзначных (-999,-100), ср.=-549.5");
+			else
+				Fail($"  [-999 -100]:               ожидается ср.=-549.5, получено {a4.average}");
+
+			Console.WriteLine();
+		}
+
 		private static void TestTask5Array()
 		{
 			ConsoleUI.Info("Задача 5 — Массив: среднее на нечётных местах");
@@ -224,18 +256,18 @@ namespace AlgorithmsLauncher.Tasks
 			var a1 = ArrayProcessor.ProcessArray(new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 });
 			double[] expected1 = { 1, 2, 6, 4, 5, 6, 7, 8, 6, 10, 11, 6 };
 			if (Eq(a1.average, 6.0) && ArrEq(a1.modifiedArray, expected1))
-				Pass("  [1..12]:     avg=6, замена %3 → [1,2,6,4,5,6,7,8,6,10,11,6]");
+				Pass("  [1..12]:     ср.=6, замена %3 → [1,2,6,4,5,6,7,8,6,10,11,6]");
 			else
 			{
 				string got = "[" + string.Join(",", a1.modifiedArray.Select(x => x.ToString("0.##"))) + "]";
-				Fail($"  [1..12]:     ожидается avg=6, [{string.Join(",", expected1)}], получено avg={a1.average}, {got}");
+				Fail($"  [1..12]:     ожидается ср.=6, [{string.Join(",", expected1)}], получено ср.={a1.average}, {got}");
 			}
 
 			var a2 = ArrayProcessor.ProcessArray(new[] { 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 });
 			if (Eq(a2.average, 3.0) && a2.modifiedArray.All(x => Eq(x, 3.0)))
-				Pass("  [3×12]:      avg=3, все заменены на 3");
+				Pass("  [3×12]:      ср.=3, все заменены на 3");
 			else
-				Fail("  [3×12]:      ожидается avg=3, все элементы = 3");
+				Fail("  [3×12]:      ожидается ср.=3, все элементы = 3");
 
 			Console.WriteLine();
 		}
@@ -246,23 +278,23 @@ namespace AlgorithmsLauncher.Tasks
 
 			var r1 = SeriesCalculator.ComputeExpSeries(0, 0.001);
 			if (Eq(r1.sum, 1.0))
-				Pass($"  x=0,  eps=0.001:  sum={r1.sum:0.######}, terms={r1.terms}");
+				Pass($"  x=0,  eps=0.001:  сумма={r1.sum:0.######}, слагаемых={r1.terms}");
 			else
-				Fail($"  x=0,  eps=0.001:  ожидается sum≈1, получено sum={r1.sum}");
+				Fail($"  x=0,  eps=0.001:  ожидается сумма≈1, получено сумма={r1.sum}");
 
 			var r2 = SeriesCalculator.ComputeExpSeries(1, 0.001);
 			double exact2 = Math.Exp(-1);
 			if (Eq(r2.sum, exact2, 0.01))
-				Pass($"  x=1,  eps=0.001:  sum={r2.sum:0.######} (≈e⁻¹={exact2:0.######})");
+				Pass($"  x=1,  eps=0.001:  сумма={r2.sum:0.######} (≈e⁻¹={exact2:0.######})");
 			else
-				Fail($"  x=1,  eps=0.001:  ожидается sum≈{exact2:0.######}, получено sum={r2.sum}");
+				Fail($"  x=1,  eps=0.001:  ожидается сумма≈{exact2:0.######}, получено сумма={r2.sum}");
 
 			var r3 = SeriesCalculator.ComputeExpSeries(-2, 0.001);
 			double exact3 = Math.Exp(2);
 			if (Eq(r3.sum, exact3, 0.01))
-				Pass($"  x=-2, eps=0.001:  sum={r3.sum:0.######} (≈e²={exact3:0.######})");
+				Pass($"  x=-2, eps=0.001:  сумма={r3.sum:0.######} (≈e²={exact3:0.######})");
 			else
-				Fail($"  x=-2, eps=0.001:  ожидается sum≈{exact3:0.######}, получено sum={r3.sum}");
+				Fail($"  x=-2, eps=0.001:  ожидается сумма≈{exact3:0.######}, получено сумма={r3.sum}");
 
 			Console.WriteLine();
 		}

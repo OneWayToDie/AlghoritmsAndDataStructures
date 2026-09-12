@@ -14,9 +14,9 @@ namespace AlgorithmsLauncher.Tasks
 			{
 				ConsoleUI.Clear();
 				ConsoleUI.Header("ПРАКТИЧЕСКАЯ РАБОТА 4");
-				ConsoleUI.MenuItem(1, "Сумма ряда");
-				ConsoleUI.MenuItem(2, "Среднее арифметическое трёхзначных чисел");
-				ConsoleUI.MenuItem(0, "Назад в меню");
+				ConsoleUI.MenuItem(1, "Сумма ряда", "\u2211");
+				ConsoleUI.MenuItem(2, "Среднее арифметическое трёхзначных чисел", "\uD83D\uDCCA");
+				ConsoleUI.MenuItem(0, "Назад в меню", "\u21A9\uFE0F");
 				Console.WriteLine();
 				int choice = ConsoleUI.AskChoice(0, 2);
 				if (choice == 0) return;
@@ -28,7 +28,7 @@ namespace AlgorithmsLauncher.Tasks
 		private static void SolveSeriesSum()
 		{
 			ConsoleUI.Clear();
-			ConsoleUI.Header("4.1 — СУММА РЯДА", ConsoleColor.Cyan);
+			ConsoleUI.Header("4.1 — СУММА РЯДА");
 			ConsoleUI.Condition(
 				"Найти сумму ряда: S = Σ k/(k+1), где k = 1..n.\n" +
 				"Ряд сходится к n - (H(n+1) - 1), но в задаче требуется последовательно посчитать сумму.");
@@ -84,7 +84,7 @@ namespace AlgorithmsLauncher.Tasks
 		private static void SolveAverage()
 		{
 			ConsoleUI.Clear();
-			ConsoleUI.Header("4.2 — СРЕДНЕЕ ТРЁХЗНАЧНЫХ ЧИСЕЛ", ConsoleColor.Cyan);
+			ConsoleUI.Header("4.2 — СРЕДНЕЕ ТРЁХЗНАЧНЫХ ЧИСЕЛ");
 			ConsoleUI.Condition(
 				"В последовательности целых чисел найти количество трёхзначных чисел и их среднее арифметическое.");
 
@@ -124,7 +124,7 @@ namespace AlgorithmsLauncher.Tasks
 			Console.WriteLine();
 			ConsoleUI.Info("Последовательность: " + string.Join(", ", nums));
 
-			var threeDigit = nums.Where(x => Math.Abs(x) >= 100 && Math.Abs(x) <= 999).ToList();
+			var (threeDigit, average, _) = AverageCalculator.ComputeAverage(input);
 			if (threeDigit.Count == 0)
 			{
 				ConsoleUI.Warn("Трёхзначных чисел нет в последовательности.");
@@ -134,7 +134,6 @@ namespace AlgorithmsLauncher.Tasks
 
 			ConsoleUI.Step("Трёхзначные числа: " + string.Join(", ", threeDigit));
 			var sw = Stopwatch.StartNew();
-			double average = threeDigit.Average();
 			sw.Stop();
 			string sumExpr = string.Join(" + ", threeDigit);
 			ConsoleUI.Step($"Среднее = ({sumExpr}) / {threeDigit.Count} = {average:0.###}");
@@ -145,7 +144,7 @@ namespace AlgorithmsLauncher.Tasks
 			{
 				Timestamp = DateTime.Now, TaskName = "ПР 4.2 — Среднее",
 				InputSummary = $"{nums.Count} чисел",
-				ResultSummary = $"{threeDigit.Count} трёхзнач., avg={average:0.##}",
+				ResultSummary = $"{threeDigit.Count} трёхзнач., ср.={average:0.##}",
 				Elapsed = ConsoleUI.FormatTime(sw.Elapsed)
 			});
 			ConsoleUI.Pause();

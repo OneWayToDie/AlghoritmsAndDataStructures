@@ -19,6 +19,7 @@ OutputBaseFilename=setup
 Compression=lzma2/ultra64
 SolidCompression=yes
 WizardStyle=modern
+SetupIconFile=C:\Users\Danila\source\repos\AlghoritmsAndDataStructures\AlghoritmsAndDataStructures\Resources\Icons\app.ico
 UninstallDisplayIcon={app}\AlgorithmsLauncher.exe
 
 [Languages]
@@ -31,7 +32,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 ; === WPF-приложение: все файлы bin\Release, включая зависимости и папки локалей ===
 Source: "C:\Users\Danila\source\repos\AlghoritmsAndDataStructures\AlghoritmsAndDataStructures\bin\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: "*.pdb,history.json"
 ; === Консольный лаунчер ===
-Source: "C:\Users\Danila\source\repos\AlghoritmsAndDataStructures\AlgorithmsLauncher\bin\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: "*.pdb"
+Source: "C:\Users\Danila\source\repos\AlghoritmsAndDataStructures\AlgorithmsLauncher\bin\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: "*.pdb,settings.json,history.json"
 
 [Icons]
 Name: "{group}\Алгоритмы и структуры данных (WPF)"; Filename: "{app}\AlghoritmsAndDataStructures.exe"

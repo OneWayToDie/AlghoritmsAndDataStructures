@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:AlghoritmsAndDataStructures.ViewModels"
         Title="Практические работы" 
+        Icon="pack://application:,,,/Resources/Icons/app.ico"
         Height="600" Width="800"
         WindowStyle="None"
         ResizeMode="NoResize"
@@ -52,7 +53,10 @@
                                 BorderBrush="{DynamicResource TileBorderBrush}"
                                 BorderThickness="1">
                             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                <TextBlock Text="📁" FontSize="48" Margin="0,0,0,12" HorizontalAlignment="Center"/>
+                                <Image Source="{Binding IconPath}"
+                                   Width="48" Height="48"
+                                   Margin="0,0,0,12"
+                                   HorizontalAlignment="Center"/>
                                 <TextBlock Text="{Binding Title}" 
                                            HorizontalAlignment="Center"
                                            TextWrapping="Wrap"

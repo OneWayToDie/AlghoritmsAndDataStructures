@@ -5,6 +5,7 @@
         xmlns:conv="clr-namespace:AlghoritmsAndDataStructures.Converters"
         xmlns:controls="clr-namespace:AlghoritmsAndDataStructures.Views.Controls"
         Title="Практическая работа" 
+        Icon="pack://application:,,,/Resources/Icons/app.ico"
         Height="810" Width="850"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None" 

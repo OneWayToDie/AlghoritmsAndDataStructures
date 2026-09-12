@@ -12,9 +12,9 @@ namespace AlgorithmsLauncher.Tasks
 			{
 				ConsoleUI.Clear();
 				ConsoleUI.Header("ПРАКТИЧЕСКАЯ РАБОТА 1");
-				ConsoleUI.MenuItem(1, "Куб — площадь грани, полная поверхность, объём");
-				ConsoleUI.MenuItem(2, "Дробь M/N — цифры целой и дробной части");
-				ConsoleUI.MenuItem(0, "Назад в меню");
+				ConsoleUI.MenuItem(1, "Куб — площадь грани, полная поверхность, объём", "\uD83E\uDDCA");
+				ConsoleUI.MenuItem(2, "Дробь M/N — цифры целой и дробной части", "\uD83D\uDD22");
+				ConsoleUI.MenuItem(0, "Назад в меню", "\u21A9\uFE0F");
 				Console.WriteLine();
 				int choice = ConsoleUI.AskChoice(0, 2);
 				if (choice == 0) return;
@@ -26,7 +26,7 @@ namespace AlgorithmsLauncher.Tasks
 		private static void SolveCube()
 		{
 			ConsoleUI.Clear();
-			ConsoleUI.Header("1.1 — КУБ", ConsoleColor.Cyan);
+			ConsoleUI.Header("1.1 — КУБ");
 			ConsoleUI.Condition(
 				"Дана грань куба a. Найти площадь грани Sгр, площадь полной поверхности Sполн и объём V:\n" +
 				"Sгр = a², Sполн = 6·a², V = a³.");
@@ -76,7 +76,7 @@ namespace AlgorithmsLauncher.Tasks
 		private static void SolveFraction()
 		{
 			ConsoleUI.Clear();
-			ConsoleUI.Header("1.2 — ДРОБЬ M/N", ConsoleColor.Cyan);
+			ConsoleUI.Header("1.2 — ДРОБЬ M/N");
 			ConsoleUI.Condition(
 				"Дана дробь M/N (M, N — натуральные числа). Найти младшую цифру целой части дроби\n" +
 				"и старшую цифру дробной части.");

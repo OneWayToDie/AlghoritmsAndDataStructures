@@ -27,14 +27,14 @@ namespace AlghoritmsAndDataStructures.ViewModels
 			SwitchThemeCommand = new RelayCommand(ExecuteSwitchTheme);
 
 			// Заполняем список работ (8 штук)
-			Works.Add(new WorkItem { Id = 1, Title = "Практическая работа 1", IconPath = "/Resources/Icons/work1.png", IsAvailable = true });
-			Works.Add(new WorkItem { Id = 2, Title = "Практическая работа 2", IconPath = "/Resources/Icons/work2.png", IsAvailable = true });
-			Works.Add(new WorkItem { Id = 3, Title = "Практическая работа 3", IconPath = "/Resources/Icons/work3.png", IsAvailable = true });
-			Works.Add(new WorkItem { Id = 4, Title = "Практическая работа 4", IconPath = "/Resources/Icons/work4.png", IsAvailable = true });
-			Works.Add(new WorkItem { Id = 5, Title = "Практическая работа 5", IconPath = "/Resources/Icons/work5.png", IsAvailable = true });
-			Works.Add(new WorkItem { Id = 6, Title = "Практическая работа 6", IconPath = "/Resources/Icons/work6.png", IsAvailable = true });
-			Works.Add(new WorkItem { Id = 7, Title = "Практическая работа 7", IconPath = "/Resources/Icons/work7.png", IsAvailable = true });
-			Works.Add(new WorkItem { Id = 8, Title = "Практическая работа 8", IconPath = "/Resources/Icons/work8.png", IsAvailable = true });
+			Works.Add(new WorkItem { Id = 1, Title = "Практическая работа 1", IconPath = "/Resources/Icons/practice1.ico", IsAvailable = true });
+			Works.Add(new WorkItem { Id = 2, Title = "Практическая работа 2", IconPath = "/Resources/Icons/practice2.ico", IsAvailable = true });
+			Works.Add(new WorkItem { Id = 3, Title = "Практическая работа 3", IconPath = "/Resources/Icons/practice3.ico", IsAvailable = true });
+			Works.Add(new WorkItem { Id = 4, Title = "Практическая работа 4", IconPath = "/Resources/Icons/practice4.ico", IsAvailable = true });
+			Works.Add(new WorkItem { Id = 5, Title = "Практическая работа 5", IconPath = "/Resources/Icons/practice5.ico", IsAvailable = true });
+			Works.Add(new WorkItem { Id = 6, Title = "Практическая работа 6", IconPath = "/Resources/Icons/practice6.ico", IsAvailable = true });
+			Works.Add(new WorkItem { Id = 7, Title = "Практическая работа 7", IconPath = "/Resources/Icons/practice7.ico", IsAvailable = true });
+			Works.Add(new WorkItem { Id = 8, Title = "Практическая работа 8", IconPath = "/Resources/Icons/practice8.ico", IsAvailable = true });
 		}
 
 		private void ExecuteOpenWork(object parameter)

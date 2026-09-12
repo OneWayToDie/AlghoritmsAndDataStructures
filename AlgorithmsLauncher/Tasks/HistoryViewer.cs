@@ -38,7 +38,7 @@ namespace AlgorithmsLauncher.Tasks
 				int elapsedW = 9;
 
 				Console.WriteLine();
-				Console.ForegroundColor = ConsoleColor.DarkGray;
+				Console.ForegroundColor = ConsoleUI.Pal.Borders;
 				string headerNum = "".PadLeft(numW);
 				string headerLine = "  " + headerNum + " \u2502 "
 					+ "Дата и время".PadRight(dateW) + " \u2502 "
@@ -64,33 +64,33 @@ namespace AlgorithmsLauncher.Tasks
 					string res = Truncate(e.ResultSummary, maxRes).PadRight(maxRes);
 					string elapsed = (e.Elapsed ?? "").PadRight(elapsedW);
 
-					Console.ForegroundColor = ConsoleColor.DarkGray;
+					Console.ForegroundColor = ConsoleUI.Pal.Borders;
 					Console.Write("  " + num + " \u2502 ");
 					Console.ResetColor();
-					Console.ForegroundColor = ConsoleColor.White;
+					Console.ForegroundColor = ConsoleUI.Pal.Info;
 					Console.Write(date);
 					Console.ResetColor();
-					Console.ForegroundColor = ConsoleColor.DarkGray;
+					Console.ForegroundColor = ConsoleUI.Pal.Borders;
 					Console.Write(" \u2502 ");
 					Console.ResetColor();
-					Console.ForegroundColor = ConsoleColor.Cyan;
+					Console.ForegroundColor = ConsoleUI.Pal.Accent;
 					Console.Write(task);
 					Console.ResetColor();
-					Console.ForegroundColor = ConsoleColor.DarkGray;
+					Console.ForegroundColor = ConsoleUI.Pal.Borders;
 					Console.Write(" \u2502 ");
 					Console.ResetColor();
-					Console.ForegroundColor = ConsoleColor.Green;
+					Console.ForegroundColor = ConsoleUI.Pal.Good;
 					Console.Write(res);
 					Console.ResetColor();
-					Console.ForegroundColor = ConsoleColor.DarkGray;
+					Console.ForegroundColor = ConsoleUI.Pal.Borders;
 					Console.Write(" \u2502 ");
 					Console.ResetColor();
 					Console.WriteLine(elapsed);
 				}
 
 				Console.WriteLine();
-				ConsoleUI.MenuItem(1, "Очистить историю");
-				ConsoleUI.MenuItem(0, "Назад");
+				ConsoleUI.MenuItem(1, "Очистить историю", "\uD83D\uDDD1\uFE0F");
+				ConsoleUI.MenuItem(0, "Назад", "\u21A9\uFE0F");
 				Console.WriteLine();
 				int choice = ConsoleUI.AskChoice(0, 1);
 				if (choice == 0) return;

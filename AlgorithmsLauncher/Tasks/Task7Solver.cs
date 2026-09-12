@@ -13,8 +13,8 @@ namespace AlgorithmsLauncher.Tasks
 			{
 				ConsoleUI.Clear();
 				ConsoleUI.Header("ПРАКТИЧЕСКАЯ РАБОТА 7");
-				ConsoleUI.MenuItem(1, "Быстрая сортировка массива по убыванию");
-				ConsoleUI.MenuItem(0, "Назад в меню");
+				ConsoleUI.MenuItem(1, "Быстрая сортировка массива по убыванию", "\u2B07\uFE0F");
+				ConsoleUI.MenuItem(0, "Назад в меню", "\u21A9\uFE0F");
 				Console.WriteLine();
 				if (ConsoleUI.AskChoice(0, 1) == 0) return;
 				Solve();
@@ -24,7 +24,7 @@ namespace AlgorithmsLauncher.Tasks
 		private static void Solve()
 		{
 			ConsoleUI.Clear();
-			ConsoleUI.Header("7 — БЫСТРАЯ СОРТИРОВКА", ConsoleColor.Cyan);
+			ConsoleUI.Header("7 — БЫСТРАЯ СОРТИРОВКА");
 			ConsoleUI.Condition(
 				"Отсортировать массив целых чисел по убыванию методом быстрой сортировки\n" +
 				"(опорный элемент — последний элемент подмассива, Хоара с разбиением Ломуто).");

@@ -13,6 +13,7 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
     <LangVersion>7.3</LangVersion>
+    <ApplicationIcon>..\AlghoritmsAndDataStructures\Resources\Icons\app.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -93,6 +94,8 @@
     <Compile Include="Tasks\AutoTestRunner.cs" />
     <Compile Include="HistoryEntry.cs" />
     <Compile Include="HistoryStorage.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="ThemePalette.cs" />
     <Compile Include="Tasks\HistoryViewer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

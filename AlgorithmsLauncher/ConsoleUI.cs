@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 
 namespace AlgorithmsLauncher
 {
@@ -14,6 +15,92 @@ namespace AlgorithmsLauncher
 	{
 		/// <summary>true — расширенный вывод (рамки и эмодзи), false — упрощённый (cmd).</summary>
 		public static bool Unicode { get; private set; }
+
+		/// <summary>Палитра активного оформления (плоская в минимальном режиме).</summary>
+		public static ThemePalette Pal => Minimal ? Plain : ThemePalettes.Get(Settings.Current.Theme);
+
+		private static bool _animationsSkipped;
+
+		/// <summary>true — режим минимальной консоли (без оформления).</summary>
+		public static bool Minimal => Settings.Current.Minimal;
+
+		private static readonly ThemePalette Plain = new ThemePalette
+		{
+			Name = "Plain",
+			Accent = ConsoleColor.Gray,
+			Menu = ConsoleColor.Gray,
+			Info = ConsoleColor.Gray,
+			Hint = ConsoleColor.DarkGray,
+			Good = ConsoleColor.Gray,
+			Warn = ConsoleColor.Gray,
+			Error = ConsoleColor.Gray,
+			Borders = ConsoleColor.Gray,
+			BarPlus = ConsoleColor.Gray,
+			BarMinus = ConsoleColor.Gray,
+			BarZero = ConsoleColor.Gray
+		};
+
+		/// <summary>
+		/// true — анимации включены: только Windows Terminal (Unicode), не перенаправленный вывод
+		/// и скорость из настроек не равна Off.
+		/// </summary>
+		public static bool AnimationsEnabled
+		{
+			get
+			{
+				if (_animationsSkipped || Minimal) return false;
+				try { if (Console.IsOutputRedirected) return false; } catch { return false; }
+				if (!Unicode) return false;
+				return Settings.Current.AnimationSpeed != AnimationSpeed.Off;
+			}
+		}
+
+		private static int LineAnimationDelayMs
+		{
+			get
+			{
+				switch (Settings.Current.AnimationSpeed)
+				{
+					case AnimationSpeed.Slow: return 45;
+					case AnimationSpeed.Normal: return 16;
+					default: return 0;
+				}
+			}
+		}
+
+		private static int WipeAnimationDelayMs
+		{
+			get
+			{
+				switch (Settings.Current.AnimationSpeed)
+				{
+					case AnimationSpeed.Slow: return 8;
+					case AnimationSpeed.Normal: return 3;
+					default: return 0;
+				}
+			}
+		}
+
+		/// <summary>Пауза между строками меню. Esc прерывает и отключает анимации до конца сессии.</summary>
+		private static void AnimateSleep(int delayMs)
+		{
+			if (delayMs <= 0 || !AnimationsEnabled) return;
+			int total = 0;
+			while (total < delayMs)
+			{
+				try
+				{
+					while (Console.KeyAvailable)
+					{
+						ConsoleKey key = Console.ReadKey(true).Key;
+						if (key == ConsoleKey.Escape) { _animationsSkipped = true; return; }
+					}
+				}
+				catch { return; }
+				Thread.Sleep(Math.Min(20, delayMs - total));
+				total += 20;
+			}
+		}
 
 		/// <summary>Определяет стиль оформления один раз при старте.</summary>
 		public static void Detect()
@@ -59,13 +146,33 @@ namespace AlgorithmsLauncher
 			return new string(' ', left) + s + new string(' ', width - s.Length - left);
 		}
 
-		/// <summary>Заголовок в рамке. По умолчанию рамка зелёная, для задач — голубая.</summary>
-		public static void Header(string title, ConsoleColor frameColor = ConsoleColor.Green)
+		/// <summary>Заголовок. В минимальном режиме — одна строка без рамки.</summary>
+		public static void Header(string title)
 		{
+			if (Minimal)
+			{
+				Console.WriteLine(title);
+				Console.WriteLine();
+				return;
+			}
 			int width = Math.Max(56, Math.Min(UsableWidth(), title.Length + 8));
 			bool u = Unicode;
-			Console.ForegroundColor = frameColor;
-			Console.WriteLine((u ? "\u2554" : "+") + new string(u ? '\u2550' : '=', width) + (u ? "\u2557" : "+"));
+			Console.ForegroundColor = Pal.Accent;
+			Console.Write(u ? "\u2554" : "+");
+			if (AnimationsEnabled)
+			{
+				int step = WipeAnimationDelayMs;
+				for (int i = 0; i < width; i++)
+				{
+					Console.Write(u ? '\u2550' : '=');
+					AnimateSleep(step);
+				}
+			}
+			else
+			{
+				Console.Write(new string(u ? '\u2550' : '=', width));
+			}
+			Console.WriteLine(u ? "\u2557" : "+");
 			Console.WriteLine((u ? "\u2551" : "|") + Center(title, width) + (u ? "\u2551" : "|"));
 			Console.WriteLine((u ? "\u255A" : "+") + new string(u ? '\u2550' : '=', width) + (u ? "\u255D" : "+"));
 			Console.ResetColor();
@@ -75,9 +182,17 @@ namespace AlgorithmsLauncher
 		/// <summary>Блок «УСЛОВИЕ ЗАДАЧИ».</summary>
 		public static void Condition(string text)
 		{
+			if (Minimal)
+			{
+				Console.WriteLine("УСЛОВИЕ ЗАДАЧИ:");
+				foreach (string line in text.Replace("\r", "").Split('\n'))
+					Console.WriteLine("  " + line);
+				Console.WriteLine();
+				return;
+			}
 			int width = UsableWidth();
 			string prefix = Unicode ? "  \u25B8 " : "  * ";
-			Console.ForegroundColor = ConsoleColor.Cyan;
+			Console.ForegroundColor = Pal.Accent;
 			Console.WriteLine((Unicode ? "\u2500\u2500 " : "-- ") + "УСЛОВИЕ ЗАДАЧИ " + new string(Unicode ? '\u2500' : '-', Math.Max(10, width - 24)));
 			Console.ResetColor();
 			Console.WriteLine();
@@ -88,25 +203,89 @@ namespace AlgorithmsLauncher
 
 		public static void Rule()
 		{
-			Console.ForegroundColor = ConsoleColor.DarkGray;
+			if (Minimal) return;
+			Console.ForegroundColor = Pal.Borders;
 			Console.WriteLine(new string(Unicode ? '\u2500' : '-', Math.Max(40, UsableWidth())));
 			Console.ResetColor();
 		}
 
-		public static void MenuItem(int key, string text)
+		public static void MenuItem(int key, string text, string icon = null)
 		{
-			Console.ForegroundColor = ConsoleColor.Yellow;
+			if (Minimal)
+			{
+				Console.WriteLine($"  {key}. {text}");
+				return;
+			}
+			Console.ForegroundColor = Pal.Menu;
 			Console.Write(Unicode ? $"   {key,2} \u2192 " : $"   {key,2} - ");
 			Console.ResetColor();
+			Console.Write(RenderIcon(icon));
 			Console.WriteLine(text);
+			AnimateSleep(LineAnimationDelayMs);
 		}
 
-		public static void Step(string text) => Print(Unicode ? "   \u25B8 " : "   > ", text, ConsoleColor.Cyan);
-		public static void Info(string text)   => Print("  ", text, ConsoleColor.Gray);
-		public static void Hint(string text)   => Print("  ", text, ConsoleColor.DarkGray);
-		public static void Good(string text)   => Print(Unicode ? "  \u2713 " : "  OK ", text, ConsoleColor.Green);
-		public static void Warn(string text)   => Print(Unicode ? "  \u26A0 " : "  !! ", text, ConsoleColor.Yellow);
-		public static void Error(string text)  => Print(Unicode ? "  \u2715 " : "  XX ", text, ConsoleColor.Red);
+		/// <summary>
+		/// Иконка пункта меню по настройке IconStyle:
+		/// Emoji — эмодзи (в Windows Terminal), Strict — строгие символы, Off — без иконок.
+		/// </summary>
+		private static string RenderIcon(string icon)
+		{
+			if (Minimal) return "";
+			IconStyle style = Settings.Current.IconStyle;
+			if (style == IconStyle.Off || string.IsNullOrEmpty(icon) || !Unicode)
+				return "";
+			if (style == IconStyle.Strict)
+				return "\u25AA ";
+			return icon + " ";
+		}
+
+		/// <summary>Строка темы в подменю «Оформление»: маркер текущей + полоска-предпросмотр.</summary>
+		public static void ThemeOption(int key, string name, bool isCurrent)
+		{
+			if (Minimal)
+			{
+				Console.WriteLine($"  {key}. {(isCurrent ? "OK " : "   ")}{name}");
+				return;
+			}
+			Console.ForegroundColor = Pal.Menu;
+			Console.Write(Unicode ? $"   {key,2} \u2192 " : $"   {key,2} - ");
+			Console.ResetColor();
+			string marker = isCurrent ? (Unicode ? "\u2713" : "OK") : "  ";
+			Console.ForegroundColor = isCurrent ? Pal.Good : ConsoleColor.DarkGray;
+			Console.Write(marker + " ");
+			Console.ResetColor();
+			Console.ForegroundColor = Pal.Hint;
+			Console.Write(name.PadRight(12));
+			Console.ResetColor();
+			Console.Write(" ");
+			ThemePalettes.Preview(ThemePalettes.Get(name));
+			Console.WriteLine();
+		}
+
+		/// <summary>Строка-вариант в подменю настроек с маркером текущего значения.</summary>
+		public static void OptionRow(int key, string label, bool isCurrent)
+		{
+			if (Minimal)
+			{
+				Console.WriteLine($"  {key}. {(isCurrent ? "OK " : "   ")}{label}");
+				return;
+			}
+			Console.ForegroundColor = Pal.Menu;
+			Console.Write(Unicode ? $"   {key,2} \u2192 " : $"   {key,2} - ");
+			Console.ResetColor();
+			string marker = isCurrent ? (Unicode ? "\u2713" : "OK") : "  ";
+			Console.ForegroundColor = isCurrent ? Pal.Good : ConsoleColor.DarkGray;
+			Console.Write(marker + " ");
+			Console.ResetColor();
+			Console.WriteLine(label);
+		}
+
+		public static void Step(string text) => Print((Minimal || !Unicode) ? "   > " : "   \u25B8 ", text, Pal.Accent);
+		public static void Info(string text)   => Print("  ", text, Pal.Info);
+		public static void Hint(string text)   => Print("  ", text, Pal.Hint);
+		public static void Good(string text)   => Print(Minimal || !Unicode ? "  " : "  \u2713 ", text, Pal.Good);
+		public static void Warn(string text)   => Print(Minimal || !Unicode ? "  Внимание: " : "  \u26A0 ", text, Pal.Warn);
+		public static void Error(string text)  => Print(Minimal || !Unicode ? "  Ошибка: " : "  \u2715 ", text, Pal.Error);
 
 		private static void Print(string prefix, string text, ConsoleColor color)
 		{
@@ -128,7 +307,7 @@ namespace AlgorithmsLauncher
 
 		public static string ReadInput(string prompt)
 		{
-			Console.ForegroundColor = ConsoleColor.Yellow;
+			Console.ForegroundColor = Pal.Menu;
 			Console.Write(prompt + " ");
 			Console.ResetColor();
 			return Console.ReadLine()?.Trim() ?? "";
@@ -197,9 +376,9 @@ namespace AlgorithmsLauncher
 		public static int AskMode()
 		{
 			Console.WriteLine();
-			MenuItem(1, "Ввести данные вручную");
-			MenuItem(2, "Сгенерировать пример (seed; пусто — случайно)");
-			MenuItem(0, "Назад");
+			MenuItem(1, "Ввести данные вручную", "\u270D\uFE0F");
+			MenuItem(2, "Сгенерировать пример (seed; пусто — случайно)", "\uD83C\uDFB2");
+			MenuItem(0, "Назад", "\u21A9\uFE0F");
 			return AskChoice(0, 2);
 		}
 
@@ -214,10 +393,18 @@ namespace AlgorithmsLauncher
 
 		public static void Pause()
 		{
+			if (Console.IsOutputRedirected) return;
 			Console.WriteLine();
-			Console.ForegroundColor = ConsoleColor.DarkGray;
-			Console.WriteLine(Unicode ? "  \u2500\u2500 Нажмите Enter, чтобы продолжить \u2500\u2500" : "  -- Нажмите Enter, чтобы продолжить --");
-			Console.ResetColor();
+			if (Minimal)
+			{
+				Console.WriteLine("  -- Нажмите Enter, чтобы продолжить --");
+			}
+			else
+			{
+				Console.ForegroundColor = Pal.Borders;
+				Console.WriteLine(Unicode ? "  \u2500\u2500 Нажмите Enter, чтобы продолжить \u2500\u2500" : "  -- Нажмите Enter, чтобы продолжить --");
+				Console.ResetColor();
+			}
 			Console.ReadLine();
 		}
 
@@ -255,7 +442,7 @@ namespace AlgorithmsLauncher
 
 		private static void PrintBarChartTable(string[] labels, string[] valStrs, double[] vals, string title)
 		{
-			if (!Unicode) return;
+			if (Minimal || vals == null) return;
 			bool u = Unicode;
 			char h  = u ? '\u2500' : '-';
 			char tl = u ? '\u250C' : '+';
@@ -291,11 +478,11 @@ namespace AlgorithmsLauncher
 			int leftDash = dashes / 2;
 			int rightDash = dashes - leftDash;
 
-			Console.ForegroundColor = ConsoleColor.DarkGray;
+			Console.ForegroundColor = Pal.Borders;
 			Console.Write(tl + new string(h, leftDash));
-			Console.ForegroundColor = ConsoleColor.Cyan;
+			Console.ForegroundColor = Pal.Accent;
 			Console.Write(titleText);
-			Console.ForegroundColor = ConsoleColor.DarkGray;
+			Console.ForegroundColor = Pal.Borders;
 			Console.Write(new string(h, rightDash) + tr);
 			Console.WriteLine();
 			Console.ResetColor();
@@ -307,11 +494,11 @@ namespace AlgorithmsLauncher
 				int barLen = (int)Math.Round(Math.Abs(vals[i]) / maxAbs * barWidth);
 				if (barLen > barWidth) barLen = barWidth;
 
-				ConsoleColor barColor = vals[i] > 0 ? ConsoleColor.Green
-									  : vals[i] < 0 ? ConsoleColor.Red
-									  : ConsoleColor.Yellow;
+				ConsoleColor barColor = vals[i] > 0 ? Pal.BarPlus
+									  : vals[i] < 0 ? Pal.BarMinus
+									  : Pal.BarZero;
 
-				Console.ForegroundColor = ConsoleColor.DarkGray;
+				Console.ForegroundColor = Pal.Borders;
 				Console.Write(vr);
 				Console.ResetColor();
 
@@ -322,13 +509,13 @@ namespace AlgorithmsLauncher
 				Console.ResetColor();
 
 				Console.Write(new string(' ', barWidth - barLen));
-				Console.ForegroundColor = ConsoleColor.DarkGray;
+				Console.ForegroundColor = Pal.Borders;
 				Console.WriteLine(vr);
 				Console.ResetColor();
 
 				if (i < vals.Length - 1)
 				{
-					Console.ForegroundColor = ConsoleColor.DarkGray;
+					Console.ForegroundColor = Pal.Borders;
 					Console.WriteLine(lt + new string(h, innerWidth) + rt);
 					Console.ResetColor();
 				}
@@ -337,18 +524,18 @@ namespace AlgorithmsLauncher
 			WriteDataRow(vr, null, innerWidth);
 
 			string scale = BuildScaleLine(barWidth, maxAbs);
-			Console.ForegroundColor = ConsoleColor.DarkGray;
+			Console.ForegroundColor = Pal.Borders;
 			Console.Write(vr);
 			Console.ResetColor();
 			Console.Write(new string(' ', contentPrefix));
-			Console.ForegroundColor = ConsoleColor.DarkGray;
+			Console.ForegroundColor = Pal.Borders;
 			Console.Write(scale);
 			int tail = innerWidth - contentPrefix - scale.Length;
 			if (tail > 0) Console.Write(new string(' ', tail));
 			Console.WriteLine(vr);
 			Console.ResetColor();
 
-			Console.ForegroundColor = ConsoleColor.DarkGray;
+			Console.ForegroundColor = Pal.Borders;
 			Console.WriteLine(bl + new string(h, innerWidth) + br);
 			Console.ResetColor();
 			Console.WriteLine();
@@ -356,13 +543,13 @@ namespace AlgorithmsLauncher
 
 		private static void WriteDataRow(char vr, string content, int innerWidth)
 		{
-			Console.ForegroundColor = ConsoleColor.DarkGray;
+			Console.ForegroundColor = Pal.Borders;
 			Console.Write(vr);
 			Console.ResetColor();
 			int len = content?.Length ?? 0;
 			if (content != null) Console.Write(content);
 			Console.Write(new string(' ', innerWidth - len));
-			Console.ForegroundColor = ConsoleColor.DarkGray;
+			Console.ForegroundColor = Pal.Borders;
 			Console.WriteLine(vr);
 			Console.ResetColor();
 		}

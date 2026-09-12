@@ -13,8 +13,8 @@ namespace AlgorithmsLauncher.Tasks
 			{
 				ConsoleUI.Clear();
 				ConsoleUI.Header("ПРАКТИЧЕСКАЯ РАБОТА 8");
-				ConsoleUI.MenuItem(1, "Среднее арифметическое соседей");
-				ConsoleUI.MenuItem(0, "Назад в меню");
+				ConsoleUI.MenuItem(1, "Среднее арифметическое соседей", "\uD83D\uDD04");
+				ConsoleUI.MenuItem(0, "Назад в меню", "\u21A9\uFE0F");
 				Console.WriteLine();
 				int choice = ConsoleUI.AskChoice(0, 1);
 				if (choice == 0) return;
@@ -25,7 +25,7 @@ namespace AlgorithmsLauncher.Tasks
 		private static void Solve()
 		{
 			ConsoleUI.Clear();
-			ConsoleUI.Header("8 — СРЕДНЕЕ АРИФМЕТИЧЕСКОЕ СОСЕДЕЙ", ConsoleColor.Cyan);
+			ConsoleUI.Header("8 — СРЕДНЕЕ АРИФМЕТИЧЕСКОЕ СОСЕДЕЙ");
 			ConsoleUI.Condition(
 				"Заменить каждый элемент массива средним арифметическим его соседей:\n" +
 				"первый элемент — среднее с правым соседом, внутренние — с двумя соседями,\n" +

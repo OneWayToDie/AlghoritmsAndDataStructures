@@ -12,8 +12,8 @@ namespace AlgorithmsLauncher.Tasks
 			{
 				ConsoleUI.Clear();
 				ConsoleUI.Header("ПРАКТИЧЕСКАЯ РАБОТА 3");
-				ConsoleUI.MenuItem(1, "Проверить попадание точки в область");
-				ConsoleUI.MenuItem(0, "Назад в меню");
+				ConsoleUI.MenuItem(1, "Проверить попадание точки в область", "\uD83D\uDFE6");
+				ConsoleUI.MenuItem(0, "Назад в меню", "\u21A9\uFE0F");
 				Console.WriteLine();
 				int choice = ConsoleUI.AskChoice(0, 1);
 				if (choice == 0) return;
@@ -24,7 +24,7 @@ namespace AlgorithmsLauncher.Tasks
 		private static void Solve()
 		{
 			ConsoleUI.Clear();
-			ConsoleUI.Header("3 — ПОПАДАНИЕ ТОЧКИ В ОБЛАСТЬ", ConsoleColor.Cyan);
+			ConsoleUI.Header("3 — ПОПАДАНИЕ ТОЧКИ В ОБЛАСТЬ");
 			ConsoleUI.Condition(
 				"Определить, попадает ли точка с координатами (x, y) в заштрихованную область.\n" +
 				"Область: третий квадрант — внутри прямоугольника a×b И внутри окружности r;\n" +
@@ -90,7 +90,7 @@ namespace AlgorithmsLauncher.Tasks
 			{
 				Timestamp = DateTime.Now, TaskName = "ПР 3 — Область",
 				InputSummary = $"({x:0.##};{y:0.##}), r={r:0.##}",
-				ResultSummary = inside ? "inside" : "outside",
+				ResultSummary = inside ? "внутри" : "снаружи",
 				Elapsed = ConsoleUI.FormatTime(sw.Elapsed)
 			});
 			ConsoleUI.Pause();

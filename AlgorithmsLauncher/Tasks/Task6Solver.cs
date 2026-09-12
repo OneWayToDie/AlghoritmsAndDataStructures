@@ -14,8 +14,8 @@ namespace AlgorithmsLauncher.Tasks
 			{
 				ConsoleUI.Clear();
 				ConsoleUI.Header("ПРАКТИЧЕСКАЯ РАБОТА 6");
-				ConsoleUI.MenuItem(1, "Сумма ряда e^(-x) на интервале");
-				ConsoleUI.MenuItem(0, "Назад в меню");
+				ConsoleUI.MenuItem(1, "Сумма ряда e^(-x) на интервале", "\u2211");
+				ConsoleUI.MenuItem(0, "Назад в меню", "\u21A9\uFE0F");
 				Console.WriteLine();
 				int choice = ConsoleUI.AskChoice(0, 1);
 				if (choice == 0) return;
@@ -26,7 +26,7 @@ namespace AlgorithmsLauncher.Tasks
 		private static void Solve()
 		{
 			ConsoleUI.Clear();
-			ConsoleUI.Header("6 — СУММА РЯДА e^(-x)", ConsoleColor.Cyan);
+			ConsoleUI.Header("6 — СУММА РЯДА e^(-x)");
 			ConsoleUI.Condition(
 				"На интервале [A; B] с шагом Dx вычислить значение суммы ряда\n" +
 				"e^(-x) = 1 - x + x²/2! - x³/3! + ... с точностью eps и сравнить с точным значением e^(-x).");
@@ -67,7 +67,7 @@ namespace AlgorithmsLauncher.Tasks
 
 			bool showAll = points <= 20;
 			int skipMarker = 0;
-			ConsoleColor white = ConsoleColor.White;
+			ConsoleColor white = ConsoleUI.Pal.Info;
 			var sw = Stopwatch.StartNew();
 			for (int i = 0; i < points; i++)
 			{
@@ -76,7 +76,7 @@ namespace AlgorithmsLauncher.Tasks
 				if (!show && skipMarker != 1)
 				{
 					skipMarker = 1;
-					Console.ForegroundColor = ConsoleColor.DarkGray;
+					Console.ForegroundColor = ConsoleUI.Pal.Borders;
 					Console.WriteLine("  ...");
 					Console.ResetColor();
 				}
@@ -126,7 +126,7 @@ namespace AlgorithmsLauncher.Tasks
 
 		private static void PrintTableHeader()
 		{
-			Console.ForegroundColor = ConsoleColor.Cyan;
+			Console.ForegroundColor = ConsoleUI.Pal.Accent;
 			Console.WriteLine(string.Format("  {0,-9}  {1,-13}  {2,-7}  {3,-13}  {4,-13}",
 				"x", "Сумма ряда", "Членов", "e^(-x)", "Погрешность"));
 			ConsoleUI.Rule();

@@ -16,6 +16,7 @@
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <ApplicationIcon>Resources\Icons\app.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -376,7 +377,15 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Resources\Icons\" />
+    <Resource Include="Resources\Icons\app.ico" />
+    <Resource Include="Resources\Icons\practice1.ico" />
+    <Resource Include="Resources\Icons\practice2.ico" />
+    <Resource Include="Resources\Icons\practice3.ico" />
+    <Resource Include="Resources\Icons\practice4.ico" />
+    <Resource Include="Resources\Icons\practice5.ico" />
+    <Resource Include="Resources\Icons\practice6.ico" />
+    <Resource Include="Resources\Icons\practice7.ico" />
+    <Resource Include="Resources\Icons\practice8.ico" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.4\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
